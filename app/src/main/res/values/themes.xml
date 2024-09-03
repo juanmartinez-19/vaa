@@ -12,4 +12,11 @@
         <item name="android:colorPrimary">@android:color/white</item>
     </style>
 
+        <!-- Define un estilo para los elementos del Spinner -->
+        <style name="SpinnerItemStyle">
+            <item name="android:textSize">18sp</item> <!-- Ajusta el tamaño de fuente -->
+            <item name="android:padding">8dp</item> <!-- Ajusta el padding -->
+        </style>
+
 </resources>
+

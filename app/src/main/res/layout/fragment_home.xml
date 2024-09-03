@@ -7,17 +7,177 @@
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
 
-    <TextView
-        android:id="@+id/textView2"
+    <!-- Layout para Dirección origen -->
+    <LinearLayout
+        android:id="@+id/layoutDireccionOrigen"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="136dp">
+
+        <ImageView
+            android:id="@+id/iconDireccionOrigen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_location_on_24"
+            android:contentDescription="Icono Dirección Origen" />
+
+        <EditText
+            android:id="@+id/etDireccionOrigen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Dirección origen"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <!-- Layout para Dirección destino -->
+    <LinearLayout
+        android:id="@+id/layoutDireccionDestino"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layoutDireccionOrigen"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ImageView
+            android:id="@+id/iconDireccionDestino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_airplane_24"
+            android:contentDescription="Dirección Destino" />
+
+        <Spinner
+            android:id="@+id/etDireccionDestino"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:spinnerItemStyle="@style/SpinnerItemStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutPasajeros"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layoutDireccionDestino"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ImageView
+            android:id="@+id/iconPasajeros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_person_24"
+            android:contentDescription="Icono Pasajeros" />
+
+        <EditText
+            android:id="@+id/etPasajeros"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Pasajeros"
+            android:inputType="number" />
+    </LinearLayout>
+
+    <!-- Layout para Equipaje (KG) -->
+    <LinearLayout
+        android:id="@+id/layoutEquipaje"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/layoutPasajeros"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ImageView
+            android:id="@+id/iconEquipaje"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_suitcase_24"
+            android:contentDescription="Icono Equipaje" />
+
+        <EditText
+            android:id="@+id/etEquipaje"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Equipaje (KG)"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <!-- Botón para enviar el formulario -->
+    <Button
+        android:id="@+id/btnBuscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="170dp"
-        android:layout_marginTop="168dp"
-        android:layout_marginEnd="184dp"
-        android:layout_marginBottom="544dp"
-        android:text="TextView"
+        android:layout_marginTop="44dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="@string/buscar_viajes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutEquipaje" />
+
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        style="?android:attr/progressBarStyle"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.557" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="218dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="64dp"
+        android:text="@string/encontr_tu_viaje"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/layoutDireccionOrigen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvError"
+        android:layout_width="321dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="58dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="179dp"
+        android:text="Ha ocurrido un error"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBuscar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
