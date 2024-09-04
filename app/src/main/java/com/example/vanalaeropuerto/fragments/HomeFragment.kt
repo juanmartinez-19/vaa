@@ -1,6 +1,5 @@
 package com.example.vanalaeropuerto.fragments
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +14,6 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
@@ -37,9 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var progressBar : ProgressBar
     private lateinit var textViewTitle : TextView
 
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
+
 
     private lateinit var viewModel: HomeViewModel
 
@@ -76,6 +72,20 @@ class HomeFragment : Fragment() {
             }
         }
 
+        spDireccionDestino.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                if (position == 0) {
+                    Snackbar.make(view, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
+                    return
+                }
+                val selectedOption = parent.getItemAtPosition(position).toString()
+                direccionDestino = selectedOption
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
+
         spDireccionDestino.adapter = adapter
 
         return v
@@ -90,20 +100,6 @@ class HomeFragment : Fragment() {
 
             val direccionOrigen = etDireccionOrigen.text?.toString()
 
-            spDireccionDestino.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    if (position == 0) {
-                        Snackbar.make(view, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
-                        return
-                    }
-                    val selectedOption = parent.getItemAtPosition(position).toString()
-                    direccionDestino = selectedOption
-                }
-                override fun onNothingSelected(parent: AdapterView<*>) {
-
-                }
-            }
-
             val equipajeString = etEquipaje.text?.toString()
             val equipaje = if (!equipajeString.isNullOrBlank()) {
                 equipajeString.toInt()
@@ -117,7 +113,7 @@ class HomeFragment : Fragment() {
             } else {
                 0
             }
-            println("holaholahola ${direccionDestino} aaa")
+
             viewModel.validarDatos(direccionOrigen, direccionDestino, equipaje, pasajeros)
             this.observeState()
         }
