@@ -9,5 +9,14 @@
         android:id="@+id/homeFragment"
         android:name="com.example.vanalaeropuerto.fragments.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/actionHomeFragmentToVehiculosFragment"
+            app:destination="@id/vehiculosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehiculosFragment"
+        android:name="com.example.vanalaeropuerto.fragments.VehiculosFragment"
+        android:label="fragment_vehiculos"
+        tools:layout="@layout/fragment_vehiculos" />
 </navigation>

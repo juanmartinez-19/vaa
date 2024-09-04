@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -20,20 +21,20 @@ import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.HomeViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
     //Pantalla
     private lateinit var v : View
     private lateinit var etDireccionOrigen : EditText
-    private lateinit var etDireccionDestino : Spinner
+    private lateinit var spDireccionDestino : Spinner
     private lateinit var etPasajeros : EditText
     private lateinit var etEquipaje : EditText
     private lateinit var btnBuscar : Button
     private var direccionDestino: String=""
     //State
     private lateinit var progressBar : ProgressBar
-    private lateinit var textViewError : TextView
     private lateinit var textViewTitle : TextView
 
     companion object {
@@ -49,13 +50,12 @@ class HomeFragment : Fragment() {
         v= inflater.inflate(R.layout.fragment_home, container, false)
 
         etDireccionOrigen = v.findViewById(R.id.etDireccionOrigen)
-        etDireccionDestino = v.findViewById(R.id.etDireccionDestino)
+        spDireccionDestino = v.findViewById(R.id.spDireccionDestino)
         etPasajeros = v.findViewById(R.id.etPasajeros)
         etEquipaje = v.findViewById(R.id.etEquipaje)
         btnBuscar = v.findViewById(R.id.btnBuscar)
         progressBar = v.findViewById(R.id.progressBarLoading)
         textViewTitle = v.findViewById(R.id.tvTitle)
-        textViewError = v.findViewById(R.id.tvError)
 
         val opcionesDestino = listOf("Dirección destino", "Buenos Aires Aeroparque, Argentina (AEP)", "Buenos Aires Ezeiza, Argentina (EZE)")
 
@@ -76,7 +76,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        etDireccionDestino.adapter = adapter
+        spDireccionDestino.adapter = adapter
 
         return v
     }
@@ -87,11 +87,13 @@ class HomeFragment : Fragment() {
 
 
         btnBuscar.setOnClickListener {
+
             val direccionOrigen = etDireccionOrigen.text?.toString()
 
-            etDireccionDestino.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            spDireccionDestino.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     if (position == 0) {
+                        Snackbar.make(view, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
                         return
                     }
                     val selectedOption = parent.getItemAtPosition(position).toString()
@@ -101,7 +103,6 @@ class HomeFragment : Fragment() {
 
                 }
             }
-
 
             val equipajeString = etEquipaje.text?.toString()
             val equipaje = if (!equipajeString.isNullOrBlank()) {
@@ -116,72 +117,78 @@ class HomeFragment : Fragment() {
             } else {
                 0
             }
-
-
+            println("holaholahola ${direccionDestino} aaa")
             viewModel.validarDatos(direccionOrigen, direccionDestino, equipaje, pasajeros)
             this.observeState()
         }
     }
 
-    private fun navigate(){
-        //val action = HomeFragmentDirections.actionHomeFragmentToFragment()
-        //findNavController().navigate(action)
-    }
-
-    private fun observeState() {
+    private fun observeState () {
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
                 is ViewState.Loading -> {
                     this.showLoading()
+                    println("culo1")
                 }
                 is ViewState.Failure -> {
                     this.showError()
+                    println("culo2")
                 }
                 is ViewState.Idle -> {
+                    println("culo3")
                     this.hideLoading()
-                    this.navigate()
+                   try {
+                        if (findNavController().currentDestination?.id == R.id.homeFragment) {
+                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment()
+                            findNavController().navigate(action)
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("HomeFragment", "Navigation action failed: ${e.message}")
+                    }
+
                 }
                 is ViewState.Empty ->{
+                    println("culo4")
                     this.showEmpty()
                 }
-                is ViewState.InvalidParameters ->{
+                is ViewState.InvalidParameters -> {
+                    println("culo5")
                     this.showInvalidParameters()
                 }
                 else ->{
+                    println("culo6")
                     this.showError()
-            }
+                }
             }
         })
     }
+
     private fun showEmpty() {
         progressBar.visibility = View.GONE
-        textViewError.visibility = View.VISIBLE
+        Snackbar.make(v, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
         textViewTitle.visibility = View.VISIBLE
     }
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE
-        textViewError.visibility = View.GONE
         textViewTitle.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
         progressBar.visibility = View.GONE
-        textViewError.visibility = View.GONE
         textViewTitle.visibility = View.VISIBLE
     }
 
     private fun showError() {
         progressBar.visibility = View.GONE
-        textViewError.visibility = View.VISIBLE
-        textViewError.text = "Ha ocurrido un error"
+        Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
         textViewTitle.visibility = View.VISIBLE
     }
 
     private fun showInvalidParameters() {
+
         progressBar.visibility = View.GONE
-        textViewError.visibility = View.VISIBLE
-        textViewError.text = "Los valores ingresados son incorrectos"
+        Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
         textViewTitle.visibility = View.VISIBLE
     }
 

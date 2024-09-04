@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,37 +14,39 @@ class HomeViewModel : ViewModel() {
     init {
         _viewState.value = ViewState.Idle
     }
-    fun validarDatos (direccionOrigen: String?, direccionDestino: String?,equipaje: Int?, pasajeros: Int?) {
+    fun validarDatos(direccionOrigen: String?, direccionDestino: String?, equipaje: Int?, pasajeros: Int?) {
         _viewState.value = ViewState.Loading
 
-       if (equipaje == null) {
+        val errores = mutableListOf<String>()
+
+        if (equipaje == null) {
+            errores.add("Equipaje no puede ser nulo")
+        } else if (equipaje <= 0 || equipaje > 100) {
+            errores.add("Equipaje debe estar entre 1 y 100 kg")
+        }
+
+        if (pasajeros == null) {
+            errores.add("Pasajeros no puede ser nulo")
+        } else if (pasajeros <= 0 || pasajeros > 10) {
+            errores.add("Número de pasajeros debe estar entre 1 y 10")
+        }
+
+        if (direccionOrigen.isNullOrBlank()) {
+            errores.add("Dirección de origen no puede estar vacía")
+        }
+
+        if (direccionDestino.isNullOrBlank()) {
+            errores.add("Dirección de destino no puede estar vacía")
+        }
+
+        if (errores.isNotEmpty()) {
             _viewState.value = ViewState.InvalidParameters
-       } else
-       if (pasajeros == null) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       if (direccionOrigen.isNullOrBlank()) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       if (direccionDestino.isNullOrBlank()) {
-             _viewState.value = ViewState.InvalidParameters
-       } else
-       if (equipaje <= 0) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       if (equipaje > 100) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       if (pasajeros <= 0) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       if (pasajeros > 10) {
-            _viewState.value = ViewState.InvalidParameters
-       } else
-       {
+            Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
+        } else {
             _viewState.value = ViewState.Idle
-       }
+        }
     }
+
 
 
 }
