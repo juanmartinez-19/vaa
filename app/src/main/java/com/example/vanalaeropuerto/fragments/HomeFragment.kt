@@ -145,7 +145,7 @@ class HomeFragment : Fragment() {
                     this.hideLoading()
                    try {
                         if (findNavController().currentDestination?.id == R.id.homeFragment) {
-                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(luggage, passangers)
+                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(passangers,luggage)
                             findNavController().navigate(action)
                         }
                     } catch (e: IllegalArgumentException) {
