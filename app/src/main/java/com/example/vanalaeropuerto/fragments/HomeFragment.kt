@@ -1,5 +1,7 @@
 package com.example.vanalaeropuerto.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -25,17 +27,21 @@ class HomeFragment : Fragment() {
 
     //Pantalla
     private lateinit var v : View
-    private lateinit var etDireccionOrigen : EditText
-    private lateinit var spDireccionDestino : Spinner
-    private lateinit var etPasajeros : EditText
-    private lateinit var etEquipaje : EditText
-    private lateinit var btnBuscar : Button
-    private var direccionDestino: String=""
+    private lateinit var etOriginAddress : EditText
+    private lateinit var spDestinationAddress : Spinner
+    private lateinit var etPassangers : EditText
+    private lateinit var etLuggage : EditText
+    private lateinit var btnSearch : Button
     //State
     private lateinit var progressBar : ProgressBar
     private lateinit var textViewTitle : TextView
 
+    private var originAddress: String?=""
+    private var destinationAddress: String=""
+    private var luggage: Float = 0F
+    private var passangers: Int = 0
 
+    val opcionesDestino = listOf("Dirección destino", "Buenos Aires Aeroparque, Argentina (AEP)", "Buenos Aires Ezeiza, Argentina (EZE)")
 
     private lateinit var viewModel: HomeViewModel
 
@@ -45,15 +51,21 @@ class HomeFragment : Fragment() {
     ): View? {
         v= inflater.inflate(R.layout.fragment_home, container, false)
 
-        etDireccionOrigen = v.findViewById(R.id.etDireccionOrigen)
-        spDireccionDestino = v.findViewById(R.id.spDireccionDestino)
-        etPasajeros = v.findViewById(R.id.etPasajeros)
-        etEquipaje = v.findViewById(R.id.etEquipaje)
-        btnBuscar = v.findViewById(R.id.btnBuscar)
+        etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
+        spDestinationAddress = v.findViewById(R.id.spDireccionDestino)
+        etPassangers = v.findViewById(R.id.etPasajeros)
+        etLuggage = v.findViewById(R.id.etEquipaje)
+        btnSearch = v.findViewById(R.id.btnBuscar)
         progressBar = v.findViewById(R.id.progressBarLoading)
         textViewTitle = v.findViewById(R.id.tvTitle)
 
-        val opcionesDestino = listOf("Dirección destino", "Buenos Aires Aeroparque, Argentina (AEP)", "Buenos Aires Ezeiza, Argentina (EZE)")
+        return v
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         val adapter = object : ArrayAdapter<String>(requireContext(), R.layout.item_spinner, opcionesDestino) {
             override fun isEnabled(position: Int): Boolean {
@@ -61,81 +73,79 @@ class HomeFragment : Fragment() {
             }
 
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val textView = view as TextView
+                val v = super.getDropDownView(position, convertView, parent)
+                val textView = v as TextView
 
                 textView.setTextColor(
                     if (position == 0) android.graphics.Color.GRAY else android.graphics.Color.BLACK
                 )
 
-                return view
+                return v
             }
         }
 
-        spDireccionDestino.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                if (position == 0) {
-                    Snackbar.make(view, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
+        spDestinationAddress.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+               if (position == 0) {
                     return
                 }
                 val selectedOption = parent.getItemAtPosition(position).toString()
-                direccionDestino = selectedOption
+                destinationAddress = selectedOption
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
 
             }
         }
 
-        spDireccionDestino.adapter = adapter
 
-        return v
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        spDestinationAddress.adapter = adapter
 
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        btnSearch.setOnClickListener {
 
+            originAddress = etOriginAddress.text?.toString()
 
-        btnBuscar.setOnClickListener {
+            val equipajeString = etLuggage.text?.toString()
+            luggage = if (!equipajeString.isNullOrBlank()) {
+                equipajeString.toFloat()
+            } else {
+                0F
+            }
 
-            val direccionOrigen = etDireccionOrigen.text?.toString()
-
-            val equipajeString = etEquipaje.text?.toString()
-            val equipaje = if (!equipajeString.isNullOrBlank()) {
-                equipajeString.toInt()
+            val passangersString = etPassangers.text?.toString()
+            passangers = if (!passangersString.isNullOrBlank()) {
+                passangersString.toInt()
             } else {
                 0
             }
 
-            val pasajerosString = etPasajeros.text?.toString()
-            val pasajeros = if (!pasajerosString.isNullOrBlank()) {
-                pasajerosString.toInt()
-            } else {
-                0
-            }
-
-            viewModel.validarDatos(direccionOrigen, direccionDestino, equipaje, pasajeros)
+            viewModel.validarDatos(originAddress, destinationAddress, luggage, passangers)
             this.observeState()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        val selectedPosition = opcionesDestino.indexOf(destinationAddress)
+        spDestinationAddress.setSelection(if (selectedPosition != -1) selectedPosition else 0)
+    }
+
 
     private fun observeState () {
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
                 is ViewState.Loading -> {
                     this.showLoading()
-                    println("culo1")
                 }
                 is ViewState.Failure -> {
                     this.showError()
-                    println("culo2")
                 }
                 is ViewState.Idle -> {
-                    println("culo3")
                     this.hideLoading()
                    try {
                         if (findNavController().currentDestination?.id == R.id.homeFragment) {
-                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment()
+                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(luggage, passangers)
                             findNavController().navigate(action)
                         }
                     } catch (e: IllegalArgumentException) {
@@ -143,26 +153,14 @@ class HomeFragment : Fragment() {
                     }
 
                 }
-                is ViewState.Empty ->{
-                    println("culo4")
-                    this.showEmpty()
-                }
                 is ViewState.InvalidParameters -> {
-                    println("culo5")
                     this.showInvalidParameters()
                 }
                 else ->{
-                    println("culo6")
                     this.showError()
                 }
             }
         })
-    }
-
-    private fun showEmpty() {
-        progressBar.visibility = View.GONE
-        Snackbar.make(v, "Seleccione una dirección válida", Snackbar.LENGTH_SHORT).show()
-        textViewTitle.visibility = View.VISIBLE
     }
 
     private fun showLoading() {

@@ -20,10 +20,10 @@ class VehiculosViewModel : ViewModel() {
     init {
         _viewState.value = ViewState.Idle
     }
-    fun getProducts() {
+    fun getProducts(passangers : Int, luggage : Float) {
         viewModelScope.launch {
             _viewState.value = ViewState.Loading
-            when (val result = getVehiclesUseCase.getVehicles()){
+            when (val result = getVehiclesUseCase.getVehicles(passangers, luggage)){
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _vehiclesList.value = result.data

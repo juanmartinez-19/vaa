@@ -14,28 +14,28 @@ class HomeViewModel : ViewModel() {
     init {
         _viewState.value = ViewState.Idle
     }
-    fun validarDatos(direccionOrigen: String?, direccionDestino: String?, equipaje: Int?, pasajeros: Int?) {
+    fun validarDatos(originAddress: String?, destinationAddress: String, luggage: Float?, passangers: Int?) {
         _viewState.value = ViewState.Loading
 
         val errores = mutableListOf<String>()
 
-        if (equipaje == null) {
+        if (luggage == null) {
             errores.add("Equipaje no puede ser nulo")
-        } else if (equipaje <= 0 || equipaje > 100) {
+        } else if (luggage <= 0 || luggage > 100) {
             errores.add("Equipaje debe estar entre 1 y 100 kg")
         }
 
-        if (pasajeros == null) {
+        if (passangers == null) {
             errores.add("Pasajeros no puede ser nulo")
-        } else if (pasajeros <= 0 || pasajeros > 10) {
+        } else if (passangers <= 0 || passangers > 10) {
             errores.add("Número de pasajeros debe estar entre 1 y 10")
         }
 
-        if (direccionOrigen.isNullOrBlank()) {
+        if (originAddress.isNullOrBlank()) {
             errores.add("Dirección de origen no puede estar vacía")
         }
 
-        if (direccionDestino.isNullOrBlank()) {
+        if (destinationAddress.isBlank()) {
             errores.add("Dirección de destino no puede estar vacía")
         }
 

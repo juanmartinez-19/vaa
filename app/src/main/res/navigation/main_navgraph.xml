@@ -18,5 +18,14 @@
         android:id="@+id/vehiculosFragment"
         android:name="com.example.vanalaeropuerto.fragments.VehiculosFragment"
         android:label="Seleccionar vehículo"
-        tools:layout="@layout/fragment_vehiculos" />
+        tools:layout="@layout/fragment_vehiculos" >
+        <argument
+            android:name="passangers"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="luggage"
+            app:argType="float"
+            android:defaultValue="0.0" />
+    </fragment>
 </navigation>

@@ -26,11 +26,9 @@ class VehiculosFragment : Fragment() {
     lateinit var vehicleAdapter : VehicleAdapter
     // State
     lateinit var progressBar : ProgressBar
-    lateinit var textViewError : TextView
 
-    companion object {
-        fun newInstance() = VehiculosFragment()
-    }
+    private var luggage : Float = 0.0f
+    private var passangers : Int = 0
 
     private lateinit var viewModel: VehiculosViewModel
 
@@ -42,16 +40,8 @@ class VehiculosFragment : Fragment() {
 
         recyclerVehicles = v.findViewById(R.id.recyclerVehicles)
         progressBar = v.findViewById(R.id.progressBarLoading)
-
-        val navController = findNavController()
-        val backStackEntryCount = navController.currentBackStackEntry?.let {
-            it.arguments?.size() ?: 0
-        } ?: 0
-
-        Log.d("Navigation", "Back stack entry count: $backStackEntryCount")
-
-
-
+        luggage = VehiculosFragmentArgs.fromBundle(requireArguments()).luggage
+        passangers = VehiculosFragmentArgs.fromBundle(requireArguments()).passangers
 
         return v
     }
@@ -68,7 +58,7 @@ class VehiculosFragment : Fragment() {
         }
         recyclerVehicles.adapter = vehicleAdapter
 
-        viewModel.getProducts()
+        viewModel.getProducts(passangers,luggage)
 
         this.observeProductsList()
 
