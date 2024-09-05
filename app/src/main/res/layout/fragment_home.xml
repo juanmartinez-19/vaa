@@ -7,7 +7,41 @@
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
 
+    <!-- Layout para Fecha de salida -->
+
     <!-- Layout para Dirección origen -->
+
+    <LinearLayout
+        android:id="@+id/layoutFechaSalida"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <ImageView
+            android:id="@+id/iconFechaSalida"
+            android:layout_width="25dp"
+            android:layout_height="22dp"
+            android:contentDescription="Icono Fecha de Salida"
+            android:src="@drawable/baseline_calendar_month_24" />
+
+        <EditText
+            android:id="@+id/etDepartureDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Fecha de salida"
+            android:inputType="date" />
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/layoutDireccionOrigen"
         android:layout_width="0dp"
@@ -15,10 +49,10 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutFechaSalida"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="136dp">
+        android:layout_marginTop="16dp">
 
         <ImageView
             android:id="@+id/iconDireccionOrigen"
@@ -66,6 +100,7 @@
             android:spinnerItemStyle="@style/SpinnerItemStyle" />
     </LinearLayout>
 
+    <!-- Layout para Pasajeros -->
     <LinearLayout
         android:id="@+id/layoutPasajeros"
         android:layout_width="0dp"
@@ -124,7 +159,6 @@
     </LinearLayout>
 
     <!-- Botón para enviar el formulario -->
-
     <Button
         android:id="@+id/btnBuscar"
         android:layout_width="wrap_content"
@@ -152,8 +186,8 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="218dp"
-        android:layout_height="34dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginTop="38dp"
         android:layout_marginEnd="180dp"
@@ -162,10 +196,9 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/layoutDireccionOrigen"
+        app:layout_constraintBottom_toTopOf="@id/layoutFechaSalida"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

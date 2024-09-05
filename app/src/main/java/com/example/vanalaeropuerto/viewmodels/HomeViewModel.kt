@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vanalaeropuerto.data.ViewState
+import java.util.Calendar
 
 class HomeViewModel : ViewModel() {
 
@@ -14,9 +15,10 @@ class HomeViewModel : ViewModel() {
     init {
         _viewState.value = ViewState.Idle
     }
-    fun validarDatos(originAddress: String?, destinationAddress: String, luggage: Float?, passangers: Int?) {
+    fun validarDatos(originAddress: String?, destinationAddress: String, luggage: Float?, passangers: Int?, selectedDateInMillis: Long?) {
         _viewState.value = ViewState.Loading
 
+        val currentDateInMillis = Calendar.getInstance().timeInMillis
         val errores = mutableListOf<String>()
 
         if (luggage == null) {
@@ -37,6 +39,12 @@ class HomeViewModel : ViewModel() {
 
         if (destinationAddress.isBlank()) {
             errores.add("Dirección de destino no puede estar vacía")
+        }
+
+        if (selectedDateInMillis==null) {
+            errores.add("Fecha de salida no puede estar vacía")
+        } else if (selectedDateInMillis <= currentDateInMillis) {
+            errores.add("Fecha de salida debe ser mayor a la fecha actual")
         }
 
         if (errores.isNotEmpty()) {

@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Spinner
@@ -22,6 +24,7 @@ import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
+import java.util.Calendar
 
 class HomeFragment : Fragment() {
 
@@ -31,6 +34,7 @@ class HomeFragment : Fragment() {
     private lateinit var spDestinationAddress : Spinner
     private lateinit var etPassangers : EditText
     private lateinit var etLuggage : EditText
+    private lateinit var etDepartureDate : EditText
     private lateinit var btnSearch : Button
     //State
     private lateinit var progressBar : ProgressBar
@@ -40,6 +44,8 @@ class HomeFragment : Fragment() {
     private var destinationAddress: String=""
     private var luggage: Float = 0F
     private var passangers: Int = 0
+    private var departureDate: String?=""
+    private var selectedDateInMillis: Long = 0
 
     val opcionesDestino = listOf("Dirección destino", "Buenos Aires Aeroparque, Argentina (AEP)", "Buenos Aires Ezeiza, Argentina (EZE)")
 
@@ -58,6 +64,7 @@ class HomeFragment : Fragment() {
         btnSearch = v.findViewById(R.id.btnBuscar)
         progressBar = v.findViewById(R.id.progressBarLoading)
         textViewTitle = v.findViewById(R.id.tvTitle)
+        etDepartureDate = v.findViewById(R.id.etDepartureDate)
 
         return v
     }
@@ -67,12 +74,17 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        val adapter = object : ArrayAdapter<String>(requireContext(), R.layout.item_spinner, opcionesDestino) {
+        val adapter = object :
+            ArrayAdapter<String>(requireContext(), R.layout.item_spinner, opcionesDestino) {
             override fun isEnabled(position: Int): Boolean {
                 return position != 0
             }
 
-            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
                 val v = super.getDropDownView(position, convertView, parent)
                 val textView = v as TextView
 
@@ -85,8 +97,13 @@ class HomeFragment : Fragment() {
         }
 
         spDestinationAddress.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-               if (position == 0) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                if (position == 0) {
                     return
                 }
                 val selectedOption = parent.getItemAtPosition(position).toString()
@@ -98,12 +115,17 @@ class HomeFragment : Fragment() {
             }
         }
 
-
         spDestinationAddress.adapter = adapter
+
+        etDepartureDate.setOnClickListener {
+            this.showDatePickerDialog()
+        }
 
         btnSearch.setOnClickListener {
 
             originAddress = etOriginAddress.text?.toString()
+
+            departureDate = etDepartureDate.text?.toString()
 
             val equipajeString = etLuggage.text?.toString()
             luggage = if (!equipajeString.isNullOrBlank()) {
@@ -119,7 +141,8 @@ class HomeFragment : Fragment() {
                 0
             }
 
-            viewModel.validarDatos(originAddress, destinationAddress, luggage, passangers)
+            viewModel.validarDatos(originAddress, destinationAddress, luggage, passangers, selectedDateInMillis)
+
             this.observeState()
         }
     }
@@ -131,6 +154,23 @@ class HomeFragment : Fragment() {
         spDestinationAddress.setSelection(if (selectedPosition != -1) selectedPosition else 0)
     }
 
+    private fun showDatePickerDialog() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(requireContext(), { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val selectedCalendar = Calendar.getInstance()
+            selectedCalendar.set(year, month, dayOfMonth)
+            selectedDateInMillis = selectedCalendar.timeInMillis
+
+            val selectedDate = "$dayOfMonth/${month + 1}/$year"
+            etDepartureDate.setText(selectedDate)
+        }, year, month, day)
+
+        datePickerDialog.show()
+    }
 
     private fun observeState () {
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
