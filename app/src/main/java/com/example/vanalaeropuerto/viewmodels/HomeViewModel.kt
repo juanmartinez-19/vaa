@@ -12,9 +12,62 @@ class HomeViewModel : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
 
+    private val _passengers = MutableLiveData(0)
+    val passengers: LiveData<Int> get() = _passengers
+
+    // LiveData para los contadores
+    private val _adultCount = MutableLiveData(0)
+    val adultCount: LiveData<Int> get() = _adultCount
+
+    private val _childCount = MutableLiveData(0)
+    val childCount: LiveData<Int> get() = _childCount
+
+    private val _babyCount = MutableLiveData(0)
+    val babyCount: LiveData<Int> get() = _babyCount
+
+
     init {
         _viewState.value = ViewState.Idle
     }
+
+    fun addAdult() {
+        _adultCount.value = (_adultCount.value ?: 0) + 1
+        this.updateTotalPassengers()
+    }
+
+    fun removeAdult() {
+        _adultCount.value = (_adultCount.value ?: 0).coerceAtLeast(1) - 1
+        this.updateTotalPassengers()
+    }
+
+    fun addChild() {
+        _childCount.value = (_childCount.value ?: 0) + 1
+        this.updateTotalPassengers()
+    }
+
+    fun removeChild() {
+        _childCount.value = (_childCount.value ?: 0).coerceAtLeast(1) - 1
+        this.updateTotalPassengers()
+    }
+
+    fun addBaby() {
+        _babyCount.value = (_babyCount.value ?: 0) + 1
+        this.updateTotalPassengers()
+    }
+
+    fun removeBaby() {
+        _babyCount.value = (_babyCount.value ?: 0).coerceAtLeast(1) - 1
+        this.updateTotalPassengers()
+    }
+
+    private fun updateTotalPassengers() {
+        val adults = _adultCount.value ?: 0
+        val children = _childCount.value ?: 0
+        val babies = _babyCount.value ?: 0
+
+        _passengers.value = adults + children + babies
+    }
+
     fun validarDatos(originAddress: String?, destinationAddress: String?, luggage: Float?, passangers: Int?, selectedDateInMillis: Long?) {
         _viewState.value = ViewState.Loading
 

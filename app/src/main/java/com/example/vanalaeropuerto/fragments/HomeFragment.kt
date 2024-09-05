@@ -1,8 +1,6 @@
 package com.example.vanalaeropuerto.fragments
 
 import android.app.DatePickerDialog
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -32,10 +27,20 @@ class HomeFragment : Fragment() {
     private lateinit var v : View
     private lateinit var etOriginAddress : EditText
     private lateinit var etDestinationAddress : EditText
-    private lateinit var etPassangers : EditText
     private lateinit var etLuggage : EditText
     private lateinit var etDepartureDate : EditText
     private lateinit var btnSearch : Button
+    private lateinit var btnAdultPlus : Button
+    private lateinit var btnAdultMinus : Button
+    private lateinit var btnChildMinus : Button
+    private lateinit var btnChildPlus : Button
+    private lateinit var btnBabyMinus : Button
+    private lateinit var btnBabyPlus : Button
+    private lateinit var tvAdultCount : TextView
+    private lateinit var tvChildCount : TextView
+    private lateinit var tvBabyCount : TextView
+
+
     //State
     private lateinit var progressBar : ProgressBar
     private lateinit var textViewTitle : TextView
@@ -43,9 +48,16 @@ class HomeFragment : Fragment() {
     private var originAddress: String?=""
     private var destinationAddress: String?=""
     private var luggage: Float = 0F
-    private var passangers: Int = 0
+    private var passengers: Int = 0
     private var departureDate: String?=""
     private var selectedDateInMillis: Long = 0
+
+    private var adultCountString : String?=""
+    private var adultCount : Int=0
+    private var childCountString : String?=""
+    private var childCount : Int=0
+    private var babyCountString : String?=""
+    private var babyCount : Int=0
 
     private lateinit var viewModel: HomeViewModel
 
@@ -53,16 +65,43 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v= inflater.inflate(R.layout.fragment_home, container, false)
+        v = inflater.inflate(R.layout.fragment_home, container, false)
 
         etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
         etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
-        etPassangers = v.findViewById(R.id.etPasajeros)
         etLuggage = v.findViewById(R.id.etEquipaje)
         btnSearch = v.findViewById(R.id.btnBuscar)
         progressBar = v.findViewById(R.id.progressBarLoading)
         textViewTitle = v.findViewById(R.id.tvTitle)
         etDepartureDate = v.findViewById(R.id.etDepartureDate)
+        btnAdultPlus = v.findViewById(R.id.btnAdultPlus)
+        btnAdultMinus = v.findViewById(R.id.btnAdultMinus)
+        tvAdultCount = v.findViewById(R.id.tvAdultCount)
+
+        btnChildPlus = v.findViewById(R.id.btnChildPlus)
+        btnChildMinus = v.findViewById(R.id.btnChildMinus)
+        tvChildCount = v.findViewById(R.id.tvChildCount)
+
+        btnBabyPlus = v.findViewById(R.id.btnBabyPlus)
+        btnBabyMinus = v.findViewById(R.id.btnBabyMinus)
+        tvBabyCount = v.findViewById(R.id.tvBabyCount)
+
+        adultCountString = tvAdultCount.text?.toString()
+
+        adultCountString = tvAdultCount.text?.toString()
+        adultCount = if (!adultCountString.isNullOrBlank()) {
+            adultCountString!!.toInt()
+        } else { 0 }
+
+        childCountString = tvChildCount.text?.toString()
+        childCount = if (!childCountString.isNullOrBlank()) {
+            childCountString!!.toInt()
+        } else { 0 }
+
+        babyCountString = tvBabyCount.text?.toString()
+        babyCount = if (!babyCountString.isNullOrBlank()) {
+            babyCountString!!.toInt()
+        } else { 0 }
 
         return v
     }
@@ -72,8 +111,48 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
+        viewModel.passengers.observe(viewLifecycleOwner) { count ->
+            passengers = count
+        }
+
+        viewModel.adultCount.observe(viewLifecycleOwner) { count ->
+            tvAdultCount.text = count.toString()
+        }
+
+        viewModel.childCount.observe(viewLifecycleOwner) { count ->
+            tvChildCount.text = count.toString()
+        }
+
+        viewModel.babyCount.observe(viewLifecycleOwner) { count ->
+            tvBabyCount.text = count.toString()
+        }
+
         etDepartureDate.setOnClickListener {
             this.showDatePickerDialog()
+        }
+
+        btnAdultPlus.setOnClickListener {
+            viewModel.addAdult()
+        }
+
+        btnAdultMinus.setOnClickListener {
+            viewModel.removeAdult()
+        }
+
+        btnChildPlus.setOnClickListener {
+            viewModel.addChild()
+        }
+
+        btnChildMinus.setOnClickListener {
+            viewModel.removeChild()
+        }
+
+        btnBabyPlus.setOnClickListener {
+            viewModel.addBaby()
+        }
+
+        btnBabyMinus.setOnClickListener {
+            viewModel.removeBaby()
         }
 
         btnSearch.setOnClickListener {
@@ -91,16 +170,38 @@ class HomeFragment : Fragment() {
                 0F
             }
 
-            val passangersString = etPassangers.text?.toString()
-            passangers = if (!passangersString.isNullOrBlank()) {
-                passangersString.toInt()
-            } else {
-                0
+            viewModel.validarDatos(originAddress, destinationAddress, luggage, passengers, selectedDateInMillis)
+            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                when (viewState) {
+                    is ViewState.Loading -> {
+                        this.showLoading()
+                    }
+                    is ViewState.Failure -> {
+                        this.showError()
+                    }
+                    is ViewState.Idle -> {
+                        this.hideLoading()
+                        this.navigate()
+                    }
+                    is ViewState.InvalidParameters -> {
+                        this.showInvalidParameters()
+                    }
+                    else ->{
+                        this.showError()
+                    }
+                }
+            })
+        }
+    }
+
+    private fun navigate() {
+        try {
+            if (findNavController().currentDestination?.id == R.id.homeFragment) {
+                val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(passengers,luggage)
+                findNavController().navigate(action)
             }
-
-            viewModel.validarDatos(originAddress, destinationAddress, luggage, passangers, selectedDateInMillis)
-
-            this.observeState()
+        } catch (e: IllegalArgumentException) {
+            Log.e("HomeFragment", "Navigation action failed: ${e.message}")
         }
     }
 
@@ -120,37 +221,6 @@ class HomeFragment : Fragment() {
         }, year, month, day)
 
         datePickerDialog.show()
-    }
-
-    private fun observeState () {
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            when (viewState) {
-                is ViewState.Loading -> {
-                    this.showLoading()
-                }
-                is ViewState.Failure -> {
-                    this.showError()
-                }
-                is ViewState.Idle -> {
-                    this.hideLoading()
-                   try {
-                        if (findNavController().currentDestination?.id == R.id.homeFragment) {
-                            val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(passangers,luggage)
-                            findNavController().navigate(action)
-                        }
-                    } catch (e: IllegalArgumentException) {
-                        Log.e("HomeFragment", "Navigation action failed: ${e.message}")
-                    }
-
-                }
-                is ViewState.InvalidParameters -> {
-                    this.showInvalidParameters()
-                }
-                else ->{
-                    this.showError()
-                }
-            }
-        })
     }
 
     private fun showLoading() {
