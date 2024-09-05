@@ -15,7 +15,7 @@ class HomeViewModel : ViewModel() {
     init {
         _viewState.value = ViewState.Idle
     }
-    fun validarDatos(originAddress: String?, destinationAddress: String, luggage: Float?, passangers: Int?, selectedDateInMillis: Long?) {
+    fun validarDatos(originAddress: String?, destinationAddress: String?, luggage: Float?, passangers: Int?, selectedDateInMillis: Long?) {
         _viewState.value = ViewState.Loading
 
         val currentDateInMillis = Calendar.getInstance().timeInMillis
@@ -37,7 +37,7 @@ class HomeViewModel : ViewModel() {
             errores.add("Dirección de origen no puede estar vacía")
         }
 
-        if (destinationAddress.isBlank()) {
+        if (destinationAddress.isNullOrBlank()) {
             errores.add("Dirección de destino no puede estar vacía")
         }
 

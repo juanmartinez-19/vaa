@@ -88,14 +88,15 @@
             android:id="@+id/iconDireccionDestino"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_airplane_24"
+            android:src="@drawable/baseline_location_on_24"
             android:contentDescription="Dirección Destino" />
 
-        <Spinner
-            android:id="@+id/spDireccionDestino"
+        <EditText
+            android:id="@+id/etDireccionDestino"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:hint="Dirección destino"
             android:inputType="text"
             android:spinnerItemStyle="@style/SpinnerItemStyle" />
     </LinearLayout>

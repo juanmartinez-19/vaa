@@ -31,7 +31,7 @@ class HomeFragment : Fragment() {
     //Pantalla
     private lateinit var v : View
     private lateinit var etOriginAddress : EditText
-    private lateinit var spDestinationAddress : Spinner
+    private lateinit var etDestinationAddress : EditText
     private lateinit var etPassangers : EditText
     private lateinit var etLuggage : EditText
     private lateinit var etDepartureDate : EditText
@@ -41,13 +41,11 @@ class HomeFragment : Fragment() {
     private lateinit var textViewTitle : TextView
 
     private var originAddress: String?=""
-    private var destinationAddress: String=""
+    private var destinationAddress: String?=""
     private var luggage: Float = 0F
     private var passangers: Int = 0
     private var departureDate: String?=""
     private var selectedDateInMillis: Long = 0
-
-    val opcionesDestino = listOf("Dirección destino", "Buenos Aires Aeroparque, Argentina (AEP)", "Buenos Aires Ezeiza, Argentina (EZE)")
 
     private lateinit var viewModel: HomeViewModel
 
@@ -58,7 +56,7 @@ class HomeFragment : Fragment() {
         v= inflater.inflate(R.layout.fragment_home, container, false)
 
         etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
-        spDestinationAddress = v.findViewById(R.id.spDireccionDestino)
+        etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
         etPassangers = v.findViewById(R.id.etPasajeros)
         etLuggage = v.findViewById(R.id.etEquipaje)
         btnSearch = v.findViewById(R.id.btnBuscar)
@@ -74,49 +72,6 @@ class HomeFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        val adapter = object :
-            ArrayAdapter<String>(requireContext(), R.layout.item_spinner, opcionesDestino) {
-            override fun isEnabled(position: Int): Boolean {
-                return position != 0
-            }
-
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                val v = super.getDropDownView(position, convertView, parent)
-                val textView = v as TextView
-
-                textView.setTextColor(
-                    if (position == 0) android.graphics.Color.GRAY else android.graphics.Color.BLACK
-                )
-
-                return v
-            }
-        }
-
-        spDestinationAddress.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                if (position == 0) {
-                    return
-                }
-                val selectedOption = parent.getItemAtPosition(position).toString()
-                destinationAddress = selectedOption
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
-
-        spDestinationAddress.adapter = adapter
-
         etDepartureDate.setOnClickListener {
             this.showDatePickerDialog()
         }
@@ -124,6 +79,8 @@ class HomeFragment : Fragment() {
         btnSearch.setOnClickListener {
 
             originAddress = etOriginAddress.text?.toString()
+
+            destinationAddress = etDestinationAddress.text?.toString()
 
             departureDate = etDepartureDate.text?.toString()
 
@@ -145,13 +102,6 @@ class HomeFragment : Fragment() {
 
             this.observeState()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        val selectedPosition = opcionesDestino.indexOf(destinationAddress)
-        spDestinationAddress.setSelection(if (selectedPosition != -1) selectedPosition else 0)
     }
 
     private fun showDatePickerDialog() {
