@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +82,7 @@
         android:id="@+id/layoutDireccionDestino"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/layoutDireccionOrigen"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,22 +90,49 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp">
 
-        <ImageView
-            android:id="@+id/iconDireccionDestino"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_location_on_24"
-            android:contentDescription="Dirección Destino" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etDireccionDestino"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Dirección destino"
-            android:inputType="text"
-            android:spinnerItemStyle="@style/SpinnerItemStyle" />
+            <ImageView
+                android:id="@+id/ivDireccionIzquierda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="desc"
+                android:src="@drawable/baseline_location_on_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.105" />
+
+            <EditText
+                android:id="@+id/etDireccionDestino"
+                android:layout_width="273dp"
+                android:layout_height="43dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:hint="Dirección destino"
+                android:inputType="text"
+                app:layout_constraintEnd_toStartOf="@id/ibAddAddress"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/ivDireccionIzquierda"
+                app:layout_constraintWidth_percent="0.6"
+                tools:layout_editor_absoluteY="2dp" />
+
+            <ImageButton
+                android:id="@+id/ibAddAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_add_box_24"
+                android:contentDescription="desc2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
+
 
     <!-- Layout para Pasajeros -->
     <LinearLayout
@@ -240,24 +273,27 @@
 
 
     <!-- Layout para Equipaje (KG) -->
+
+    <!-- Botón para enviar el formulario -->
     <LinearLayout
         android:id="@+id/layoutEquipaje"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/layoutPasajeros"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp">
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutPasajeros">
 
         <ImageView
             android:id="@+id/iconEquipaje"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baseline_suitcase_24"
-            android:contentDescription="Icono Equipaje" />
+            android:contentDescription="Icono Equipaje"
+            android:src="@drawable/baseline_suitcase_24" />
 
         <EditText
             android:id="@+id/etEquipaje"
@@ -268,7 +304,6 @@
             android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <!-- Botón para enviar el formulario -->
     <Button
         android:id="@+id/btnBuscar"
         android:layout_width="wrap_content"
@@ -308,7 +343,11 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/layoutFechaSalida"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

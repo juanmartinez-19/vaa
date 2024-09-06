@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
@@ -60,18 +62,49 @@ class HomeFragment : Fragment() {
     private var babyCountString : String?=""
     private var babyCount : Int=0
 
-    private lateinit var containerDireccionDestino: LinearLayout
-    private lateinit var btnAddDireccionDestino: Button
-    private var direccionDestinoCounter = 2
-
+    private lateinit var containerLayout: LinearLayout
+    private lateinit var addFieldButton: ImageButton
+    private var fieldCounter = 2
+    private val editTextList = mutableListOf<View>()
 
     private lateinit var viewModel: HomeViewModel
+
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            val values = it.getStringArrayList("editTextValues") ?: emptyList()
+            values.forEachIndexed { index, value ->
+                addNewEditText()
+                val lastEditText = editTextList.last()
+                val editText = lastEditText.findViewById<EditText>(R.id.etDynamic)
+                editText.setText(value)
+                editText.hint = "Dirección destino ${index + 1}"
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val values = editTextList.map { view ->
+            view.findViewById<EditText>(R.id.etDynamic).text.toString()
+        }
+        outState.putStringArrayList("editTextValues", ArrayList(values))
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.fragment_home, container, false)
+
+        containerLayout = v.findViewById(R.id.layoutDireccionDestino)
+        addFieldButton = v.findViewById(R.id.ibAddAddress)
+
+        addFieldButton.setOnClickListener {
+            addNewEditText()
+         }
 
         etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
         etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
@@ -169,36 +202,118 @@ class HomeFragment : Fragment() {
 
             departureDate = etDepartureDate.text?.toString()
 
-            val equipajeString = etLuggage.text?.toString()
-            luggage = if (!equipajeString.isNullOrBlank()) {
-                equipajeString.toFloat()
+            val luggageString = etLuggage.text?.toString()
+            luggage = if (!luggageString.isNullOrBlank()) {
+                luggageString.toFloat()
             } else {
                 0F
             }
 
-            viewModel.validarDatos(originAddress, destinationAddress, luggage, passengers, selectedDateInMillis)
+            val valoresIngresados = obtenerValoresEditText()
+
+            viewModel.validarDatos(
+                originAddress,
+                destinationAddress,
+                luggage,
+                passengers,
+                selectedDateInMillis,
+                valoresIngresados
+            )
             viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
                     is ViewState.Loading -> {
                         this.showLoading()
                     }
+
                     is ViewState.Failure -> {
                         this.showError()
                     }
+
                     is ViewState.Idle -> {
                         this.hideLoading()
                         this.navigate()
                     }
+
                     is ViewState.InvalidParameters -> {
                         this.showInvalidParameters()
                     }
-                    else ->{
+
+                    else -> {
                         this.showError()
                     }
                 }
             })
         }
     }
+
+    private fun obtenerValoresEditText(): List<String> {
+        val valores = mutableListOf<String>()
+        for (view in editTextList) {
+            val editText = view.findViewById<EditText>(R.id.etDynamic)
+            valores.add(editText.text.toString())
+        }
+        return valores
+    }
+
+    private fun addNewEditText() {
+        if (fieldCounter < 6) {
+            val inflater = LayoutInflater.from(requireContext())
+            val newEditTextView = inflater.inflate(R.layout.edit_text_with_button, containerLayout, false)
+
+            val editText = newEditTextView.findViewById<EditText>(R.id.etDynamic)
+            val removeButton = newEditTextView.findViewById<ImageButton>(R.id.btnRemoveDynamic)
+
+            editText.hint = "Dirección destino $fieldCounter"
+
+            // Configurar el botón para eliminar el EditText
+            removeButton.setOnClickListener {
+                containerLayout.removeView(newEditTextView)
+                editTextList.remove(newEditTextView)
+                actualizarHints()  // Actualizar hints después de eliminar un campo
+            }
+
+            // Agregar el nuevo EditText a la lista y al contenedor
+            editTextList.add(newEditTextView)
+            val layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+            )
+            // Configurar las constraints para el nuevo EditText
+            if (editTextList.isNotEmpty()) {
+                val previousView = editTextList.last()
+                layoutParams.topToBottom = previousView.id
+            } else {
+                layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            }
+            newEditTextView.layoutParams = layoutParams
+            newEditTextView.id = View.generateViewId() // Genera un ID único
+            containerLayout.addView(newEditTextView)
+
+            fieldCounter++
+            saveEditTextValues() // Guardar valores después de agregar un campo
+        }
+    }
+
+    private fun saveEditTextValues() {
+        val values = editTextList.map { view ->
+            view.findViewById<EditText>(R.id.etDynamic).text.toString()
+        }
+        // Guardar los valores en el Bundle
+        val outState = Bundle()
+        outState.putStringArrayList("editTextValues", ArrayList(values))
+    }
+
+
+
+    // Método para actualizar los hints de los EditText después de eliminar uno
+    private fun actualizarHints() {
+        for (i in editTextList.indices) {
+            val view = editTextList[i]
+            val editText = view.findViewById<EditText>(R.id.etDynamic)
+            editText.hint = "Dirección destino ${i + 2}" // Comienza desde el número 2
+        }
+    }
+
     private fun navigate() {
         try {
             if (findNavController().currentDestination?.id == R.id.homeFragment) {

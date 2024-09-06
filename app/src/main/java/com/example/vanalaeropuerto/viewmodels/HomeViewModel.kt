@@ -68,38 +68,56 @@ class HomeViewModel : ViewModel() {
         _passengers.value = adults + children + babies
     }
 
-    fun validarDatos(originAddress: String?, destinationAddress: String?, luggage: Float?, passangers: Int?, selectedDateInMillis: Long?) {
+    fun validarDatos(
+        originAddress: String?,
+        destinationAddress: String?,
+        luggage: Float?,
+        passangers: Int?,
+        selectedDateInMillis: Long?,
+        destinationAddresses: List<String>
+    ) {
         _viewState.value = ViewState.Loading
 
         val currentDateInMillis = Calendar.getInstance().timeInMillis
         val errores = mutableListOf<String>()
 
+        // Validación de equipaje
         if (luggage == null) {
             errores.add("Equipaje no puede ser nulo")
         } else if (luggage <= 0 || luggage > 100) {
             errores.add("Equipaje debe estar entre 1 y 100 kg")
         }
 
+        // Validación de pasajeros
         if (passangers == null) {
             errores.add("Pasajeros no puede ser nulo")
         } else if (passangers <= 0 || passangers > 10) {
             errores.add("Número de pasajeros debe estar entre 1 y 10")
         }
 
+        // Validación de dirección de origen
         if (originAddress.isNullOrBlank()) {
             errores.add("Dirección de origen no puede estar vacía")
         }
 
+        // Validación de dirección de destino
         if (destinationAddress.isNullOrBlank()) {
             errores.add("Dirección de destino no puede estar vacía")
         }
 
-        if (selectedDateInMillis==null) {
+        // Validación de fecha
+        if (selectedDateInMillis == null) {
             errores.add("Fecha de salida no puede estar vacía")
         } else if (selectedDateInMillis <= currentDateInMillis) {
             errores.add("Fecha de salida debe ser mayor a la fecha actual")
         }
 
+        // Validación de direcciones de destino
+        if (destinationAddresses.any { it.isBlank() }) {
+            errores.add("Todas las direcciones de destino deben estar completas")
+        }
+
+        // Manejo de errores
         if (errores.isNotEmpty()) {
             _viewState.value = ViewState.InvalidParameters
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
@@ -107,6 +125,7 @@ class HomeViewModel : ViewModel() {
             _viewState.value = ViewState.Idle
         }
     }
+
 
 
 

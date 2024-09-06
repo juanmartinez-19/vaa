@@ -5,4 +5,6 @@
     <string name="direcci_n_destino">Dirección destino</string>
     <string name="ha_ocurrido_un_error">Ha ocurrido un error</string>
     <string name="invalid_parameters">Los parámetros ingresados son inválidos. Por favor, vuelva a intentar.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
