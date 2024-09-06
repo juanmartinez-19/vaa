@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -58,6 +59,11 @@ class HomeFragment : Fragment() {
     private var childCount : Int=0
     private var babyCountString : String?=""
     private var babyCount : Int=0
+
+    private lateinit var containerDireccionDestino: LinearLayout
+    private lateinit var btnAddDireccionDestino: Button
+    private var direccionDestinoCounter = 2
+
 
     private lateinit var viewModel: HomeViewModel
 
@@ -193,7 +199,6 @@ class HomeFragment : Fragment() {
             })
         }
     }
-
     private fun navigate() {
         try {
             if (findNavController().currentDestination?.id == R.id.homeFragment) {
