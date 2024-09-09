@@ -63,7 +63,7 @@ class HomeFragment : Fragment() {
     private var babyCount : Int=0
 
     private lateinit var containerLayout: LinearLayout
-    private lateinit var addFieldButton: ImageButton
+    private lateinit var ibAddFieldButton: ImageButton
     private var fieldCounter = 2
     private val editTextList = mutableListOf<View>()
 
@@ -100,11 +100,13 @@ class HomeFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_home, container, false)
 
         containerLayout = v.findViewById(R.id.layoutDireccionDestino)
-        addFieldButton = v.findViewById(R.id.ibAddAddress)
+        ibAddFieldButton = v.findViewById(R.id.ibAddAddress)
 
-        addFieldButton.setOnClickListener {
+        /*
+        ibAddFieldButton.setOnClickListener {
             addNewEditText()
          }
+         */
 
         etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
         etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
