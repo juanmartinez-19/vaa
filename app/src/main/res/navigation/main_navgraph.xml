@@ -13,9 +13,6 @@
         <action
             android:id="@+id/actionHomeFragmentToVehiculosFragment"
             app:destination="@id/vehiculosFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_blankFragment"
-            app:destination="@id/blankFragment" />
     </fragment>
     <fragment
         android:id="@+id/vehiculosFragment"
@@ -30,9 +27,12 @@
             android:name="luggage"
             app:argType="float"
             android:defaultValue="0.0" />
+        <action
+            android:id="@+id/action_vehiculosFragment_to_ingresoDatosFragment"
+            app:destination="@id/ingresoDatosFragment" />
     </fragment>
     <fragment
-        android:id="@+id/blankFragment"
-        android:name="com.example.vanalaeropuerto.fragments.BlankFragment"
-        android:label="BlankFragment" />
+        android:id="@+id/ingresoDatosFragment"
+        android:name="com.example.vanalaeropuerto.fragments.IngresoDatosFragment"
+        android:label="IngresoDatosFragment" />
 </navigation>

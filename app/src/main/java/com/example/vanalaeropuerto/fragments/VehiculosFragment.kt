@@ -53,8 +53,8 @@ class VehiculosFragment : Fragment() {
         recyclerVehicles.layoutManager = LinearLayoutManager(context)
         vehicleAdapter = VehicleAdapter(mutableListOf()) {
             val vehicle = vehicleAdapter.getSelectedProduct(it)
-            //val action = HomeFragmentDirections.actionHomeFragmentToProductDetailFragment(product)
-            //findNavController().navigate(action)
+            val action = VehiculosFragmentDirections.actionVehiculosFragmentToIngresoDatosFragment()
+            findNavController().navigate(action)
         }
         recyclerVehicles.adapter = vehicleAdapter
 
