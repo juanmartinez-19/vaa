@@ -1,7 +1,9 @@
 package com.example.vanalaeropuerto.fragments
 
+import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.IngresoDatosViewModel
@@ -124,6 +127,10 @@ class IngresoDatosFragment : Fragment() {
                     is ViewState.Idle -> {
                         this.hideLoading()
                     }
+                    is ViewState.Confirmed -> {
+                        this.hideLoading()
+                        this.showConfirmed()
+                    }
                     is ViewState.InvalidParameters -> {
                         this.showInvalidParameters()
                     }
@@ -135,6 +142,17 @@ class IngresoDatosFragment : Fragment() {
 
         }
 
+    }
+
+    private fun navigate() {
+        try {
+            if (findNavController().currentDestination?.id == R.id.ingresoDatosFragment) {
+                val action = IngresoDatosFragmentDirections.actionIngresoDatosFragmentToHomeFragment()
+                findNavController().navigate(action)
+            }
+        } catch (e: IllegalArgumentException) {
+            Log.e("IngresoDatosFragment", "Navigation action failed: ${e.message}")
+        }
     }
 
     private fun showLoading() {
@@ -152,6 +170,18 @@ class IngresoDatosFragment : Fragment() {
     private fun showInvalidParameters() {
         progressBar.visibility = View.GONE
         Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showConfirmed() {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Solicitud confirmada")
+        builder.setMessage("Su solicitud ha sido procesada correctamente. Un agente se comunicará con usted en breve.")
+        builder.setPositiveButton("Aceptar") { dialog, _ ->
+            dialog.dismiss()
+            this.navigate()
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
 

@@ -63,7 +63,7 @@ class IngresoDatosViewModel : ViewModel() {
             _viewState.value = ViewState.InvalidParameters
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
-            _viewState.value = ViewState.Idle
+            _viewState.value = ViewState.Confirmed
         }
     }
 }

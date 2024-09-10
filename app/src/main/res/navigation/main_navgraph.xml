@@ -34,5 +34,9 @@
     <fragment
         android:id="@+id/ingresoDatosFragment"
         android:name="com.example.vanalaeropuerto.fragments.IngresoDatosFragment"
-        android:label="Datos Pasajeros" />
+        android:label="Datos Pasajeros" >
+        <action
+            android:id="@+id/action_ingresoDatosFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>
