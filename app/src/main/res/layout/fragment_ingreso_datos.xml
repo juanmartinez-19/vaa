@@ -55,7 +55,7 @@
 
     <!-- Nombre del solicitante -->
     <EditText
-        android:id="@+id/et_solicitante_nombre"
+        android:id="@+id/et_user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Nombre"
@@ -66,61 +66,52 @@
 
     <!-- Apellido del solicitante -->
     <EditText
-        android:id="@+id/et_solicitante_apellido"
+        android:id="@+id/et_user_surname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:hint="Apellido"
-        app:layout_constraintTop_toBottomOf="@id/et_solicitante_nombre"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-
-    <!-- Género del solicitante -->
-    <EditText
-        android:id="@+id/et_solicitante_genero"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Género"
-        app:layout_constraintTop_toBottomOf="@id/et_solicitante_apellido"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
-
-    <!-- Teléfono del solicitante -->
-    <EditText
-        android:id="@+id/et_solicitante_telefono"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Número de teléfono"
-        android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/et_solicitante_genero"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        app:layout_constraintTop_toBottomOf="@id/et_user_name" />
 
     <!-- CUIL del solicitante -->
     <EditText
-        android:id="@+id/et_solicitante_cuil"
+        android:id="@+id/et_user_phone_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:hint="Número de teléfono"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/et_user_surname" />
+
+    <EditText
+        android:id="@+id/et_user_cuil"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="CUIL"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/et_solicitante_telefono"
+        app:layout_constraintTop_toBottomOf="@id/et_user_phone_number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
 
     <!-- Sección de datos del tercero -->
+
     <LinearLayout
         android:id="@+id/third_party_fields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/et_solicitante_cuil"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_user_cuil"
+        app:layout_constraintVertical_bias="0.108">
 
         <!-- Nombre del tercero -->
         <TextView
@@ -133,7 +124,7 @@
 
         <!-- Nombre del tercero -->
         <EditText
-            android:id="@+id/et_tercero_nombre"
+            android:id="@+id/et_third_party_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -141,23 +132,15 @@
 
         <!-- Apellido del tercero -->
         <EditText
-            android:id="@+id/et_tercero_apellido"
+            android:id="@+id/et_third_party_surname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Apellido" />
 
-        <!-- Género del tercero -->
-        <EditText
-            android:id="@+id/et_tercero_genero"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Género" />
-
         <!-- Teléfono del tercero -->
         <EditText
-            android:id="@+id/et_tercero_telefono"
+            android:id="@+id/et_third_party_phone_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -166,12 +149,43 @@
 
         <!-- CUIL del tercero -->
         <EditText
-            android:id="@+id/et_tercero_cuil"
+            android:id="@+id/et_third_party_cuil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="CUIL"
             android:inputType="number" />
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_confirm_form"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_marginStart="323dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Cargar formulario"
+        android:src="@drawable/baseline_confirm_24"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tint="@android:color/white" />
+
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.512" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
