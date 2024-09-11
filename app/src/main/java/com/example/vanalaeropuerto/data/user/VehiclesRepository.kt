@@ -1,7 +1,6 @@
-package com.example.vanalaeropuerto.data
+package com.example.vanalaeropuerto.data.user
 
-import android.content.ContentValues
-import android.util.Log
+import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.entities.Vehicle
 
 class VehiclesRepository {

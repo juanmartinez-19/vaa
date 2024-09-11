@@ -7,4 +7,5 @@
     <string name="invalid_parameters">Los parámetros ingresados son inválidos. Por favor, vuelva a intentar.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_empresa">EmpresaActivity</string>
 </resources>

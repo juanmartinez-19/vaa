@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.viewmodels
+package com.example.vanalaeropuerto.viewmodels.user
 
 import android.util.Log
 import androidx.lifecycle.LiveData

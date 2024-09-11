@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.fragments
+package com.example.vanalaeropuerto.fragments.user
 
 import android.app.DatePickerDialog
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.viewmodels.HomeViewModel
+import com.example.vanalaeropuerto.viewmodels.user.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 

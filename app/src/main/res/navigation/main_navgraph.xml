@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.vanalaeropuerto.fragments.HomeFragment"
+        android:name="com.example.vanalaeropuerto.fragments.user.HomeFragment"
         android:label="Van al Aeropuerto"
         tools:layout="@layout/fragment_home" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/vehiculosFragment"
-        android:name="com.example.vanalaeropuerto.fragments.VehiculosFragment"
+        android:name="com.example.vanalaeropuerto.fragments.user.VehiculosFragment"
         android:label="Seleccionar vehículo"
         tools:layout="@layout/fragment_vehiculos" >
         <argument
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/ingresoDatosFragment"
-        android:name="com.example.vanalaeropuerto.fragments.IngresoDatosFragment"
+        android:name="com.example.vanalaeropuerto.fragments.user.IngresoDatosFragment"
         android:label="Datos Pasajeros" >
         <action
             android:id="@+id/action_ingresoDatosFragment_to_homeFragment"

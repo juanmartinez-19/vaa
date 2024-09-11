@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.adapters
+package com.example.vanalaeropuerto.adapters.user
 
 import android.view.LayoutInflater
 import android.view.View

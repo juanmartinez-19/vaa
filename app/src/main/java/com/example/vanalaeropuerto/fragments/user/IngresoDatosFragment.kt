@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.fragments
+package com.example.vanalaeropuerto.fragments.user
 
 import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.viewmodels.IngresoDatosViewModel
+import com.example.vanalaeropuerto.viewmodels.user.IngresoDatosViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 

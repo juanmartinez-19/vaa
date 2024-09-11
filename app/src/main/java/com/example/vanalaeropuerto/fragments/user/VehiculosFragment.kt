@@ -1,23 +1,20 @@
-package com.example.vanalaeropuerto.fragments
+package com.example.vanalaeropuerto.fragments.user
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.adapters.VehicleAdapter
+import com.example.vanalaeropuerto.adapters.user.VehicleAdapter
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.viewmodels.VehiculosViewModel
+import com.example.vanalaeropuerto.viewmodels.user.VehiculosViewModel
 
 class VehiculosFragment : Fragment() {
 
@@ -60,22 +57,12 @@ class VehiculosFragment : Fragment() {
 
         viewModel.getProducts(passangers,luggage)
 
-        this.observeProductsList()
-
-        this.observeState()
-
-
-    }
-
-    private fun observeProductsList() {
-        viewModel._vehiclesList.observe(viewLifecycleOwner, Observer { _productsList ->
-            if (_productsList != null) {
-                vehicleAdapter.submitList(_productsList)
+        viewModel._vehiclesList.observe(viewLifecycleOwner, Observer { _vehiclesList ->
+            if (_vehiclesList != null) {
+                vehicleAdapter.submitList(_vehiclesList)
             }
         })
-    }
 
-    private fun observeState() {
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
                 is ViewState.Loading -> {
@@ -94,8 +81,9 @@ class VehiculosFragment : Fragment() {
             }
             }
         })
-    }
 
+
+    }
     private fun showEmpty() {
         progressBar.visibility = View.GONE
         recyclerVehicles.visibility = View.GONE

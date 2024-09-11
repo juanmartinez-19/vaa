@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardViewVehicles"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:elevation="8dp"
+    app:cardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="379dp"
+            android:layout_height="31dp"
+            android:text="2024-09-10"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvOriginAddressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dirección Origen:"
+            android:textAllCaps="false"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDate" />
+
+        <TextView
+            android:id="@+id/tvOriginAddress"
+            android:layout_width="243dp"
+            android:layout_height="20dp"
+            android:text="123 Main St"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvOriginAddressLabel"
+            app:layout_constraintTop_toTopOf="@id/tvOriginAddressLabel" />
+
+        <TextView
+            android:id="@+id/tvDestinationAddressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dirección Destino:"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvOriginAddress" />
+
+        <TextView
+            android:id="@+id/tvDestinationAddress"
+            android:layout_width="237dp"
+            android:layout_height="22dp"
+            android:text="456 Elm St"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvDestinationAddressLabel"
+            app:layout_constraintTop_toTopOf="@id/tvDestinationAddressLabel" />
+
+        <TextView
+            android:id="@+id/tvAdultsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adultos:"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDestinationAddress" />
+
+        <TextView
+            android:id="@+id/tvAdults"
+            android:layout_width="310dp"
+            android:layout_height="24dp"
+            android:text="2"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvAdultsLabel"
+            app:layout_constraintTop_toTopOf="@id/tvAdultsLabel" />
+
+        <TextView
+            android:id="@+id/tvChildLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Niños:"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvAdults" />
+
+        <TextView
+            android:id="@+id/tvChildren"
+            android:layout_width="323dp"
+            android:layout_height="24dp"
+            android:text="1"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvChildLabel"
+            app:layout_constraintTop_toTopOf="@id/tvChildLabel" />
+
+        <TextView
+            android:id="@+id/tvBabiesLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bebés:"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvChildren" />
+
+        <TextView
+            android:id="@+id/tvBabies"
+            android:layout_width="323dp"
+            android:layout_height="21dp"
+            android:text="0"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvBabiesLabel"
+            app:layout_constraintTop_toTopOf="@id/tvBabiesLabel" />
+
+        <TextView
+            android:id="@+id/tvLuggageKgLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Equipaje (Kg):"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBabies" />
+
+        <TextView
+            android:id="@+id/tvLuggageKg"
+            android:layout_width="263dp"
+            android:layout_height="24dp"
+            android:text="15.0"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvLuggageKgLabel"
+            app:layout_constraintTop_toTopOf="@id/tvLuggageKgLabel" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

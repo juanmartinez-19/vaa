@@ -7,20 +7,20 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.vanalaeropuerto.R
 
-class HomeActivity : AppCompatActivity() {
+class EmpresaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.home_activity)
+        setContentView(R.layout.empresa_activity)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_home) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_home_empresa) as NavHostFragment
         val navController = navHostFragment.navController
 
         setupActionBarWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_home)
+        val navController = findNavController(R.id.nav_host_fragment_home_empresa)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 

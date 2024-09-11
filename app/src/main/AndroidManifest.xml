@@ -13,15 +13,21 @@
         android:theme="@style/Theme.VanAlAeropuerto"
         tools:targetApi="31">
         <activity
+            android:name=".activities.EmpresaActivity"
+            android:exported="true"
+            android:label="@string/title_activity_empresa"
+            android:theme="@style/Theme.VanAlAeropuerto">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <activity
             android:name=".activities.HomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.VanAlAeropuerto">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.VanAlAeropuerto"/>
     </application>
 
 </manifest>
