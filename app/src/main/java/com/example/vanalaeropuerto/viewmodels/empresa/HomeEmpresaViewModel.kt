@@ -13,36 +13,7 @@ import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
 
 class HomeEmpresaViewModel : ViewModel() {
-    private val _viewState = MutableLiveData<ViewState>()
-    val viewState: LiveData<ViewState> get() = _viewState
-    var _tripsList : MutableLiveData<MutableList<Trip>?> = MutableLiveData()
-    val getTripsUseCase : TripsRepository = TripsRepository()
 
-    init {
-        _viewState.value = ViewState.Idle
-    }
-    fun getTrips() {
-        viewModelScope.launch {
-            _viewState.value = ViewState.Loading
-            when (val result = getTripsUseCase.getTrips()){
-                is MyResult.Success -> {
-                    if (result.data.isNotEmpty()) {
-                        _tripsList.value = result.data
-                        _viewState.value = ViewState.Idle
-
-                    } else {
-                        _viewState.value = ViewState.Empty
-                    }
-                }
-                is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
-                    Log.d("TEST", _viewState.value.toString())
-                }
-            }
-
-
-        }
-    }
 
 
 }

@@ -8,6 +8,21 @@
     <fragment
         android:id="@+id/homeEmpresaFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.HomeEmpresaFragment"
-        android:label="Home"
+        android:label="Viajes"
         tools:layout="@layout/fragment_home_empresa" />
+    <fragment
+        android:id="@+id/tripsHistoryFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.TripsHistoryFragment"
+        android:label="fragment_trips_history"
+        tools:layout="@layout/fragment_trips_history" />
+    <fragment
+        android:id="@+id/pendingTripsFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripsFragment"
+        android:label="fragment_pending_trips"
+        tools:layout="@layout/fragment_pending_trips" />
+    <fragment
+        android:id="@+id/confirmedTripsFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.ConfirmedTripsFragment"
+        android:label="fragment_confirmed_trips"
+        tools:layout="@layout/fragment_confirmed_trips" />
 </navigation>

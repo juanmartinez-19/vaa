@@ -12,19 +12,21 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
+import com.example.vanalaeropuerto.adapters.empresa.ViewPagerAdapter
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.HomeEmpresaViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeEmpresaFragment : Fragment() {
 
     private lateinit var v : View
-
-    private lateinit var progressBar : ProgressBar
-    private lateinit var recyclerTrips : RecyclerView
-    private lateinit var tripsAdapter : TripsAdapter
+    private lateinit var viewPager : ViewPager2
+    private lateinit var tabLayout : TabLayout
 
     private lateinit var viewModel: HomeEmpresaViewModel
 
@@ -34,70 +36,32 @@ class HomeEmpresaFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.fragment_home_empresa, container, false)
 
-        recyclerTrips = v.findViewById(R.id.rvTrips)
+        viewPager = v.findViewById(R.id.view_pager)
+        tabLayout = v.findViewById(R.id.tab_layout)
 
         return v
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
         viewModel = ViewModelProvider(this).get(HomeEmpresaViewModel::class.java)
 
-        progressBar = v.findViewById(R.id.progressBarLoading)
-        recyclerTrips.layoutManager = LinearLayoutManager(context)
-        tripsAdapter = TripsAdapter(mutableListOf())
-        recyclerTrips.adapter = tripsAdapter
+        viewPager.adapter = ViewPagerAdapter(requireActivity())
 
-        viewModel.getTrips()
+        TabLayoutMediator(tabLayout, viewPager, TabLayoutMediator.TabConfigurationStrategy { tab, position ->
+            when (position) {
+                0 -> tab.text = "Historial"
+                1 -> tab.text = "Solicitados"
+                2 -> tab.text = "Confirmados"
 
-        viewModel._tripsList.observe(viewLifecycleOwner, Observer { _tripsList ->
-            if (_tripsList != null) {
-                tripsAdapter.submitList(_tripsList)
+                else -> tab.text = "undefined"
             }
-        })
+        }).attach()
 
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            when (viewState) {
-                is ViewState.Loading -> {
-                    this.showLoading()
-                }
-                is ViewState.Failure -> {
-                    this.showError()
-                }
-                is ViewState.Idle -> {
-                    this.hideLoading()
-                }
-                is ViewState.Empty ->{
-                    this.showEmpty()
-                } else ->{
-                this.showError()
-            }
-            }
-        })
+        viewPager.setCurrentItem(1, false) // Establece la segunda pestaña como la inicial (sin animación)
 
     }
 
-    private fun showEmpty() {
-        progressBar.visibility = View.GONE
-        recyclerTrips.visibility = View.GONE
-    }
-    private fun showLoading() {
-        progressBar.visibility = View.VISIBLE
-        recyclerTrips.visibility = View.GONE
-    }
 
-    private fun hideLoading() {
-        progressBar.visibility = View.GONE
-        recyclerTrips.visibility = View.VISIBLE
-    }
-
-    private fun showError() {
-        recyclerTrips.visibility = View.GONE
-        progressBar.visibility = View.GONE
-        Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
-    }
-
-
-
-    }
+}

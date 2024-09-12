@@ -8,7 +8,10 @@ class Trip (
     private var children : Int?=0,
     private var babies : Int?=0,
     private var luggageKg : Float?=0F,
-    private var vehicleId : String?=""
+    private var price : Float?=0F,
+    private var tripId : String?="",
+    private var segmentoId : String?="",
+    private var solicitanteId : String?=""
 ) {
 
     fun getDate() : String? {
@@ -32,8 +35,19 @@ class Trip (
     fun getLuggageKg() : Float? {
         return this.luggageKg
     }
-    fun getVehicleId() : String? {
-        return this.vehicleId
+    fun getPrice() : Float? {
+        return this.price
     }
+
+    fun getSegmentoId() : String? {
+        return this.segmentoId
+    }
+    fun getTripId() : String? {
+        return this.tripId
+    }
+    fun getSolicitanteId() : String? {
+        return this.solicitanteId
+    }
+
 
 }
