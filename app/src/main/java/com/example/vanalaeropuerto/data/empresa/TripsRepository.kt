@@ -8,7 +8,7 @@ import java.util.Locale
 class TripsRepository {
 
     val tripsList : MutableList<Trip> = mutableListOf()
-    val trip1 =  Trip(
+    private val trip1 =  Trip(
         date = "2024-10-10",
         originAddress = "Pumacahua 50",
         destinationAddress = "Senillosa 484",
@@ -16,11 +16,12 @@ class TripsRepository {
         children = 1,
         babies = 0,
         luggageKg = 15.0F,
-        segmentoId = "ABC123",
+        segmentId = "ABC123",
         tripId="1",
-        requesterId ="1"
+        requesterId ="1",
+        state = "pending"
     )
-    val trip2 = Trip(
+    private val trip2 = Trip(
         date = "2024-10-12",
         originAddress = "Hortiguera 333",
         destinationAddress = "Aeropuerto de Ezeiza",
@@ -28,11 +29,12 @@ class TripsRepository {
         children = 0,
         babies = 0,
         luggageKg = 8.0F,
-        segmentoId = "XYZ789",
+        segmentId = "XYZ789",
         tripId="2",
-        requesterId="1"
+        requesterId="1",
+        state = "pending"
     )
-    val trip3 =Trip(
+    private val trip3 =Trip(
         date = "2024-10-15",
         originAddress = "La Pampa 4921",
         destinationAddress = "Estados Unidos 423",
@@ -40,11 +42,12 @@ class TripsRepository {
         children = 2,
         babies = 1,
         luggageKg = 25.0F,
-        segmentoId = "DEF456",
+        segmentId = "DEF456",
         tripId="3",
-        requesterId="2"
+        requesterId="2",
+        state = "pending"
     )
-    val trip4 =Trip(
+    private val trip4 =Trip(
         date = "2024-09-20",
         originAddress = "Aeroparque",
         destinationAddress = "José León Suárez 4891",
@@ -52,11 +55,12 @@ class TripsRepository {
         children = 0,
         babies = 2,
         luggageKg = 30.0F,
-        segmentoId = "GHI123",
+        segmentId = "GHI123",
         tripId="4",
-        requesterId="3"
+        requesterId="3",
+        state = "confirmed"
     )
-    val trip5 = Trip(
+    private val trip5 = Trip(
         date = "2024-11-12",
         originAddress = "Av. Corrientes 1200",
         destinationAddress = "Sarmiento 3456",
@@ -64,11 +68,12 @@ class TripsRepository {
         children = 0,
         babies = 0,
         luggageKg = 10.0F,
-        segmentoId = "5432123",
+        segmentId = "5432123",
         tripId = "5",
-        requesterId = "3"
+        requesterId = "3",
+        state = "pending"
     )
-    val trip6 =Trip(
+    private val trip6 =Trip(
         date = "2024-09-25",
         originAddress = "San Martín 123",
         destinationAddress = "Independencia 678",
@@ -76,11 +81,12 @@ class TripsRepository {
         children = 2,
         babies = 1,
         luggageKg = 25.5F,
-        segmentoId = "6789345",
+        segmentId = "6789345",
         tripId = "6",
-        requesterId = "4"
+        requesterId = "4",
+        state = "pending"
     )
-    val trip7 =Trip(
+    private val trip7 =Trip(
         date = "2024-08-30",
         originAddress = "Belgrano 456",
         destinationAddress = "9 de Julio 789",
@@ -88,11 +94,12 @@ class TripsRepository {
         children = 0,
         babies = 0,
         luggageKg = 18.0F,
-        segmentoId = "3456789",
+        segmentId = "3456789",
         tripId = "7",
-        requesterId = "5"
+        requesterId = "5",
+        state = "finalized"
     )
-    val trip8 =Trip(
+    private val trip8 =Trip(
         date = "2024-12-05",
         originAddress = "Lavalle 987",
         destinationAddress = "Mitre 123",
@@ -100,11 +107,12 @@ class TripsRepository {
         children = 1,
         babies = 0,
         luggageKg = 8.0F,
-        segmentoId = "1234567",
+        segmentId = "1234567",
         tripId = "8",
-        requesterId = "5"
+        requesterId = "5",
+        state = "finalized"
     )
-    val trip9 =Trip(
+    private val trip9 =Trip(
         date = "2024-07-15",
         originAddress = "Las Heras 220",
         destinationAddress = "Rivadavia 654",
@@ -112,11 +120,12 @@ class TripsRepository {
         children = 0,
         babies = 1,
         luggageKg = 30.0F,
-        segmentoId = "8765432",
+        segmentId = "8765432",
         tripId = "9",
-        requesterId = "2"
+        requesterId = "2",
+        state = "pending"
     )
-    val trip10 =Trip(
+    private val trip10 =Trip(
         date = "2024-06-28",
         originAddress = "Alvear 300",
         destinationAddress = "Callao 500",
@@ -124,11 +133,12 @@ class TripsRepository {
         children = 3,
         babies = 0,
         luggageKg = 22.5F,
-        segmentoId = "9876543",
+        segmentId = "9876543",
         tripId = "10",
-        requesterId = "3"
+        requesterId = "3",
+        state = "confirmed"
     )
-    val trip11 =Trip(
+    private val trip11 =Trip(
         date = "2024-11-01",
         originAddress = "Perón 1020",
         destinationAddress = "Entre Ríos 300",
@@ -136,11 +146,12 @@ class TripsRepository {
         children = 0,
         babies = 0,
         luggageKg = 12.0F,
-        segmentoId = "1234568",
+        segmentId = "1234568",
         tripId = "11",
-        requesterId = "1"
+        requesterId = "1",
+        state = "confirmed"
     )
-    val trip12 =Trip(
+    private val trip12 =Trip(
         date = "2024-05-20",
         originAddress = "Juncal 450",
         destinationAddress = "Palermo 100",
@@ -148,11 +159,12 @@ class TripsRepository {
         children = 1,
         babies = 0,
         luggageKg = 20.0F,
-        segmentoId = "6543210",
+        segmentId = "6543210",
         tripId = "12",
-        requesterId = "3"
+        requesterId = "3",
+        state = "pending"
     )
-    val trip13 =Trip(
+    private val trip13 =Trip(
         date = "2024-09-10",
         originAddress = "Santa Fe 234",
         destinationAddress = "Uruguay 111",
@@ -160,9 +172,10 @@ class TripsRepository {
         children = 2,
         babies = 1,
         luggageKg = 16.0F,
-        segmentoId = "5674321",
+        segmentId = "5674321",
         tripId = "13",
-        requesterId = "5"
+        requesterId = "5",
+        state = "confirmed"
     )
 
     init {
@@ -182,14 +195,18 @@ class TripsRepository {
     }
 
     fun getPendingTrips () : MyResult<MutableList<Trip>> {
+        val pendingTrips = tripsList.filter { trip ->
+            trip.getState() == "pending"
+        }
 
-        val sortedTrips = tripsList.sortedBy { trip ->
+        val sortedPendingTrips = pendingTrips.sortedBy { trip ->
             trip.getDate()?.let {
                 SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it)
             }
         }
 
-        return MyResult.Success(sortedTrips.toMutableList())
+
+        return MyResult.Success(sortedPendingTrips.toMutableList())
 
         /*
         return try {
@@ -206,14 +223,17 @@ class TripsRepository {
     }
 
     fun getTripHistory () : MyResult<MutableList<Trip>> {
+        val tripHistory = tripsList.filter { trip ->
+            trip.getState() == "finalized"
+        }
 
-        val sortedTrips = tripsList.sortedBy { trip ->
+        val sortedTripHistory = tripHistory.sortedBy { trip ->
             trip.getDate()?.let {
                 SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it)
             }
         }
 
-        return MyResult.Success(sortedTrips.toMutableList())
+        return MyResult.Success(sortedTripHistory.toMutableList())
 
         /*
         return try {
@@ -230,14 +250,17 @@ class TripsRepository {
     }
 
     fun getConfirmedTrips () : MyResult<MutableList<Trip>> {
+        val confirmedTrips = tripsList.filter { trip ->
+            trip.getState() == "confirmed|"
+        }
 
-        val sortedTrips = tripsList.sortedBy { trip ->
+        val sortedConfirmedTrips = confirmedTrips.sortedBy { trip ->
             trip.getDate()?.let {
                 SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it)
             }
         }
 
-        return MyResult.Success(sortedTrips.toMutableList())
+        return MyResult.Success(sortedConfirmedTrips.toMutableList())
 
         /*
         return try {

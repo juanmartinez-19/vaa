@@ -11,7 +11,7 @@ class Trip (
     private var price : Float?=0F,
     private var state : String?="",
     private var tripId : String?="",
-    private var segmentoId : String?="",
+    private var segmentId : String?="",
     private var requesterId : String?=""
 ) {
 
@@ -44,7 +44,7 @@ class Trip (
     }
 
     fun getSegmentoId() : String? {
-        return this.segmentoId
+        return this.segmentId
     }
     fun getTripId() : String? {
         return this.tripId
