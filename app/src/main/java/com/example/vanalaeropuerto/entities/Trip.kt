@@ -9,9 +9,10 @@ class Trip (
     private var babies : Int?=0,
     private var luggageKg : Float?=0F,
     private var price : Float?=0F,
+    private var state : String?="",
     private var tripId : String?="",
     private var segmentoId : String?="",
-    private var solicitanteId : String?=""
+    private var requesterId : String?=""
 ) {
 
     fun getDate() : String? {
@@ -22,6 +23,9 @@ class Trip (
     }
     fun getDestinationAddress() : String? {
         return this.destinationAddress
+    }
+    fun getState() : String? {
+        return this.state
     }
     fun getAdults() : Int? {
         return this.adults
@@ -45,8 +49,8 @@ class Trip (
     fun getTripId() : String? {
         return this.tripId
     }
-    fun getSolicitanteId() : String? {
-        return this.solicitanteId
+    fun getRequesterId() : String? {
+        return this.requesterId
     }
 
 

@@ -23,10 +23,58 @@
             android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Nombre y Apellido del Pasajero -->
+        <TextView
+            android:id="@+id/tvPassengerNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre:"
+            android:textAllCaps="false"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvDate" />
+
+        <TextView
+            android:id="@+id/tvPassengerName"
+            android:layout_width="240dp"
+            android:layout_height="23dp"
+            android:text="Juan Pérez"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/tvPassengerNameLabel"
+            app:layout_constraintTop_toTopOf="@id/tvPassengerNameLabel" />
+
+        <!-- Teléfono del Pasajero -->
+        <TextView
+            android:id="@+id/tvPassengerPhoneLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teléfono:"
+            android:textAllCaps="false"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPassengerName" />
+
+        <TextView
+            android:id="@+id/tvPassengerPhone"
+            android:layout_width="240dp"
+            android:layout_height="23dp"
+            android:text="+54 11 1234 5678"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@id/tvPassengerPhoneLabel"
+            app:layout_constraintTop_toTopOf="@id/tvPassengerPhoneLabel" />
+
+        <!-- Origen del Viaje -->
         <TextView
             android:id="@+id/tvOriginAddressLabel"
             android:layout_width="wrap_content"
@@ -36,7 +84,7 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDate" />
+            app:layout_constraintTop_toBottomOf="@id/tvPassengerPhone" />
 
         <TextView
             android:id="@+id/tvOriginAddress"
@@ -49,6 +97,7 @@
             app:layout_constraintStart_toEndOf="@id/tvOriginAddressLabel"
             app:layout_constraintTop_toTopOf="@id/tvOriginAddressLabel" />
 
+        <!-- Destino del Viaje -->
         <TextView
             android:id="@+id/tvDestinationAddressLabel"
             android:layout_width="wrap_content"
@@ -70,112 +119,7 @@
             app:layout_constraintStart_toEndOf="@id/tvDestinationAddressLabel"
             app:layout_constraintTop_toTopOf="@id/tvDestinationAddressLabel" />
 
-        <TextView
-            android:id="@+id/tvAdultsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Adultos:"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDestinationAddress" />
-
-        <TextView
-            android:id="@+id/tvAdults"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="2"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvAdultsLabel"
-            app:layout_constraintTop_toTopOf="@id/tvAdultsLabel" />
-
-        <TextView
-            android:id="@+id/tvChildLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Niños:"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvAdults" />
-
-        <TextView
-            android:id="@+id/tvChildren"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="1"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvChildLabel"
-            app:layout_constraintTop_toTopOf="@id/tvChildLabel" />
-
-        <TextView
-            android:id="@+id/tvBabiesLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bebés:"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvChildren" />
-
-        <TextView
-            android:id="@+id/tvBabies"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="0"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvBabiesLabel"
-            app:layout_constraintTop_toTopOf="@id/tvBabiesLabel" />
-
-        <TextView
-            android:id="@+id/tvLuggageKgLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Equipaje (Kg):"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvBabies" />
-
-        <!-- Nuevos campos agregados -->
-        <TextView
-            android:id="@+id/tvLuggageKg"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="15.0"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvLuggageKgLabel"
-            app:layout_constraintTop_toTopOf="@id/tvLuggageKgLabel" />
-
-        <TextView
-            android:id="@+id/tvKmLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kilómetros:"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvLuggageKg" />
-
-        <TextView
-            android:id="@+id/tvKm"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="100"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvKmLabel"
-            app:layout_constraintTop_toTopOf="@id/tvKmLabel" />
-
+        <!-- Precio del Viaje -->
         <TextView
             android:id="@+id/tvPriceLabel"
             android:layout_width="wrap_content"
@@ -184,7 +128,7 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvKm" />
+            app:layout_constraintTop_toBottomOf="@id/tvDestinationAddress" />
 
         <TextView
             android:id="@+id/tvPrice"
@@ -197,6 +141,7 @@
             app:layout_constraintStart_toEndOf="@id/tvPriceLabel"
             app:layout_constraintTop_toTopOf="@id/tvPriceLabel" />
 
+        <!-- Segmento del Viaje -->
         <TextView
             android:id="@+id/tvSegmentoLabel"
             android:layout_width="wrap_content"

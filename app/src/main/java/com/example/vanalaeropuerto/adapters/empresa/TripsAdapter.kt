@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.entities.Trip
+import com.example.vanalaeropuerto.entities.TripRequester
 
 class TripsAdapter(
-    var trips : MutableList<Trip>
+    var trips : MutableList<TripRequester>
 ) : RecyclerView.Adapter<TripsAdapter.TripHolder>() {
     class TripHolder(view : View) : RecyclerView.ViewHolder(view)
     {
@@ -17,6 +18,16 @@ class TripsAdapter(
         private var v : View
         init {
             this.v = view
+        }
+
+        fun setPassengerName (name : String)  {
+            val txtName : TextView = v.findViewById(R.id.tvPassengerName)
+            txtName.text = name
+        }
+
+        fun setPassengerPhoneNumber (phoneNumber : String)  {
+            val txtPhoneNumber : TextView = v.findViewById(R.id.tvPassengerPhone)
+            txtPhoneNumber.text = phoneNumber
         }
 
         fun setTripDate(date : String)  {
@@ -34,26 +45,6 @@ class TripsAdapter(
             txtDestinationAddress.text = destinationAddress
         }
 
-        fun setTripLuggageKg(luggageKg : Float)  {
-            val txtLuggageKg : TextView = v.findViewById(R.id.tvLuggageKg)
-            txtLuggageKg.text = luggageKg.toString()
-        }
-
-        fun setTripAdults(adults : Int)  {
-            val txtAdults : TextView = v.findViewById(R.id.tvAdults)
-            txtAdults.text = adults.toString()
-        }
-
-        fun setTripBabies(babies : Int)  {
-            val txtBabies : TextView = v.findViewById(R.id.tvBabies)
-            txtBabies.text = babies.toString()
-        }
-
-        fun setTripChildren(children : Int)  {
-            val txtChildren : TextView = v.findViewById(R.id.tvChildren)
-            txtChildren.text = children.toString()
-        }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TripHolder {
@@ -65,24 +56,33 @@ class TripsAdapter(
         return trips.size
     }
 
-    fun getSelectedProduct(position: Int): Trip {
+    fun getSelectedProduct(position: Int): TripRequester {
         return trips[position]
     }
 
-    fun submitList(newTrips: MutableList<Trip>) {
+    fun submitList(newTrips: MutableList<TripRequester>) {
         trips.clear()
         trips.addAll(newTrips)
         notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: TripHolder, position: Int) {
-        trips[position].getDate()?.let { holder.setTripDate(it) }
-        trips[position].getOriginAddress()?.let { holder.setTripOriginAddress(it) }
-        trips[position].getDestinationAddress()?.let { holder.setTripDestinationAddress(it) }
-        trips[position].getAdults()?.let { holder.setTripAdults(it) }
-        trips[position].getChildren()?.let { holder.setTripChildren(it) }
-        trips[position].getBabies()?.let { holder.setTripBabies(it) }
-        trips[position].getLuggageKg()?.let { holder.setTripLuggageKg(it) }
+        trips[position].getTrip().getDate()?.let { holder.setTripDate(it) }
+        trips[position].getTrip().getOriginAddress()?.let { holder.setTripOriginAddress(it) }
+        trips[position].getTrip().getDestinationAddress()?.let { holder.setTripDestinationAddress(it) }
+        trips[position].getRequester().getRequesterPhoneNumber()?.let { holder.setPassengerPhoneNumber(it) }
+
+        val name = trips[position].getRequester().getRequesterName() ?: ""
+        val surname = trips[position].getRequester().getRequesterSurname() ?: ""
+
+        val fullName = if (surname.isNotEmpty() && name.isNotEmpty()) {
+            "$surname, $name"
+        } else {
+            "$name$surname"
+        }
+
+        holder.setPassengerName(fullName)
+
     }
 
 }

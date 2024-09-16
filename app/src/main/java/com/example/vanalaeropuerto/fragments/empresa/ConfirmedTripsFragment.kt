@@ -13,17 +13,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.entities.Requester
+import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class ConfirmedTripsFragment : Fragment() {
 
-    private lateinit var v : View
+    private lateinit var v: View
 
-    private lateinit var progressBar : ProgressBar
-    private lateinit var recyclerConfirmedTrips : RecyclerView
-    private lateinit var tripsAdapter : TripsAdapter
+    private lateinit var progressBar: ProgressBar
+    private lateinit var recyclerConfirmedTrips: RecyclerView
+    private lateinit var tripsAdapter: TripsAdapter
+
+    private var tripRequesterList = mutableListOf<TripRequester>()
+    private var requesterMap = mutableMapOf<String?, Requester>()
 
     private lateinit var viewModel: ConfirmedTripsViewModel
 
@@ -52,8 +57,21 @@ class ConfirmedTripsFragment : Fragment() {
 
         viewModel._tripsList.observe(viewLifecycleOwner, Observer { _tripsList ->
             if (_tripsList != null) {
-                tripsAdapter.submitList(_tripsList)
+                for (trip in _tripsList) {
+                    val requesterId = trip.getRequesterId()
+                    if (requesterId != null) {
+                        viewModel.getRequester(requesterId)
+                    }
+                }
             }
+        })
+
+        viewModel.requestersMap.observe(viewLifecycleOwner, Observer { itrequestersMap ->
+            if (itrequestersMap != null) {
+                this.requesterMap = itrequestersMap
+                updateTripRequester()
+            }
+
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
@@ -61,25 +79,44 @@ class ConfirmedTripsFragment : Fragment() {
                 is ViewState.Loading -> {
                     this.showLoading()
                 }
+
                 is ViewState.Failure -> {
                     this.showError()
                 }
+
                 is ViewState.Idle -> {
                     this.hideLoading()
                 }
-                is ViewState.Empty ->{
+
+                is ViewState.Empty -> {
                     this.showEmpty()
-                } else ->{
-                this.showError()
-            }
+                }
+
+                else -> {
+                    this.showError()
+                }
             }
         })
 
     }
 
+    private fun updateTripRequester() {
+        tripRequesterList.clear()
+        for (trip in viewModel._tripsList.value ?: emptyList()) {
+            val requesterId = trip.getRequesterId()
+            val requester = requesterId?.let { requesterMap[it] }
+            if (requester != null) {
+                tripRequesterList.add(TripRequester(trip, requester))
+            }
+        }
+
+        tripsAdapter.submitList(tripRequesterList)
+    }
+
     private fun showEmpty() {
         progressBar.visibility = View.GONE
         recyclerConfirmedTrips.visibility = View.GONE
+        Snackbar.make(v,"La lista está vacía", Snackbar.LENGTH_SHORT).show()
     }
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE

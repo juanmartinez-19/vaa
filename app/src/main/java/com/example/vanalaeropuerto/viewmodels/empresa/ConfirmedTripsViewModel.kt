@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.empresa.RequesterRepository
 import com.example.vanalaeropuerto.data.empresa.TripsRepository
+import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
 
@@ -16,6 +18,14 @@ class ConfirmedTripsViewModel : ViewModel() {
     val viewState: LiveData<ViewState> get() = _viewState
     var _tripsList : MutableLiveData<MutableList<Trip>?> = MutableLiveData()
     val getTripsUseCase : TripsRepository = TripsRepository()
+
+    val getRequesterUseCase : RequesterRepository = RequesterRepository()
+    private val _requestersMap = MutableLiveData<MutableMap<String?, Requester>>()
+    val requestersMap: LiveData<MutableMap<String?, Requester>> get() = _requestersMap
+
+    init {
+        _requestersMap.value = mutableMapOf()
+    }
 
     init {
         _viewState.value = ViewState.Idle
@@ -42,4 +52,28 @@ class ConfirmedTripsViewModel : ViewModel() {
 
         }
     }
+
+    fun getRequester(requesterId: String?) {
+        if (requesterId.isNullOrEmpty()) return
+
+        viewModelScope.launch {
+            _viewState.value = ViewState.Loading
+            when (val result = getRequesterUseCase.getRequester(requesterId)) {
+                is MyResult.Success -> {
+                    val currentMap = _requestersMap.value ?: mutableMapOf()
+                    // Asegúrate de que requesterId no sea null antes de usarlo como clave
+                    requesterId.let {
+                        currentMap[it] = result.data ?: return@launch
+                        _requestersMap.value = currentMap
+                    }
+                    _viewState.value = ViewState.Idle
+                }
+                is MyResult.Failure -> {
+                    _viewState.value = ViewState.Failure
+                    Log.d("TEST", "Failure: ${result.exception}")
+                }
+            }
+        }
+    }
+
 }
