@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
@@ -50,7 +51,11 @@ class ConfirmedTripsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(ConfirmedTripsViewModel::class.java)
 
         recyclerConfirmedTrips.layoutManager = LinearLayoutManager(context)
-        tripsAdapter = TripsAdapter(mutableListOf())
+        tripsAdapter = TripsAdapter(mutableListOf()) {
+            val navController = findNavController()
+            navController.navigate(R.id.pendingTripDetailFragment)
+
+        }
         recyclerConfirmedTrips.adapter = tripsAdapter
 
         viewModel.getConfirmedTrips()

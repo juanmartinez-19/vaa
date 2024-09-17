@@ -9,20 +9,38 @@
         android:id="@+id/homeEmpresaFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.HomeEmpresaFragment"
         android:label="Viajes"
-        tools:layout="@layout/fragment_home_empresa" />
+        tools:layout="@layout/fragment_home_empresa" >
+    </fragment>
     <fragment
         android:id="@+id/tripsHistoryFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.TripsHistoryFragment"
         android:label="fragment_trips_history"
-        tools:layout="@layout/fragment_trips_history" />
+        tools:layout="@layout/fragment_trips_history" >
+        <action
+            android:id="@+id/action_tripsHistoryFragment_to_pendingTripDetailFragment"
+            app:destination="@id/pendingTripDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/pendingTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripsFragment"
         android:label="fragment_pending_trips"
-        tools:layout="@layout/fragment_pending_trips" />
+        tools:layout="@layout/fragment_pending_trips" >
+        <action
+            android:id="@+id/action_pendingTripsFragment_to_pendingTripDetailFragment"
+            app:destination="@id/pendingTripDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/confirmedTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.ConfirmedTripsFragment"
         android:label="fragment_confirmed_trips"
-        tools:layout="@layout/fragment_confirmed_trips" />
+        tools:layout="@layout/fragment_confirmed_trips" >
+        <action
+            android:id="@+id/action_confirmedTripsFragment_to_pendingTripDetailFragment"
+            app:destination="@id/pendingTripDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pendingTripDetailFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripDetailFragment"
+        android:label="Detalle Viaje"
+        tools:layout="@layout/fragment_pending_trip_detail" />
 </navigation>

@@ -10,7 +10,8 @@ import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
 
 class TripsAdapter(
-    var trips : MutableList<TripRequester>
+    private var trips : MutableList<TripRequester>,
+    var onClick : (Int) -> Unit
 ) : RecyclerView.Adapter<TripsAdapter.TripHolder>() {
     class TripHolder(view : View) : RecyclerView.ViewHolder(view)
     {
@@ -82,6 +83,11 @@ class TripsAdapter(
         }
 
         holder.setPassengerName(fullName)
+
+        holder.itemView.setOnClickListener() {
+            onClick(position)
+        }
+
 
     }
 

@@ -251,7 +251,7 @@ class TripsRepository {
 
     fun getConfirmedTrips () : MyResult<MutableList<Trip>> {
         val confirmedTrips = tripsList.filter { trip ->
-            trip.getState() == "confirmed|"
+            trip.getState() == "confirmed"
         }
 
         val sortedConfirmedTrips = confirmedTrips.sortedBy { trip ->
