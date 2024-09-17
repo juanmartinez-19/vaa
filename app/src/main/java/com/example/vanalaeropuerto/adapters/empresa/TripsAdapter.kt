@@ -68,13 +68,13 @@ class TripsAdapter(
     }
 
     override fun onBindViewHolder(holder: TripHolder, position: Int) {
-        trips[position].getTrip().getDate()?.let { holder.setTripDate(it) }
-        trips[position].getTrip().getOriginAddress()?.let { holder.setTripOriginAddress(it) }
-        trips[position].getTrip().getDestinationAddress()?.let { holder.setTripDestinationAddress(it) }
-        trips[position].getRequester().getRequesterPhoneNumber()?.let { holder.setPassengerPhoneNumber(it) }
+        trips[position].getTrip()?.getDate()?.let { holder.setTripDate(it) }
+        trips[position].getTrip()?.getOriginAddress()?.let { holder.setTripOriginAddress(it) }
+        trips[position].getTrip()?.getDestinationAddress()?.let { holder.setTripDestinationAddress(it) }
+        trips[position].getRequester()?.getRequesterPhoneNumber()?.let { holder.setPassengerPhoneNumber(it) }
 
-        val name = trips[position].getRequester().getRequesterName() ?: ""
-        val surname = trips[position].getRequester().getRequesterSurname() ?: ""
+        val name = trips[position].getRequester()?.getRequesterName() ?: ""
+        val surname = trips[position].getRequester()?.getRequesterSurname() ?: ""
 
         val fullName = if (surname.isNotEmpty() && name.isNotEmpty()) {
             "$surname, $name"

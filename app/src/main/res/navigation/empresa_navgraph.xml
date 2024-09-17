@@ -42,5 +42,9 @@
         android:id="@+id/pendingTripDetailFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripDetailFragment"
         android:label="Detalle Viaje"
-        tools:layout="@layout/fragment_pending_trip_detail" />
+        tools:layout="@layout/fragment_pending_trip_detail" >
+        <argument
+            android:name="pendingTrip"
+            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
+    </fragment>
 </navigation>

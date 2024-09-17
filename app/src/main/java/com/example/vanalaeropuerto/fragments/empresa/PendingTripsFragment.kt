@@ -53,9 +53,16 @@ class PendingTripsFragment : Fragment() {
 
         recyclerPendingTrips.layoutManager = LinearLayoutManager(context)
         tripsAdapter = TripsAdapter(mutableListOf()) {
+            val tripRequester = tripsAdapter.getSelectedProduct(it)
             val navController = findNavController()
-            navController.navigate(R.id.pendingTripDetailFragment)
 
+            // Crear un Bundle para pasar el tripRequester
+            val bundle = Bundle().apply {
+                putParcelable("tripRequester", tripRequester)
+            }
+
+            // Navegar al fragmento y pasar el Bundle
+            navController.navigate(R.id.pendingTripDetailFragment, bundle)
         }
 
         recyclerPendingTrips.adapter = tripsAdapter
