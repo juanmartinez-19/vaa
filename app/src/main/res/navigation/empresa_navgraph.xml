@@ -46,5 +46,17 @@
         <argument
             android:name="pendingTrip"
             app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
+        <action
+            android:id="@+id/action_pendingTripDetailFragment_to_editTripFragment"
+            app:destination="@id/editTripFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editTripFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.EditTripFragment"
+        android:label="Editar Viaje"
+        tools:layout="@layout/fragment_edit_trip" >
+        <argument
+            android:name="pendingTrip"
+            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
     </fragment>
 </navigation>

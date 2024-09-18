@@ -2,18 +2,22 @@ package com.example.vanalaeropuerto.fragments.empresa
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.entities.TripRequester
+import com.example.vanalaeropuerto.fragments.user.IngresoDatosFragmentDirections
 import com.example.vanalaeropuerto.fragments.user.VehiculosFragmentArgs.Companion.fromBundle
 import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripDetailViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class PendingTripDetailFragment : Fragment() {
 
@@ -31,6 +35,7 @@ class PendingTripDetailFragment : Fragment() {
     private lateinit var tvBabyCount: TextView
     private lateinit var tvLuggage: TextView
     private lateinit var tvPrice: TextView
+    private lateinit var fabEditTrip : FloatingActionButton
 
     private lateinit var pendingTrip : TripRequester
 
@@ -58,6 +63,7 @@ class PendingTripDetailFragment : Fragment() {
         tvBabyCount = v.findViewById(R.id.tvBabyCount)
         tvLuggage = v.findViewById(R.id.tvLuggage)
         tvPrice = v.findViewById(R.id.tvPrice)
+        fabEditTrip = v.findViewById(R.id.fabEditTrip)
 
         arguments?.let {
             pendingTrip = it.getParcelable("tripRequester")!!
@@ -92,6 +98,17 @@ class PendingTripDetailFragment : Fragment() {
             tvRequesterName.text = fullName.trim()
             tvRequesterPhone.text = requester.getRequesterPhoneNumber() ?: ""
             tvRequesterCUIL.text = requester.getRequesterCuil() ?: ""
+        }
+
+        fabEditTrip.setOnClickListener{
+            try {
+                if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
+                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(pendingTrip)
+                    findNavController().navigate(action)
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e("PendingTripDetailFragment", "Navigation action failed: ${e.message}")
+            }
         }
 
 
