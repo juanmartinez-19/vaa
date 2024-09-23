@@ -21,7 +21,6 @@ class IngresoDatosViewModel : ViewModel() {
     ) {
         _viewState.value = ViewState.Loading
 
-        val currentDateInMillis = Calendar.getInstance().timeInMillis
         val errores = mutableListOf<String>()
 
         // Validación de radiobutton

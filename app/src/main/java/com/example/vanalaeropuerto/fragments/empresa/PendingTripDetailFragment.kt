@@ -8,9 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.entities.Requester
+import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.fragments.user.IngresoDatosFragmentDirections
 import com.example.vanalaeropuerto.fragments.user.VehiculosFragmentArgs.Companion.fromBundle
@@ -18,10 +23,12 @@ import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripDetailViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class PendingTripDetailFragment : Fragment() {
 
     private lateinit var v: View
+    private lateinit var progressBar : ProgressBar
 
     // Variables para los TextView
     private lateinit var tvRequesterName: TextView
@@ -37,7 +44,8 @@ class PendingTripDetailFragment : Fragment() {
     private lateinit var tvPrice: TextView
     private lateinit var fabEditTrip : FloatingActionButton
 
-    private lateinit var pendingTrip : TripRequester
+    private lateinit var pendingTripId : String
+    private lateinit var requesterId : String
 
     // Variables para los botones
     private lateinit var btnConfirmTrip: Button
@@ -52,6 +60,7 @@ class PendingTripDetailFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_pending_trip_detail, container, false)
 
         // Asociar las vistas con las variables
+        progressBar = v.findViewById(R.id.progressBarLoading)
         tvRequesterName = v.findViewById(R.id.tvRequesterName)
         tvTripDate = v.findViewById(R.id.tvTripDate)
         tvRequesterPhone = v.findViewById(R.id.tvRequesterPhone)
@@ -65,9 +74,11 @@ class PendingTripDetailFragment : Fragment() {
         tvPrice = v.findViewById(R.id.tvPrice)
         fabEditTrip = v.findViewById(R.id.fabEditTrip)
 
-        arguments?.let {
-            pendingTrip = it.getParcelable("tripRequester")!!
-        }
+        pendingTripId = arguments?.getString("tripId").toString()
+        requesterId = arguments?.getString("requesterId").toString()
+
+        Log.e("FirestoreError", "Exception thrown: $pendingTripId")
+        Log.e("FirestoreError", "Exception thrown: $requesterId")
 
         // Asociar los botones
         btnConfirmTrip = v.findViewById(R.id.btnConfirmTrip)
@@ -81,29 +92,72 @@ class PendingTripDetailFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(PendingTripDetailViewModel::class.java)
 
-        // Asignar los valores de la clase TripRequester a los TextView
-        pendingTrip.getTrip()?.let { trip ->
-            tvTripDate.text = trip.getDate() ?: ""
-            tvOriginAddress.text = trip.getOriginAddress() ?: ""
-            tvDestinationAddress.text = trip.getDestinationAddress() ?: ""
-            tvAdultCount.text = trip.getAdults()?.toString() ?: "0"
-            tvChildCount.text = trip.getChildren()?.toString() ?: "0"
-            tvBabyCount.text = trip.getBabies()?.toString() ?: "0"
-            tvLuggage.text = trip.getLuggageKg()?.toString() ?: "0"
-            tvPrice.text = trip.getPrice()?.toString() ?: "0.00"
-        }
+        viewModel.getTrip(pendingTripId)
+        viewModel.getRequester(requesterId)
 
-        pendingTrip.getRequester()?.let { requester ->
-            val fullName = "${requester.getRequesterName() ?: ""} ${requester.getRequesterSurname() ?: ""}"
-            tvRequesterName.text = fullName.trim()
-            tvRequesterPhone.text = requester.getRequesterPhoneNumber() ?: ""
-            tvRequesterCUIL.text = requester.getRequesterCuil() ?: ""
-        }
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+            when (viewState) {
+                is ViewState.Loading -> {
+                    this.showLoading()
+                }
+
+                is ViewState.Failure -> {
+                    this.showError()
+                }
+
+                is ViewState.Idle -> {
+                    this.hideLoading()
+                }
+
+                is ViewState.Confirmed -> {
+                    this.confirmed()
+                }
+
+                else -> {
+                    this.showError()
+                }
+            }
+        })
+
+        viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
+
+            if (trip != null) {
+
+
+                Log.e("FirestoreError", "$trip")
+
+                tvTripDate.text = trip.getDate() ?: ""
+                tvOriginAddress.text = trip.getOriginAddress() ?: ""
+                tvDestinationAddress.text = trip.getDestinationAddress() ?: ""
+                tvAdultCount.text = trip.getAdults()?.toString() ?: "0"
+                tvChildCount.text = trip.getChildren()?.toString() ?: "0"
+                tvBabyCount.text = trip.getBabies()?.toString() ?: "0"
+                tvLuggage.text = trip.getLuggageKg()?.toString() ?: "0"
+                tvPrice.text = trip.getPrice()?.toString() ?: "0.00"
+            }
+
+        })
+
+        viewModel.requester.observe(viewLifecycleOwner, Observer { requester ->
+            if (requester != null) {
+
+
+                Log.e("FirestoreError", "$requester")
+
+                val fullName =
+                    "${requester.getRequesterName() ?: ""} ${requester.getRequesterSurname() ?: ""}"
+                tvRequesterName.text = fullName.trim()
+                tvRequesterPhone.text = requester.getRequesterPhoneNumber() ?: ""
+                tvRequesterCUIL.text = requester.getRequesterCuil() ?: ""
+            }
+        })
 
         fabEditTrip.setOnClickListener{
             try {
                 if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
-                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(pendingTrip)
+
+                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(pendingTripId)
+
                     findNavController().navigate(action)
                 }
             } catch (e: IllegalArgumentException) {
@@ -113,6 +167,23 @@ class PendingTripDetailFragment : Fragment() {
 
 
 
+    }
+
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        progressBar.visibility = View.GONE
+    }
+
+    private fun confirmed(){
+        activity?.supportFragmentManager?.popBackStack()
+    }
+
+    private fun showError() {
+        progressBar.visibility = View.GONE
+        Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
 
 

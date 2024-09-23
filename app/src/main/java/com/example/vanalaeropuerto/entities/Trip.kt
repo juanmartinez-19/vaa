@@ -15,6 +15,21 @@ class Trip (
     private var requesterId : String?=""
 ) {
 
+    fun setOriginAddress(originAddress: String?) {
+        this.originAddress = originAddress
+    }
+
+    fun setDestinationAddress(destinationAddress: String?) {
+        this.destinationAddress = destinationAddress
+    }
+
+    fun setDate(date: String?) {
+        this.date = date
+    }
+
+    fun setPrice(price: Float?) {
+        this.price = price
+    }
     fun getDate() : String? {
         return this.date
     }

@@ -43,12 +43,15 @@
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripDetailFragment"
         android:label="Detalle Viaje"
         tools:layout="@layout/fragment_pending_trip_detail" >
-        <argument
-            android:name="pendingTrip"
-            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
         <action
             android:id="@+id/action_pendingTripDetailFragment_to_editTripFragment"
             app:destination="@id/editTripFragment" />
+        <argument
+            android:name="tripId"
+            app:argType="string" />
+        <argument
+            android:name="requesterId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/editTripFragment"
@@ -56,7 +59,7 @@
         android:label="Editar Viaje"
         tools:layout="@layout/fragment_edit_trip" >
         <argument
-            android:name="pendingTrip"
-            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
+            android:name="tripId"
+            app:argType="string" />
     </fragment>
 </navigation>
