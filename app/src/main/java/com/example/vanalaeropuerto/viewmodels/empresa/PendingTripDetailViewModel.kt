@@ -28,6 +28,10 @@ class PendingTripDetailViewModel : ViewModel() {
     private val _requester = MutableLiveData<Requester?>()
     val requester: LiveData<Requester?> get() = _requester
 
+    fun cancelTrip(pendingTripId : String) {
+        getTripsUseCase.cancelTrip(pendingTripId)
+    }
+
     fun getTrip(tripId : String) {
         _viewState.value = ViewState.Loading
 

@@ -26,7 +26,9 @@ class Trip (
     fun setDate(date: String?) {
         this.date = date
     }
-
+    fun setState(state : String) {
+        this.state = state
+    }
     fun setPrice(price: Float?) {
         this.price = price
     }

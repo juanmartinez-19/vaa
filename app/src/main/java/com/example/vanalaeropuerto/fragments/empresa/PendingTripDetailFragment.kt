@@ -42,6 +42,7 @@ class PendingTripDetailFragment : Fragment() {
     private lateinit var tvBabyCount: TextView
     private lateinit var tvLuggage: TextView
     private lateinit var tvPrice: TextView
+
     private lateinit var fabEditTrip : FloatingActionButton
 
     private lateinit var pendingTripId : String
@@ -163,6 +164,10 @@ class PendingTripDetailFragment : Fragment() {
             } catch (e: IllegalArgumentException) {
                 Log.e("PendingTripDetailFragment", "Navigation action failed: ${e.message}")
             }
+        }
+
+        btnCancelTrip.setOnClickListener {
+            viewModel.cancelTrip(pendingTripId)
         }
 
 

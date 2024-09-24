@@ -210,6 +210,12 @@ class TripsRepository {
         tripsList.add(trip13)
     }
 
+    fun cancelTrip (pendingTripId : String) {
+        val trip = tripsList.find { it.getTripId() == pendingTripId }
+
+        trip?.setState("cancelled")
+
+    }
 
     fun getTrip(tripId: String): MyResult<Trip?> {
         return try {
