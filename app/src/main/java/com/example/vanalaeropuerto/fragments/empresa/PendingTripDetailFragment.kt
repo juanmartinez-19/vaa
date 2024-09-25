@@ -157,6 +157,16 @@ class PendingTripDetailFragment : Fragment() {
 
         btnCancelTrip.setOnClickListener {
             viewModel.cancelTrip(pendingTripId)
+
+            try {
+                if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
+                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToHomeEmpresaFragment()
+                    findNavController().navigate(action)
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e("AsignDriverFragment", "Navigation action failed: ${e.message}")
+            }
+
         }
 
         btnConfirmTrip.setOnClickListener {

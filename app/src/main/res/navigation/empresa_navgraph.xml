@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_pendingTripDetailFragment_to_asignDriverFragment"
             app:destination="@id/asignDriverFragment" />
+        <action
+            android:id="@+id/action_pendingTripDetailFragment_to_homeEmpresaFragment"
+            app:destination="@id/homeEmpresaFragment" />
     </fragment>
     <fragment
         android:id="@+id/editTripFragment"
