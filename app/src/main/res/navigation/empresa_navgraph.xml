@@ -52,6 +52,9 @@
         <argument
             android:name="requesterId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_pendingTripDetailFragment_to_asignDriverFragment"
+            app:destination="@id/asignDriverFragment" />
     </fragment>
     <fragment
         android:id="@+id/editTripFragment"
@@ -61,5 +64,38 @@
         <argument
             android:name="tripId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/asignDriverFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.AsignDriverFragment"
+        android:label="Asignar Chofer"
+        tools:layout="@layout/fragment_asign_driver" >
+        <argument
+            android:name="tripId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_asignDriverFragment_to_tripSummaryFragment"
+            app:destination="@id/tripSummaryFragment" />
+        <argument
+            android:name="requesterId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripSummaryFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.TripSummaryFragment"
+        android:label="Resumen de Viaje"
+        tools:layout="@layout/fragment_trip_summary" >
+        <argument
+            android:name="tripId"
+            app:argType="string" />
+        <argument
+            android:name="driverId"
+            app:argType="string" />
+        <argument
+            android:name="requesterId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_tripSummaryFragment_to_homeEmpresaFragment"
+            app:destination="@id/homeEmpresaFragment" />
     </fragment>
 </navigation>

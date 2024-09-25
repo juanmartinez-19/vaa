@@ -32,9 +32,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Campo Nombre del solicitante -->
-
-    <!-- Fecha -->
-
     <TextView
         android:id="@+id/tvRequesterName"
         android:layout_width="209dp"
@@ -60,9 +57,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tvRequesterName" />
 
     <!-- Campo Fecha -->
-
-    <!-- Número telefónico del solicitante -->
-
     <TextView
         android:id="@+id/tvTripDate"
         android:layout_width="117dp"

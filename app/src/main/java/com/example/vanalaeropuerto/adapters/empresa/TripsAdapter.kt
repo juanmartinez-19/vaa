@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
 
 class TripsAdapter(
@@ -22,7 +21,7 @@ class TripsAdapter(
         }
 
         fun setPassengerName (name : String)  {
-            val txtName : TextView = v.findViewById(R.id.tvPassengerName)
+            val txtName : TextView = v.findViewById(R.id.tvDriverName)
             txtName.text = name
         }
 

@@ -30,7 +30,7 @@
 
         <!-- Nombre y Apellido del Pasajero -->
         <TextView
-            android:id="@+id/tvPassengerNameLabel"
+            android:id="@+id/tvDriverNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre:"
@@ -41,15 +41,15 @@
             app:layout_constraintTop_toBottomOf="@id/tvDate" />
 
         <TextView
-            android:id="@+id/tvPassengerName"
+            android:id="@+id/tvDriverName"
             android:layout_width="240dp"
             android:layout_height="23dp"
             android:text="Juan Pérez"
             android:textAppearance="?attr/textAppearanceListItem"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvPassengerNameLabel"
-            app:layout_constraintTop_toTopOf="@id/tvPassengerNameLabel" />
+            app:layout_constraintStart_toEndOf="@id/tvDriverNameLabel"
+            app:layout_constraintTop_toTopOf="@id/tvDriverNameLabel" />
 
         <!-- Teléfono del Pasajero -->
         <TextView
@@ -61,7 +61,7 @@
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPassengerName" />
+            app:layout_constraintTop_toBottomOf="@id/tvDriverName" />
 
         <TextView
             android:id="@+id/tvPassengerPhone"

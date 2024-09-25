@@ -210,6 +210,28 @@ class TripsRepository {
         tripsList.add(trip13)
     }
 
+    fun getTripById(tripId: String): Trip? {
+        return tripsList.find { it.getTripId() == tripId }
+    }
+
+    fun confirmTrip (tripId : String)  : MyResult<Trip?>  {
+        return try {
+            val trip = tripsList.find { it.getTripId() == tripId }
+
+            if (trip != null) {
+                trip.setState("confirmed")
+                MyResult.Success(trip)
+            } else {
+                MyResult.Success(null)
+            }
+        } catch (e: Exception) {
+            Log.e("FirestoreError", "Exception thrown: ${e.message}", e)
+            MyResult.Failure(e)
+        }
+
+
+    }
+
     fun cancelTrip (pendingTripId : String) {
         val trip = tripsList.find { it.getTripId() == pendingTripId }
 

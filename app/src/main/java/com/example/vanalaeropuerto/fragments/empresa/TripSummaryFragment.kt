@@ -14,18 +14,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.entities.Requester
-import com.example.vanalaeropuerto.entities.Trip
-import com.example.vanalaeropuerto.entities.TripRequester
-import com.example.vanalaeropuerto.fragments.user.IngresoDatosFragmentDirections
-import com.example.vanalaeropuerto.fragments.user.VehiculosFragmentArgs.Companion.fromBundle
-import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
-import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripDetailViewModel
-import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.vanalaeropuerto.viewmodels.empresa.TripSummaryViewModel
 import com.google.android.material.snackbar.Snackbar
 
-class PendingTripDetailFragment : Fragment() {
+class TripSummaryFragment : Fragment() {
+
 
     private lateinit var v: View
     private lateinit var progressBar : ProgressBar
@@ -42,25 +35,23 @@ class PendingTripDetailFragment : Fragment() {
     private lateinit var tvBabyCount: TextView
     private lateinit var tvLuggage: TextView
     private lateinit var tvPrice: TextView
+    private lateinit var tvDriverName : TextView
 
-    private lateinit var fabEditTrip : FloatingActionButton
-
-    private lateinit var pendingTripId : String
-    private lateinit var requesterId : String
-
-    // Variables para los botones
     private lateinit var btnConfirmTrip: Button
-    private lateinit var btnCancelTrip: Button
 
-    private lateinit var viewModel: PendingTripDetailViewModel
+    private lateinit var viewModel: TripSummaryViewModel
+
+    private lateinit var tripId : String
+    private lateinit var requesterId : String
+    private lateinit var driverId : String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.fragment_pending_trip_detail, container, false)
+        v = inflater.inflate(R.layout.fragment_trip_summary, container, false)
 
-        // Asociar las vistas con las variables
+
         progressBar = v.findViewById(R.id.progressBarLoading)
         tvRequesterName = v.findViewById(R.id.tvRequesterName)
         tvTripDate = v.findViewById(R.id.tvTripDate)
@@ -73,14 +64,11 @@ class PendingTripDetailFragment : Fragment() {
         tvBabyCount = v.findViewById(R.id.tvBabyCount)
         tvLuggage = v.findViewById(R.id.tvLuggage)
         tvPrice = v.findViewById(R.id.tvPrice)
-        fabEditTrip = v.findViewById(R.id.fabEditTrip)
-
-        pendingTripId = arguments?.getString("tripId").toString()
-        requesterId = arguments?.getString("requesterId").toString()
-
-        // Asociar los botones
         btnConfirmTrip = v.findViewById(R.id.btnConfirmTrip)
-        btnCancelTrip = v.findViewById(R.id.btnCancelTrip)
+        tvDriverName = v.findViewById(R.id.tvDriverName)
+        tripId = TripSummaryFragmentArgs.fromBundle(requireArguments()).tripId
+        driverId = TripSummaryFragmentArgs.fromBundle(requireArguments()).driverId
+        requesterId = TripSummaryFragmentArgs.fromBundle(requireArguments()).requesterId
 
         return v
     }
@@ -88,10 +76,11 @@ class PendingTripDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(PendingTripDetailViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TripSummaryViewModel::class.java)
 
-        viewModel.getTrip(pendingTripId)
+        viewModel.getTrip(tripId)
         viewModel.getRequester(requesterId)
+        viewModel.getDriver(driverId)
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
@@ -107,13 +96,15 @@ class PendingTripDetailFragment : Fragment() {
                     this.hideLoading()
                 }
 
-                is ViewState.Confirmed -> {
-                    this.confirmed()
-                }
-
                 else -> {
                     this.showError()
                 }
+            }
+        })
+
+        viewModel.driver.observe(viewLifecycleOwner, Observer { driver ->
+            if (driver != null) {
+                tvDriverName.text = driver.getDriverName() ?: ""
             }
         })
 
@@ -142,38 +133,18 @@ class PendingTripDetailFragment : Fragment() {
             }
         })
 
-        fabEditTrip.setOnClickListener{
-            try {
-                if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
-
-                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(pendingTripId)
-
-                    findNavController().navigate(action)
-                }
-            } catch (e: IllegalArgumentException) {
-                Log.e("PendingTripDetailFragment", "Navigation action failed: ${e.message}")
-            }
-        }
-
-        btnCancelTrip.setOnClickListener {
-            viewModel.cancelTrip(pendingTripId)
-        }
-
         btnConfirmTrip.setOnClickListener {
+            viewModel.confirmTrip(tripId)
+
             try {
-                if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
-
-                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToAsignDriverFragment(pendingTripId, requesterId)
-
+                if (findNavController().currentDestination?.id == R.id.tripSummaryFragment) {
+                    val action = TripSummaryFragmentDirections.actionTripSummaryFragmentToHomeEmpresaFragment()
                     findNavController().navigate(action)
                 }
             } catch (e: IllegalArgumentException) {
-                Log.e("PendingTripDetailFragment", "Navigation action failed: ${e.message}")
+                Log.e("AsignDriverFragment", "Navigation action failed: ${e.message}")
             }
         }
-
-
-
     }
 
     private fun showLoading() {
@@ -184,14 +155,9 @@ class PendingTripDetailFragment : Fragment() {
         progressBar.visibility = View.GONE
     }
 
-    private fun confirmed(){
-        activity?.supportFragmentManager?.popBackStack()
-    }
-
     private fun showError() {
         progressBar.visibility = View.GONE
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
 
-
-    }
+}
