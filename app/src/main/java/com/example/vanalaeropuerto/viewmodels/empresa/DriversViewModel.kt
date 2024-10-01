@@ -8,21 +8,20 @@ import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.empresa.DriversRepository
-import com.example.vanalaeropuerto.data.user.VehiclesRepository
 import com.example.vanalaeropuerto.entities.Driver
 import kotlinx.coroutines.launch
 
-class AsignDriverViewModel : ViewModel() {
+class DriversViewModel : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
     var _driversList : MutableLiveData<MutableList<Driver>?> = MutableLiveData()
     val getDriversUseCase : DriversRepository = DriversRepository()
 
 
-    fun getDrivers(tripId : String) {
+    fun getDrivers() {
         viewModelScope.launch {
             _viewState.value = ViewState.Loading
-            when (val result = getDriversUseCase.getDriversByTripId(tripId)){
+            when (val result = getDriversUseCase.getDrivers()){
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _driversList.value = result.data
@@ -41,5 +40,4 @@ class AsignDriverViewModel : ViewModel() {
 
         }
     }
-
 }

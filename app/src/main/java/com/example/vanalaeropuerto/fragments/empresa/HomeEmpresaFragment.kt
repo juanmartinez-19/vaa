@@ -2,6 +2,7 @@ package com.example.vanalaeropuerto.fragments.empresa
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,7 @@ import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
 import com.example.vanalaeropuerto.adapters.empresa.ViewPagerAdapter
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.HomeEmpresaViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,6 +30,8 @@ class HomeEmpresaFragment : Fragment() {
     private lateinit var v : View
     private lateinit var viewPager : ViewPager2
     private lateinit var tabLayout : TabLayout
+
+    private lateinit var fabAddDriver : FloatingActionButton
 
     private lateinit var viewModel: HomeEmpresaViewModel
 
@@ -38,6 +43,7 @@ class HomeEmpresaFragment : Fragment() {
 
         viewPager = v.findViewById(R.id.view_pager)
         tabLayout = v.findViewById(R.id.tab_layout)
+        fabAddDriver = v.findViewById(R.id.fabAddDriver)
 
         return v
     }
@@ -60,6 +66,17 @@ class HomeEmpresaFragment : Fragment() {
         }).attach()
 
         viewPager.setCurrentItem(1, false) // Establece la segunda pestaña como la inicial (sin animación)
+
+        fabAddDriver.setOnClickListener{
+            try {
+                if (findNavController().currentDestination?.id == R.id.homeEmpresaFragment) {
+                  val action = HomeEmpresaFragmentDirections.actionHomeEmpresaFragmentToDriversFragment()
+                  findNavController().navigate(action)
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e("HomeEmpresaFragment", "Navigation action failed: ${e.message}")
+            }
+        }
 
     }
 

@@ -10,16 +10,15 @@
         android:name="com.example.vanalaeropuerto.fragments.empresa.HomeEmpresaFragment"
         android:label="Viajes"
         tools:layout="@layout/fragment_home_empresa" >
+        <action
+            android:id="@+id/action_homeEmpresaFragment_to_driversFragment"
+            app:destination="@id/driversFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripsHistoryFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.TripsHistoryFragment"
         android:label="fragment_trips_history"
-        tools:layout="@layout/fragment_trips_history" >
-        <action
-            android:id="@+id/action_tripsHistoryFragment_to_pendingTripDetailFragment"
-            app:destination="@id/pendingTripDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_trips_history" />
     <fragment
         android:id="@+id/pendingTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripsFragment"
@@ -33,11 +32,7 @@
         android:id="@+id/confirmedTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.ConfirmedTripsFragment"
         android:label="fragment_confirmed_trips"
-        tools:layout="@layout/fragment_confirmed_trips" >
-        <action
-            android:id="@+id/action_confirmedTripsFragment_to_pendingTripDetailFragment"
-            app:destination="@id/pendingTripDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_confirmed_trips" />
     <fragment
         android:id="@+id/pendingTripDetailFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripDetailFragment"
@@ -100,5 +95,19 @@
         <action
             android:id="@+id/action_tripSummaryFragment_to_homeEmpresaFragment"
             app:destination="@id/homeEmpresaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/crudDriverFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.CrudDriverFragment"
+        android:label="Chofer"
+        tools:layout="@layout/fragment_crud_driver" />
+    <fragment
+        android:id="@+id/driversFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.DriversFragment"
+        android:label="Choferes"
+        tools:layout="@layout/fragment_drivers" >
+        <action
+            android:id="@+id/action_driversFragment_to_crudDriverFragment"
+            app:destination="@id/crudDriverFragment" />
     </fragment>
 </navigation>
