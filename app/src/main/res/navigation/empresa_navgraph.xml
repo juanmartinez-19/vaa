@@ -100,7 +100,11 @@
         android:id="@+id/crudDriverFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.CrudDriverFragment"
         android:label="Chofer"
-        tools:layout="@layout/fragment_crud_driver" />
+        tools:layout="@layout/fragment_crud_driver" >
+        <argument
+            android:name="driverId"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/driversFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.DriversFragment"

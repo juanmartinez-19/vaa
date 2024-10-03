@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.empresa.DriversRepository
+import com.example.vanalaeropuerto.entities.Driver
+import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
 
 class CrudDriverViewModel : ViewModel() {
@@ -18,6 +20,31 @@ class CrudDriverViewModel : ViewModel() {
     val viewState: LiveData<ViewState> get() = _viewState
 
     val getDriversRepository : DriversRepository = DriversRepository()
+
+    private val _driver = MutableLiveData<Driver?>()
+    val driver : LiveData<Driver?> get() = _driver
+
+
+    fun getDriverById (
+        driverId : String?
+    ){
+        _viewState.value = ViewState.Loading
+
+        viewModelScope.launch {
+            when (val result = getDriversRepository.getDriverById(driverId)) {
+                is MyResult.Success -> {
+                    _driver.value = result.data
+                    _viewState.value = ViewState.Idle
+                }
+
+                is MyResult.Failure -> {
+                    _driver.value = null
+                    _viewState.value = ViewState.Failure
+                    Log.d("TEST", _viewState.value.toString())
+                }
+            }
+        }
+    }
 
     fun addDriver (
         driverId : String?,

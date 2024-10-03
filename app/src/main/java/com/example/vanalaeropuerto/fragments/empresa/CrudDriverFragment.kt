@@ -40,6 +40,8 @@ class CrudDriverFragment : Fragment() {
     private lateinit var cuil: String
     private var tieneButaca: Boolean = false
 
+    private lateinit var driverId : String
+
     private lateinit var viewModel: CrudDriverViewModel
 
     override fun onCreateView(
@@ -57,12 +59,19 @@ class CrudDriverFragment : Fragment() {
         editTextCuil = v.findViewById(R.id.editTextCuil)
         buttonGuardar = v.findViewById(R.id.buttonGuardar)
 
+        driverId = CrudDriverFragmentArgs.fromBundle(requireArguments()).driverId
+
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(CrudDriverViewModel::class.java)
+
+        if (driverId.isNotBlank()) {
+            viewModel.getDriverById(driverId)
+        }
+
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
@@ -87,6 +96,27 @@ class CrudDriverFragment : Fragment() {
             }
         })
 
+        viewModel.driver.observe(viewLifecycleOwner, Observer { driver ->
+            if (driver != null) {
+                val driverName = driver.getDriverName().toString()
+                val driverSurname = driver.getDriverSurname().toString()
+                val driverTieneButaca = driver.getTieneButaca().toString().toBoolean()
+                val driverTelefono = driver.getDriverPhoneNumber().toString()
+                val driverCuil = driver.getDriverCuil().toString()
+
+
+                if (driverTieneButaca) {
+                    radioGroupButaca.check(R.id.radioSi)
+                } else {
+                    radioGroupButaca.check(R.id.radioNo)
+                }
+
+                editTextNombre.setText(driverName)
+                editTextApellido.setText(driverSurname)
+                editTextTelefono.setText(driverTelefono)
+                editTextCuil.setText(driverCuil)
+            }
+        })
         // Acción del botón guardar
         buttonGuardar.setOnClickListener {
             name = editTextNombre.text.toString()

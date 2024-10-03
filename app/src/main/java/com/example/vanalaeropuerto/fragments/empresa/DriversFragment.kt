@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments.empresa
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.core.graphics.green
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,10 +53,17 @@ class DriversFragment : Fragment() {
 
         recyclerDrivers.layoutManager = LinearLayoutManager(context)
         driverAdapter = DriverAdapter(mutableListOf()) {
+            val driver = driverAdapter.getSelectedProduct(it)
+            val driverId = driver.getDriverId()
+
             try {
                 if (findNavController().currentDestination?.id == R.id.driversFragment) {
-                   val action = DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment()
-                    findNavController().navigate(action)
+                    val action = driverId?.let { it1 ->
+                        DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment(it1)
+                    }
+                    if (action != null) {
+                        findNavController().navigate(action)
+                    }
                 }
             } catch (e: IllegalArgumentException) {
                 Log.e("DriversFragment", "Navigation action failed: ${e.message}")
@@ -65,7 +74,7 @@ class DriversFragment : Fragment() {
         fabAddDriver.setOnClickListener {
             try {
                 if (findNavController().currentDestination?.id == R.id.driversFragment) {
-                    val action = DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment()
+                    val action = DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment("")
                     findNavController().navigate(action)
                 }
             } catch (e: IllegalArgumentException) {
