@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "985160142596",
+    "project_id": "vanalaeropuerto---usuario",
+    "storage_bucket": "vanalaeropuerto---usuario.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985160142596:android:5e2991e4806e32495eca51",
+        "android_client_info": {
+          "package_name": "com.example.vanalaeropuerto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKgIXuU10WaM5B8JA477dsWn8005MOR8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
