@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout10"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    tools:context=".fragments.login.AuthCodeFragment">
+
+    <!-- Texto que explica al usuario qué hacer -->
+
+    <!-- Campo de texto para ingresar el código de 6 dígitos -->
+
+    <!-- Botón para verificar el código ingresado -->
+
+    <!-- Barra de progreso para mostrar mientras se procesa la verificación -->
+
+    <TextView
+        android:id="@+id/tvCodigoInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="Ingresa el código de verificación enviado a tu teléfono"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/etCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:hint="Código de 6 dígitos"
+        android:importantForAccessibility="yes"
+        android:inputType="number"
+        android:maxLength="6"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnVerifyCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCodigoInfo"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <Button
+        android:id="@+id/btnVerifyCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="304dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:text="Verificar"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etCode"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <ProgressBar
+        android:id="@+id/progressBarVerificacion"
+        android:layout_width="52dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="45dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/btnVerifyCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etCode" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

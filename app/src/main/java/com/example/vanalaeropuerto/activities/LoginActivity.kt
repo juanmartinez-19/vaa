@@ -24,8 +24,18 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-
         FirebaseApp.initializeApp(this)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_login) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment -> supportActionBar?.title = "Iniciar Sesión"
+                R.id.authPhoneFragment -> supportActionBar?.title = "Ingresar Celular"
+            }
+        }
+
     }
 
 

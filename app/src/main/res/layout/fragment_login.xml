@@ -8,21 +8,22 @@
     tools:context=".fragments.login.LoginFragment">
 
     <!-- Campo de texto para el email -->
+
+    <!-- Campo de texto para la contraseña -->
+
     <EditText
-        android:id="@+id/etEmail"
+        android:id="@+id/etPhoneNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="32dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
+        android:layout_marginTop="24dp"
+        android:hint="Celular"
+        android:inputType="phone"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Campo de texto para la contraseña -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
@@ -31,7 +32,7 @@
         android:inputType="textPassword"
         android:layout_marginTop="16dp"
         android:padding="16dp"
-        app:layout_constraintTop_toBottomOf="@id/etEmail"
+        app:layout_constraintTop_toBottomOf="@id/etPhoneNumber"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -64,5 +65,21 @@
         android:layout_marginHorizontal="24dp"
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="@android:color/white" />
+
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="181dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="182dp"
+        android:layout_marginBottom="365dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
