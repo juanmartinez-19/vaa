@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.login.AuthCodeFragment">
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/frameLayout10"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,6 +23,7 @@
 
     <!-- Barra de progreso para mostrar mientras se procesa la verificación -->
 
+
     <TextView
         android:id="@+id/tvCodigoInfo"
         android:layout_width="wrap_content"
@@ -23,7 +31,7 @@
         android:layout_marginTop="160dp"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:text="Ingresa el código de verificación enviado a tu teléfono"
+        android:text="Por favor ingresa el código de verificación que enviamos a tu celular."
         android:textColor="@android:color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/etCode"
@@ -35,33 +43,16 @@
         android:id="@+id/etCode"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="88dp"
         android:gravity="center"
         android:hint="Código de 6 dígitos"
         android:importantForAccessibility="yes"
         android:inputType="number"
         android:maxLength="6"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnVerifyCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCodigoInfo"
-        app:layout_constraintWidth_percent="0.8" />
-
-    <Button
-        android:id="@+id/btnVerifyCode"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="304dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:text="Verificar"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etCode"
         app:layout_constraintWidth_percent="0.8" />
 
     <ProgressBar
@@ -71,10 +62,29 @@
         android:layout_marginTop="25dp"
         android:layout_marginBottom="45dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/btnVerifyCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCode" />
+        app:layout_constraintTop_toBottomOf="@+id/etCode"
+        app:layout_constraintVertical_bias="0.101" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+android:id="@+id/btnVerifyCode"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_margin="16dp"
+android:layout_marginStart="339dp"
+android:layout_marginEnd="339dp"
+android:layout_marginBottom="16dp"
+android:backgroundTint="@color/colorPrimaryDark"
+android:src="@drawable/baseline_white_arrow_forward_24"
+app:layout_anchor="@id/frameLayout10"
+app:layout_anchorGravity="bottom|end"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="1.0"
+app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

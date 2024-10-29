@@ -8,7 +8,7 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
 
 class AuthCodeViewModel : ViewModel() {
-
+/*
     private val _authResult = MutableLiveData<AuthResult>()
     val authResult: LiveData<AuthResult> = _authResult
 
@@ -33,5 +33,5 @@ class AuthCodeViewModel : ViewModel() {
                     _authResult.postValue(AuthResult.Failure(task.exception?.message ?: "Error desconocido"))
                 }
             }
-    }
+    }*/
 }

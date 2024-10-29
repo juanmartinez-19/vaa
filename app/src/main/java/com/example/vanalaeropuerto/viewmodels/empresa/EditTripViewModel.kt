@@ -93,7 +93,7 @@ class EditTripViewModel : ViewModel() {
         this.validarDatos(originAddress,destinationAddress,selectedDateInMillis,price)
 
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters
+            _viewState.value = ViewState.InvalidParameters("")
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             viewModelScope.launch {

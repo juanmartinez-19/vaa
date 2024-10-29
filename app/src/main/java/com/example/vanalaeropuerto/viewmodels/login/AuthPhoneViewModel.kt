@@ -18,7 +18,7 @@ import com.google.firebase.auth.auth
 import java.util.concurrent.TimeUnit
 
 class AuthPhoneViewModel : ViewModel() {
-    private val errores = mutableListOf<String>()
+    /*private val errores = mutableListOf<String>()
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
@@ -65,7 +65,7 @@ class AuthPhoneViewModel : ViewModel() {
         this.validateData(phoneNumber)
 
         if (errores.isNotEmpty()||phoneNumber.isNullOrBlank()) {
-            _viewState.value = ViewState.InvalidParameters
+            _viewState.value = ViewState.InvalidParameters("")
             Log.e("PhoneAuthError", "Errores: ${errores.joinToString(", ")}")
         } else {
                 val options = PhoneAuthOptions.newBuilder(auth)
@@ -113,5 +113,5 @@ class AuthPhoneViewModel : ViewModel() {
         data class CodeSent(val verificationId: String) : AuthState()
         data class Failure(val message: String) : AuthState()
     }
-
+*/
 }

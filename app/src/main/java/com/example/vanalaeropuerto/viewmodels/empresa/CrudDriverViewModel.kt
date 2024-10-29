@@ -61,7 +61,7 @@ class CrudDriverViewModel : ViewModel() {
         this.validateDriverData(name, surname,cuil,phoneNumber)
 
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters
+            _viewState.value = ViewState.InvalidParameters("")
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             viewModelScope.launch {
@@ -126,7 +126,7 @@ class CrudDriverViewModel : ViewModel() {
 
         // Manejo de errores
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters
+            _viewState.value = ViewState.InvalidParameters("")
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             _viewState.value = ViewState.Confirmed

@@ -46,7 +46,7 @@ class LoginFragment : Fragment() {
         btnRegister.setOnClickListener {
             try {
                 if (findNavController().currentDestination?.id == R.id.loginFragment) {
-                    val action = LoginFragmentDirections.actionLoginFragmentToSignInFragment()
+                    val action = LoginFragmentDirections.actionLoginFragmentToAuthPhoneFragment()
                     findNavController().navigate(action)
                 } else {
                     Log.e("LoginFragment", "Navigation action failed")

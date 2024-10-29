@@ -6,20 +6,15 @@
     app:startDestination="@id/loginFragment">
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.vanalaeropuerto.fragments.login.LoginFragment"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_signInFragment"
-            app:destination="@id/authPhoneFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/authPhoneFragment"
         android:name="com.example.vanalaeropuerto.fragments.login.AuthPhoneFragment"
         tools:layout="@layout/fragment_auth_phone" >
         <action
             android:id="@+id/action_authPhoneFragment_to_authCodeFragment"
             app:destination="@id/authCodeFragment" />
+        <action
+            android:id="@+id/action_authPhoneFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
     </fragment>
     <fragment
         android:id="@+id/authCodeFragment"
@@ -29,5 +24,39 @@
         <argument
             android:name="verificationId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_authCodeFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
+        <argument
+            android:name="message"
+            app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.vanalaeropuerto.fragments.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_authPhoneFragment"
+            app:destination="@id/authPhoneFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.vanalaeropuerto.fragments.login.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+        <argument
+            android:name="phoneNumber"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_registerFragment_to_homeActivity"
+            app:destination="@id/homeActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/homeActivity"
+        android:name="com.example.vanalaeropuerto.activities.HomeActivity"
+        android:label="HomeActivity" />
 </navigation>

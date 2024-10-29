@@ -119,7 +119,7 @@ class HomeViewModel : ViewModel() {
 
         // Manejo de errores
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters
+            _viewState.value = ViewState.InvalidParameters("")
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             _viewState.value = ViewState.Idle

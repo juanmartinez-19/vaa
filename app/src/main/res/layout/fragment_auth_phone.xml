@@ -1,76 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.login.AuthPhoneFragment">
 
-    <EditText
-        android:id="@+id/etPhoneNumber"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frameLayout8"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Teléfono"
-        android:inputType="phone"
-        app:layout_constraintBottom_toTopOf="@+id/btnRegistrar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <Button
+        <!-- Título principal -->
+
+        <!-- Subtítulo -->
+
+        <!-- Contenedor para el código de área y el número -->
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="156dp"
+            android:layout_marginEnd="16dp"
+            android:text="Tu número de celular"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="226dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Por favor ingresá tu código de área y tu número de celular"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.487"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+        <LinearLayout
+            android:id="@+id/llPhoneInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="52dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSubtitle">
+
+            <!-- Campo para el código de área -->
+            <EditText
+                android:id="@+id/etPhoneCode"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:hint="+"
+                android:inputType="phone"
+                android:maxLength="4"
+                android:textAlignment="center" />
+
+            <!-- Espacio entre los campos -->
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <!-- Campo para el número de celular -->
+            <EditText
+                android:id="@+id/etPhoneNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Celular"
+                android:inputType="phone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSmsWarning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:layout_marginEnd="16dp"
+            android:text="Es posible que recibas un mensaje SMS para verificación y se aplicarán tarifas estándar."
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/llPhoneInput" />
+
+        <ProgressBar
+            android:id="@+id/progressBarLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnContinuar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="17dp"
-        android:backgroundTint="?attr/colorPrimary"
-        android:text="Continuar"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/tvSmsWarning"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTelefono" />
-
-    <ProgressBar
-        android:id="@+id/progressBarLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="181dp"
-        android:layout_marginEnd="182dp"
-        android:layout_marginBottom="340dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSmsWarning"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:src="@drawable/baseline_white_arrow_forward_24"
+        app:layout_anchor="@id/frameLayout8"
+        app:layout_anchorGravity="bottom|end" />
 
-    <TextView
-        android:id="@+id/tvSmsWarning"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="380dp"
-        android:text="Es posible que recibas un mensaje SMS para verificación y se aplicarán tarifas estándar."
-        android:textAlignment="center"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegistrar"
-        app:layout_constraintVertical_bias="0.139" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

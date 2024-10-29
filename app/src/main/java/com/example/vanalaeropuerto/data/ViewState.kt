@@ -6,5 +6,5 @@ sealed class ViewState {
     object Confirmed : ViewState()
     object Empty : ViewState()
     object Failure : ViewState()
-    object InvalidParameters : ViewState()
+    data class InvalidParameters(val message: String) : ViewState()
 }
