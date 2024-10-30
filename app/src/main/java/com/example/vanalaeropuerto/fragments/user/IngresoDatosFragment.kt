@@ -52,6 +52,7 @@ class IngresoDatosFragment : Fragment() {
 
     private var radiobuttonChecked : Boolean = false
     private var isForUser : Boolean = false
+    private var validateCounter : Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,10 +112,7 @@ class IngresoDatosFragment : Fragment() {
             thirdPartyCuil = etThirdPartyCuil.text.toString()
 
             viewModel.validateUserData(radiobuttonChecked,userName, userSurname, userPhoneNumber, userCuil)
-
-            if (!isForUser) {
-                viewModel.validateUserData(radiobuttonChecked,thirdPartyName, thirdPartySurname, thirdPartyPhoneNumber, thirdPartyCuil)
-            }
+            validateCounter += 1
 
             viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
@@ -129,10 +127,21 @@ class IngresoDatosFragment : Fragment() {
                     }
                     is ViewState.Confirmed -> {
                         this.hideLoading()
-                        this.showConfirmed()
+                        if ((isForUser && validateCounter==1)||(!isForUser && validateCounter==2)) {
+                            this.showConfirmed()
+                        } else if (!isForUser && validateCounter==1) {
+                            viewModel.validateUserData(
+                                radiobuttonChecked,
+                                thirdPartyName,
+                                thirdPartySurname,
+                                thirdPartyPhoneNumber,
+                                thirdPartyCuil
+                            )
+                            validateCounter += 1
+                        }
                     }
                     is ViewState.InvalidParameters -> {
-                        this.showInvalidParameters()
+                        this.showInvalidParameters(viewState.message)
                     }
                     else -> {
                         this.showError()
@@ -167,9 +176,9 @@ class IngresoDatosFragment : Fragment() {
         progressBar.visibility = View.GONE
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
-    private fun showInvalidParameters() {
+    private fun showInvalidParameters(message : String) {
         progressBar.visibility = View.GONE
-        Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showConfirmed() {

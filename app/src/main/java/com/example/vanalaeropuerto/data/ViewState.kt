@@ -1,5 +1,7 @@
 package com.example.vanalaeropuerto.data
 
+import android.view.View
+
 sealed class ViewState {
     object Idle : ViewState()
     object Loading : ViewState()

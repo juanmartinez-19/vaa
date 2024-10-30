@@ -21,6 +21,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.user.HomeViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
@@ -32,7 +33,7 @@ class HomeFragment : Fragment() {
     private lateinit var etDestinationAddress : EditText
     private lateinit var etLuggage : EditText
     private lateinit var etDepartureDate : EditText
-    private lateinit var btnSearch : Button
+    private lateinit var btnSearch : FloatingActionButton
     private lateinit var btnAdultPlus : Button
     private lateinit var btnAdultMinus : Button
     private lateinit var btnChildMinus : Button
@@ -237,7 +238,7 @@ class HomeFragment : Fragment() {
                     }
 
                     is ViewState.InvalidParameters -> {
-                        this.showInvalidParameters()
+                        this.showInvalidParameters(viewState.message)
                     }
 
                     else -> {
@@ -361,10 +362,10 @@ class HomeFragment : Fragment() {
         textViewTitle.visibility = View.VISIBLE
     }
 
-    private fun showInvalidParameters() {
+    private fun showInvalidParameters(message : String) {
 
         progressBar.visibility = View.GONE
-        Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(v, message , Snackbar.LENGTH_SHORT).show()
         textViewTitle.visibility = View.VISIBLE
     }
 

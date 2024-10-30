@@ -304,17 +304,21 @@
             android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <Button
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnBuscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
+        android:layout_marginStart="292dp"
+        android:layout_marginTop="124dp"
+        android:layout_marginEnd="31dp"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:text="@string/buscar_viajes"
+        android:src="@drawable/baseline_white_arrow_forward_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutEquipaje" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutEquipaje" />
 
     <ProgressBar
         android:id="@+id/progressBarLoading"

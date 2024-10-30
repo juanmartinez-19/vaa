@@ -44,25 +44,28 @@ class IngresoDatosViewModel : ViewModel() {
 
         // Validación de telefono
         if (phoneNumber.isNullOrBlank()) {
-            errores.add("Telefono no puede estar vacía")
+            errores.add("Telefono no puede estar vacío")
         } else if (!phoneNumber.matches(Regex("^[+]?[0-9]{10,13}\$"))) {
             errores.add("Teléfono no es válido. Debe contener entre 10 y 13 dígitos, y puede incluir un '+' al inicio.")
         }
 
         // Validación de cuil
         if (cuil.isNullOrBlank()) {
-            errores.add("Cuil no puede estar vacía")
-        } else if (!cuil.matches(Regex("^\\d{2}\\d{8}\\d{1}\$"))) {
-            errores.add("CUIL no es válido. Debe tener el formato XX-XXXXXXXX-X.")
+            errores.add("El CUIL no puede estar vacío")
+        }  else if (cuil.length != 11) {
+            errores.add("El CUIL debe tener exactamente 11 dígitos.")
+        } else if (!cuil.all { it.isDigit() }) {
+            errores.add("El CUIL debe contener solo números.")
         }
 
 
         // Manejo de errores
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters("")
+            _viewState.value = ViewState.InvalidParameters(errores.first())
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             _viewState.value = ViewState.Confirmed
         }
+
     }
 }

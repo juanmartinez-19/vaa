@@ -81,18 +81,11 @@ class HomeViewModel : ViewModel() {
         val currentDateInMillis = Calendar.getInstance().timeInMillis
         val errores = mutableListOf<String>()
 
-        // Validación de equipaje
-        if (luggage == null) {
-            errores.add("Equipaje no puede ser nulo")
-        } else if (luggage <= 0 || luggage > 100) {
-            errores.add("Equipaje debe estar entre 1 y 100 kg")
-        }
-
-        // Validación de pasajeros
-        if (passangers == null) {
-            errores.add("Pasajeros no puede ser nulo")
-        } else if (passangers <= 0 || passangers > 10) {
-            errores.add("Número de pasajeros debe estar entre 1 y 10")
+        // Validación de fecha
+        if (selectedDateInMillis == null) {
+            errores.add("Fecha de salida no puede estar vacía")
+        } else if (selectedDateInMillis <= currentDateInMillis) {
+            errores.add("Fecha de salida debe ser mayor a la fecha actual")
         }
 
         // Validación de dirección de origen
@@ -105,21 +98,28 @@ class HomeViewModel : ViewModel() {
             errores.add("Dirección de destino no puede estar vacía")
         }
 
-        // Validación de fecha
-        if (selectedDateInMillis == null) {
-            errores.add("Fecha de salida no puede estar vacía")
-        } else if (selectedDateInMillis <= currentDateInMillis) {
-            errores.add("Fecha de salida debe ser mayor a la fecha actual")
-        }
-
         // Validación de direcciones de destino
         if (destinationAddresses.any { it.isBlank() }) {
             errores.add("Todas las direcciones de destino deben estar completas")
         }
 
+        // Validación de pasajeros
+        if (passangers == null) {
+            errores.add("Pasajeros no puede ser nulo")
+        } else if (passangers <= 0 || passangers > 10) {
+            errores.add("Número de pasajeros debe estar entre 1 y 10")
+        }
+
+        // Validación de equipaje
+        if (luggage == null) {
+            errores.add("Equipaje no puede ser nulo")
+        } else if (luggage <= 0 || luggage > 100) {
+            errores.add("Equipaje debe estar entre 1 y 100 kg")
+        }
+
         // Manejo de errores
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters("")
+            _viewState.value = ViewState.InvalidParameters(errores.first())
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             _viewState.value = ViewState.Idle
