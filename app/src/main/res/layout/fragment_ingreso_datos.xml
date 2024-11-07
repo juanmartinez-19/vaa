@@ -167,7 +167,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="Cargar formulario"
-        android:src="@drawable/baseline_confirm_24"
+        android:src="@drawable/baseline_white_arrow_forward_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

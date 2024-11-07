@@ -2,7 +2,7 @@ package com.example.vanalaeropuerto.entities
 
 class Vehicle (
     private var vehicleId : String?="",
-    private var vehiclePrice : Double?=0.0,
+    private var vehiclePrice : Float?=0F,
     private var vehicleDriver : String?="",
     private var vehicleName : String?="",
     private var vehicleUrlImage : String?,
@@ -10,7 +10,7 @@ class Vehicle (
     private var vehicleLuggageCapacity : Float?=0F
 ) {
 
-    fun getVehiclePrice() : Double? {
+    fun getVehiclePrice() : Float? {
         return this.vehiclePrice
     }
 

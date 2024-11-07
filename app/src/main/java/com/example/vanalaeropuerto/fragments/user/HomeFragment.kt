@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
     private var babyCount : Int=0
 
     private lateinit var containerLayout: LinearLayout
-    private lateinit var ibAddFieldButton: ImageButton
+    //private lateinit var ibAddFieldButton: ImageButton
     private var fieldCounter = 2
     private val editTextList = mutableListOf<View>()
 
@@ -101,9 +101,9 @@ class HomeFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_home, container, false)
 
         containerLayout = v.findViewById(R.id.layoutDireccionDestino)
+        /*
         ibAddFieldButton = v.findViewById(R.id.ibAddAddress)
 
-        /*
         ibAddFieldButton.setOnClickListener {
             addNewEditText()
          }
@@ -320,8 +320,18 @@ class HomeFragment : Fragment() {
     private fun navigate() {
         try {
             if (findNavController().currentDestination?.id == R.id.homeFragment) {
-                val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(passengers,luggage)
-                findNavController().navigate(action)
+                if (departureDate.isNullOrBlank()||originAddress.isNullOrBlank()||destinationAddress.isNullOrBlank()) {
+                    Log.e("HomeFragment", "Navigation action failed")
+                } else {
+                    val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(
+                        departureDate.toString(),
+                        originAddress.toString(),
+                        destinationAddress.toString(),
+                        passengers,
+                        luggage
+                    )
+                    findNavController().navigate(action)
+                }
             }
         } catch (e: IllegalArgumentException) {
             Log.e("HomeFragment", "Navigation action failed: ${e.message}")

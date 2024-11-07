@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.user.VehicleAdapter
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.entities.Trip
+import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.VehiculosViewModel
+import java.util.UUID
 
 class VehiculosFragment : Fragment() {
 
@@ -26,6 +29,12 @@ class VehiculosFragment : Fragment() {
 
     private var luggage : Float = 0.0f
     private var passangers : Int = 0
+    private var originAddress: String?=""
+    private var destinationAddress: String?=""
+    private var departureDate: String?=""
+
+    private lateinit var trip : Trip
+    private lateinit var tripRequester : TripRequester
 
     private lateinit var viewModel: VehiculosViewModel
 
@@ -39,6 +48,10 @@ class VehiculosFragment : Fragment() {
         progressBar = v.findViewById(R.id.progressBarLoading)
         luggage = VehiculosFragmentArgs.fromBundle(requireArguments()).luggage
         passangers = VehiculosFragmentArgs.fromBundle(requireArguments()).passangers
+        originAddress = VehiculosFragmentArgs.fromBundle(requireArguments()).direccionOrigen
+        destinationAddress = VehiculosFragmentArgs.fromBundle(requireArguments()).direccionDestino
+        departureDate = VehiculosFragmentArgs.fromBundle(requireArguments()).fechaSalida
+
 
         return v
     }
@@ -50,7 +63,10 @@ class VehiculosFragment : Fragment() {
         recyclerVehicles.layoutManager = LinearLayoutManager(context)
         vehicleAdapter = VehicleAdapter(mutableListOf()) {
             val vehicle = vehicleAdapter.getSelectedProduct(it)
-            val action = VehiculosFragmentDirections.actionVehiculosFragmentToIngresoDatosFragment()
+            val tripId = UUID.randomUUID().toString()
+            trip = Trip(departureDate,originAddress,destinationAddress, passangers, passangers, passangers, luggage, vehicle.getVehiclePrice(), "PENDING",tripId,vehicle.getVehicleId(),"")
+            tripRequester = TripRequester(trip,null)
+            val action = VehiculosFragmentDirections.actionVehiculosFragmentToIngresoDatosFragment(tripRequester)
             findNavController().navigate(action)
         }
         recyclerVehicles.adapter = vehicleAdapter

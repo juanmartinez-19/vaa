@@ -29,7 +29,7 @@ class VehicleAdapter(
             val txtTitle : TextView = v.findViewById(R.id.tvVehicleName)
             txtTitle.text = name
         }
-        fun setVehiclePrice(price: Double) {
+        fun setVehiclePrice(price: Float) {
             val txtPrice: TextView = v.findViewById(R.id.etVehiclePrice)
 
             val numberFormat = NumberFormat.getNumberInstance(Locale.getDefault())

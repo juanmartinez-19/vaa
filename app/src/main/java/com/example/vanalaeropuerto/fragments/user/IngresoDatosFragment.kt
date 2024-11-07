@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.IngresoDatosViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -54,11 +55,14 @@ class IngresoDatosFragment : Fragment() {
     private var isForUser : Boolean = false
     private var validateCounter : Int = 0
 
+    private lateinit var tripRequester : TripRequester
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.fragment_ingreso_datos, container, false)
+        viewModel = ViewModelProvider(this).get(IngresoDatosViewModel::class.java)
 
         progressBar = v.findViewById(R.id.progressBarLoading)
         rbThirdParty = v.findViewById(R.id.rb_third_party)
@@ -76,13 +80,20 @@ class IngresoDatosFragment : Fragment() {
         etThirdPartyPhoneNumber = v.findViewById(R.id.et_third_party_phone_number)
         etThirdPartyCuil = v.findViewById(R.id.et_third_party_cuil)
 
+        tripRequester = IngresoDatosFragmentArgs.fromBundle(requireArguments()).tripRequester
 
         return v
     }
 
+    override fun onPause() {
+        super.onPause()
+        // Limpiar el ViewModel cuando el fragmento se detiene
+        viewModel.clearData()
+        this.validateCounter = 0
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(IngresoDatosViewModel::class.java)
 
         rbThirdParty.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -112,7 +123,6 @@ class IngresoDatosFragment : Fragment() {
             thirdPartyCuil = etThirdPartyCuil.text.toString()
 
             viewModel.validateUserData(radiobuttonChecked,userName, userSurname, userPhoneNumber, userCuil)
-            validateCounter += 1
 
             viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
                 when (viewState) {
@@ -127,6 +137,8 @@ class IngresoDatosFragment : Fragment() {
                     }
                     is ViewState.Confirmed -> {
                         this.hideLoading()
+                        validateCounter += 1
+
                         if ((isForUser && validateCounter==1)||(!isForUser && validateCounter==2)) {
                             this.showConfirmed()
                         } else if (!isForUser && validateCounter==1) {
@@ -137,7 +149,6 @@ class IngresoDatosFragment : Fragment() {
                                 thirdPartyPhoneNumber,
                                 thirdPartyCuil
                             )
-                            validateCounter += 1
                         }
                     }
                     is ViewState.InvalidParameters -> {
@@ -156,7 +167,7 @@ class IngresoDatosFragment : Fragment() {
     private fun navigate() {
         try {
             if (findNavController().currentDestination?.id == R.id.ingresoDatosFragment) {
-                val action = IngresoDatosFragmentDirections.actionIngresoDatosFragmentToHomeFragment()
+                val action = IngresoDatosFragmentDirections.actionIngresoDatosFragmentToConfirmTripFragment(tripRequester)
                 findNavController().navigate(action)
             }
         } catch (e: IllegalArgumentException) {
@@ -182,15 +193,7 @@ class IngresoDatosFragment : Fragment() {
     }
 
     private fun showConfirmed() {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle("Solicitud confirmada")
-        builder.setMessage("Su solicitud ha sido procesada correctamente. Un agente se comunicará con usted en breve.")
-        builder.setPositiveButton("Aceptar") { dialog, _ ->
-            dialog.dismiss()
-            this.navigate()
-        }
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
+        this.navigate()
     }
 
 

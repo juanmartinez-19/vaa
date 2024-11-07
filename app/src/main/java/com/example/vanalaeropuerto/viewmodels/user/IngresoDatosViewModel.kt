@@ -5,12 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import java.util.Calendar
 
 class IngresoDatosViewModel : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
+
+    fun clearData() {
+        _viewState.value = ViewState.Idle
+    }
 
     fun validateUserData(
         radiobuttonChecked: Boolean,

@@ -1,5 +1,7 @@
 package com.example.vanalaeropuerto.entities
 
+import kotlinx.parcelize.Parcelize
+
 class Trip (
     private var date : String?="",
     private var originAddress : String?="",

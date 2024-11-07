@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.vanalaeropuerto.fragments.user.HomeFragment"
-        android:label="Van al Aeropuerto"
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/actionHomeFragmentToVehiculosFragment"
@@ -17,7 +16,6 @@
     <fragment
         android:id="@+id/vehiculosFragment"
         android:name="com.example.vanalaeropuerto.fragments.user.VehiculosFragment"
-        android:label="Seleccionar vehículo"
         tools:layout="@layout/fragment_vehiculos" >
         <argument
             android:name="passangers"
@@ -30,13 +28,35 @@
         <action
             android:id="@+id/action_vehiculosFragment_to_ingresoDatosFragment"
             app:destination="@id/ingresoDatosFragment" />
+        <argument
+            android:name="fechaSalida"
+            app:argType="string" />
+        <argument
+            android:name="direccionOrigen"
+            app:argType="string" />
+        <argument
+            android:name="direccionDestino"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/ingresoDatosFragment"
-        android:name="com.example.vanalaeropuerto.fragments.user.IngresoDatosFragment"
-        android:label="Datos Pasajeros" >
+        android:name="com.example.vanalaeropuerto.fragments.user.IngresoDatosFragment">
         <action
-            android:id="@+id/action_ingresoDatosFragment_to_homeFragment"
+            android:id="@+id/action_ingresoDatosFragment_to_confirmTripFragment"
+            app:destination="@id/confirmTripFragment" />
+        <argument
+            android:name="tripRequester"
+            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmTripFragment"
+        android:name="com.example.vanalaeropuerto.fragments.user.ConfirmTripFragment"
+        tools:layout="Confirmar Reserva" >
+        <action
+            android:id="@+id/action_confirmTripFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <argument
+            android:name="tripRequester"
+            app:argType="com.example.vanalaeropuerto.entities.TripRequester" />
     </fragment>
 </navigation>
