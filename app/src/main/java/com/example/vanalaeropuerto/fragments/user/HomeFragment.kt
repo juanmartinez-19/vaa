@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
@@ -29,8 +31,8 @@ class HomeFragment : Fragment() {
 
     //Pantalla
     private lateinit var v : View
-    private lateinit var etOriginAddress : EditText
-    private lateinit var etDestinationAddress : EditText
+    private lateinit var etOriginAddress : AutoCompleteTextView
+    private lateinit var etDestinationAddress : AutoCompleteTextView
     private lateinit var etLuggage : EditText
     private lateinit var etDepartureDate : EditText
     private lateinit var btnSearch : FloatingActionButton
@@ -71,6 +73,8 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
 
 
+    val suggestions = arrayOf("Aeropuerto Internacional de Ezeiza (EZE)", "Aeropuerto Jorge Newbery (AEP)")
+
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.let {
@@ -109,8 +113,26 @@ class HomeFragment : Fragment() {
          }
          */
 
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            suggestions
+        )
+
         etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
+
+        etOriginAddress.setAdapter(adapter)
+
+        etOriginAddress.threshold = 0
+
+
         etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
+
+        etDestinationAddress.setAdapter(adapter)
+
+        etDestinationAddress.threshold = 0
+
+
         etLuggage = v.findViewById(R.id.etEquipaje)
         btnSearch = v.findViewById(R.id.btnBuscar)
         progressBar = v.findViewById(R.id.progressBarLoading)
@@ -152,6 +174,18 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        etOriginAddress.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                etOriginAddress.showDropDown()
+            }
+        }
+
+        etDestinationAddress.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                etDestinationAddress.showDropDown()
+            }
+        }
 
         viewModel.passengers.observe(viewLifecycleOwner) { count ->
             passengers = count

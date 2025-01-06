@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/homeEmpresaFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.HomeEmpresaFragment"
-        android:label="Viajes"
         tools:layout="@layout/fragment_home_empresa" >
         <action
             android:id="@+id/action_homeEmpresaFragment_to_driversFragment"
@@ -17,12 +16,10 @@
     <fragment
         android:id="@+id/tripsHistoryFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.TripsHistoryFragment"
-        android:label="fragment_trips_history"
         tools:layout="@layout/fragment_trips_history" />
     <fragment
         android:id="@+id/pendingTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripsFragment"
-        android:label="fragment_pending_trips"
         tools:layout="@layout/fragment_pending_trips" >
         <action
             android:id="@+id/action_pendingTripsFragment_to_pendingTripDetailFragment"
@@ -31,12 +28,10 @@
     <fragment
         android:id="@+id/confirmedTripsFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.ConfirmedTripsFragment"
-        android:label="fragment_confirmed_trips"
         tools:layout="@layout/fragment_confirmed_trips" />
     <fragment
         android:id="@+id/pendingTripDetailFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.PendingTripDetailFragment"
-        android:label="Detalle Viaje"
         tools:layout="@layout/fragment_pending_trip_detail" >
         <action
             android:id="@+id/action_pendingTripDetailFragment_to_editTripFragment"
@@ -57,7 +52,6 @@
     <fragment
         android:id="@+id/editTripFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.EditTripFragment"
-        android:label="Editar Viaje"
         tools:layout="@layout/fragment_edit_trip" >
         <argument
             android:name="tripId"
@@ -66,7 +60,6 @@
     <fragment
         android:id="@+id/asignDriverFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.AsignDriverFragment"
-        android:label="Asignar Chofer"
         tools:layout="@layout/fragment_asign_driver" >
         <argument
             android:name="tripId"
@@ -81,7 +74,6 @@
     <fragment
         android:id="@+id/tripSummaryFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.TripSummaryFragment"
-        android:label="Resumen de Viaje"
         tools:layout="@layout/fragment_trip_summary" >
         <argument
             android:name="tripId"
@@ -99,7 +91,6 @@
     <fragment
         android:id="@+id/crudDriverFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.CrudDriverFragment"
-        android:label="Chofer"
         tools:layout="@layout/fragment_crud_driver" >
         <argument
             android:name="driverId"
@@ -108,7 +99,6 @@
     <fragment
         android:id="@+id/driversFragment"
         android:name="com.example.vanalaeropuerto.fragments.empresa.DriversFragment"
-        android:label="Choferes"
         tools:layout="@layout/fragment_drivers" >
         <action
             android:id="@+id/action_driversFragment_to_crudDriverFragment"

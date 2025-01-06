@@ -10,7 +10,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".fragments.user.HomeFragment">
 
     <!-- Layout para Fecha de salida -->
@@ -67,7 +67,7 @@
             android:src="@drawable/baseline_location_on_24"
             android:contentDescription="Icono Dirección Origen" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etDireccionOrigen"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -98,12 +98,12 @@
             android:contentDescription="Icono Dirección Origen" />
 
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etDireccionDestino"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Dirección origen"
+            android:hint="Dirección Destino"
             android:inputType="text" />
 
     </LinearLayout>

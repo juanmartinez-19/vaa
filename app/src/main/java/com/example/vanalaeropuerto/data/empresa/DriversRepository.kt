@@ -1,13 +1,20 @@
 package com.example.vanalaeropuerto.data.empresa
 
+import android.util.Log
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.user.VehiclesRepository
 import com.example.vanalaeropuerto.entities.Driver
 import com.example.vanalaeropuerto.entities.Requester
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
+import java.lang.reflect.InvocationTargetException
 
 class DriversRepository {
 
     val driverList: MutableList<Driver> = mutableListOf()
+    private val db = Firebase.firestore
 
     private val driver1 = Driver(
         driverId = "1",
@@ -104,7 +111,7 @@ class DriversRepository {
         driverList.add(driver10)
     }
 
-    fun addDriver  (
+    suspend fun addDriver  (
         driverId : String?,
         name: String?,
         surname: String?,
@@ -113,7 +120,20 @@ class DriversRepository {
         telefono:String?
     ): MyResult<Unit> {
 
-        return MyResult.Success(Unit)
+        return try {
+            val driver = Driver (driverId,name,tieneButaca,telefono,cuil,surname)
+            db.collection("drivers")
+                .add(driver)
+                .await()
+            return MyResult.Success(Unit)
+        } catch (e: InvocationTargetException) {
+            Log.e("FirestoreError", "InvocationTargetException: ${e.message}", e)
+            MyResult.Failure(e)
+        } catch (e: Exception) {
+            Log.e("FirestoreError", "Exception thrown: ${e.message}", e)
+            MyResult.Failure(e)
+        }
+
     }
 
     fun getDriverById(driverId: String?): MyResult<Driver?> {

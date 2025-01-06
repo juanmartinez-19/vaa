@@ -3,13 +3,13 @@ package com.example.vanalaeropuerto.entities
 class Driver(
     private var driverId : String?="",
     private var driverName : String?="",
-    private var tieneButaca : Boolean,
+    private var tieneButaca : Boolean?,
     private var driverPhoneNumber : String?="",
     private var driverCuil : String?="",
     private var driverSurname : String?=""
 ) {
 
-    fun getTieneButaca() : Boolean {
+    fun getTieneButaca() : Boolean? {
         return this.tieneButaca
     }
     fun getDriverId() : String? {
