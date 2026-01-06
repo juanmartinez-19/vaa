@@ -25,8 +25,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.login_activity)
 
         FirebaseApp.initializeApp(this)
-
-
     }
 
 

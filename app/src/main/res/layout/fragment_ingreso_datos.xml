@@ -54,49 +54,58 @@
         android:layout_marginTop="16dp"/>
 
     <!-- Nombre del solicitante -->
-    <EditText
-        android:id="@+id/et_user_name"
+    <!-- Nombre del solicitante -->
+    <TextView
+        android:id="@+id/tv_user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
+        android:text="Nombre"
+        android:padding="12dp"
+        android:background="@drawable/bg_readonly_field"
         app:layout_constraintTop_toBottomOf="@id/tv_solicitante_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
 
     <!-- Apellido del solicitante -->
-    <EditText
-        android:id="@+id/et_user_surname"
+    <TextView
+        android:id="@+id/tv_user_surname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Apellido"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_user_name" />
-
-    <!-- CUIL del solicitante -->
-    <EditText
-        android:id="@+id/et_user_phone_number"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:hint="Número de teléfono"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/et_user_surname" />
-
-    <EditText
-        android:id="@+id/et_user_cuil"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="CUIL"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/et_user_phone_number"
+        android:text="Apellido"
+        android:padding="12dp"
+        android:background="@drawable/bg_readonly_field"
+        app:layout_constraintTop_toBottomOf="@id/tv_user_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"/>
+
+    <!-- Teléfono -->
+    <TextView
+        android:id="@+id/tv_user_phone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Teléfono"
+        android:padding="12dp"
+        android:background="@drawable/bg_readonly_field"
+        app:layout_constraintTop_toBottomOf="@id/tv_user_surname"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <!-- CUIL -->
+    <TextView
+        android:id="@+id/tv_user_cuil"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="CUIL"
+        android:padding="12dp"
+        android:background="@drawable/bg_readonly_field"
+        app:layout_constraintTop_toBottomOf="@id/tv_user_phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
 
     <!-- Sección de datos del tercero -->
 
@@ -110,7 +119,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_user_cuil"
+        app:layout_constraintTop_toBottomOf="@id/tv_user_cuil"
         app:layout_constraintVertical_bias="0.108">
 
         <!-- Nombre del tercero -->

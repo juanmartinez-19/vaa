@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments.login
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -11,24 +12,25 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.activities.HomeActivity
 import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 class AuthCodeFragment : Fragment() {
 
-    private lateinit var v : View
+    private lateinit var v: View
 
-    private lateinit var btnVerifyCode : FloatingActionButton
-    private lateinit var etCode : EditText
-    private lateinit var progressBar : ProgressBar
+    private lateinit var btnVerifyCode: FloatingActionButton
+    private lateinit var etCode: EditText
+    private lateinit var progressBar: ProgressBar
 
-    private lateinit var verificationId : String
+    private lateinit var verificationId: String
 
     private lateinit var viewModel: AuthViewModel
 
-    private lateinit var phoneNumber : String
-    private lateinit var initMessage : String
+    private lateinit var phoneNumber: String
+    private lateinit var initMessage: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,18 +65,22 @@ class AuthCodeFragment : Fragment() {
                 // Llamar a la función para verificar el código
                 viewModel.verifyCode(verificationId, code)
             } else {
-                Snackbar.make(v, "Por favor ingrese el código de 6 dígitos", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(v, "Por favor ingrese el código de 6 dígitos", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 
         viewModel.authState.observe(viewLifecycleOwner) { result ->
             progressBar.visibility = View.GONE
             when (result) {
-                is AuthViewModel.AuthState.Success -> {
+                is AuthViewModel.AuthState.UserNeedsRegister -> {
                     try {
                         if (findNavController().currentDestination?.id == R.id.authCodeFragment) {
-                            val action = AuthCodeFragmentDirections.actionAuthCodeFragmentToRegisterFragment(phoneNumber)
+
+                            val action =
+                                      AuthCodeFragmentDirections.actionAuthCodeFragmentToRegisterFragment(phoneNumber)
                             findNavController().navigate(action)
+
                         } else {
                             Log.e("AuthCodeFragment", "Navigation action failed")
                         }
@@ -82,19 +88,57 @@ class AuthCodeFragment : Fragment() {
                         Log.e("AuthCodeFragment", "Navigation action failed: ${e.message}")
                     }
                 }
-                is AuthViewModel.AuthState.Failure -> {
-                    Snackbar.make(v, "El código ingresado no es válido. Por favor, verifica e intenta nuevamente.", Snackbar.LENGTH_SHORT).show()
+
+                is AuthViewModel.AuthState.UserExists -> {
+                    this.goToUserHome()
+                    /*
+                    try {
+                        if (findNavController().currentDestination?.id == R.id.authCodeFragment) {
+
+                            val action =
+                                AuthCodeFragmentDirections.actionAuthCodeFragmentToHomeActivity()
+                            findNavController().navigate(action)
+
+                        } else {
+                            Log.e("AuthCodeFragment", "Navigation action failed")
+                        }
+                    } catch (e: IllegalArgumentException) {
+                        Log.e("AuthCodeFragment", "Navigation action failed: ${e.message}")
+                    }
+                    */
                 }
+
+                is AuthViewModel.AuthState.Failure -> {
+                    Snackbar.make(
+                        v,
+                        "El código ingresado no es válido. Por favor, verifica e intenta nuevamente.",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
                 is AuthViewModel.AuthState.CodeSent -> {
                     // Código enviado al número de teléfono
                     Snackbar.make(v, "Código enviado", Snackbar.LENGTH_SHORT).show()
                 }
+
                 else -> {
-                    Snackbar.make(v, "Ha ocurrido un error inesperado. Por favor, reinicie la aplicación y vuélvalo a intentar.", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        v,
+                        "Ha ocurrido un error inesperado. Por favor, reinicie la aplicación y vuélvalo a intentar.",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
 
     }
+
+    private fun goToUserHome() {
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish() // 🔴 mata LoginActivity
+    }
+
+
 
 }

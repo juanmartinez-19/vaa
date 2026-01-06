@@ -19,8 +19,10 @@ class DriversViewModel : ViewModel() {
 
 
     fun getDrivers() {
+
+        _viewState.value = ViewState.Loading
+
         viewModelScope.launch {
-            _viewState.value = ViewState.Loading
             when (val result = getDriversUseCase.getDrivers()){
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
@@ -33,7 +35,6 @@ class DriversViewModel : ViewModel() {
                 }
                 is MyResult.Failure -> {
                     _viewState.value = ViewState.Failure
-                    Log.d("TEST", _viewState.value.toString())
                 }
             }
 

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_navgraph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/authPhoneFragment">
 
     <fragment
         android:id="@+id/authPhoneFragment"
@@ -35,15 +35,6 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.vanalaeropuerto.fragments.login.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_authPhoneFragment"
-            app:destination="@id/authPhoneFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.vanalaeropuerto.fragments.login.RegisterFragment"
         android:label="fragment_register"
@@ -51,12 +42,5 @@
         <argument
             android:name="phoneNumber"
             app:argType="string" />
-        <action
-            android:id="@+id/action_registerFragment_to_homeActivity"
-            app:destination="@id/homeActivity" />
     </fragment>
-    <activity
-        android:id="@+id/homeActivity"
-        android:name="com.example.vanalaeropuerto.activities.HomeActivity"
-        android:label="HomeActivity" />
 </navigation>

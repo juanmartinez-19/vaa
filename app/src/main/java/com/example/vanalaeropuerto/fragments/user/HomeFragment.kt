@@ -1,6 +1,7 @@
 package com.example.vanalaeropuerto.fragments.user
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -17,14 +18,17 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.activities.LoginActivity
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.user.HomeViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 
 class HomeFragment : Fragment() {
@@ -42,6 +46,7 @@ class HomeFragment : Fragment() {
     private lateinit var btnChildPlus : Button
     private lateinit var btnBabyMinus : Button
     private lateinit var btnBabyPlus : Button
+    private lateinit var btnSignOut : AppCompatImageButton
     private lateinit var tvAdultCount : TextView
     private lateinit var tvChildCount : TextView
     private lateinit var tvBabyCount : TextView
@@ -125,7 +130,6 @@ class HomeFragment : Fragment() {
 
         etOriginAddress.threshold = 0
 
-
         etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
 
         etDestinationAddress.setAdapter(adapter)
@@ -140,6 +144,7 @@ class HomeFragment : Fragment() {
         etDepartureDate = v.findViewById(R.id.etDepartureDate)
         btnAdultPlus = v.findViewById(R.id.btnAdultPlus)
         btnAdultMinus = v.findViewById(R.id.btnAdultMinus)
+        btnSignOut = v.findViewById(R.id.btnSignOut)
         tvAdultCount = v.findViewById(R.id.tvAdultCount)
 
         btnChildPlus = v.findViewById(R.id.btnChildPlus)
@@ -186,6 +191,16 @@ class HomeFragment : Fragment() {
                 etDestinationAddress.showDropDown()
             }
         }
+
+        btnSignOut.setOnClickListener {
+
+            FirebaseAuth.getInstance().signOut()
+
+            val intent = Intent(requireContext(), LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        }
+
 
         viewModel.passengers.observe(viewLifecycleOwner) { count ->
             passengers = count
@@ -252,7 +267,9 @@ class HomeFragment : Fragment() {
                 originAddress,
                 destinationAddress,
                 luggage,
-                passengers,
+                viewModel.adultCount.value,
+                viewModel.childCount.value,
+                viewModel.babyCount.value,
                 selectedDateInMillis,
                 valoresIngresados
             )
@@ -340,8 +357,6 @@ class HomeFragment : Fragment() {
         outState.putStringArrayList("editTextValues", ArrayList(values))
     }
 
-
-
     // Método para actualizar los hints de los EditText después de eliminar uno
     private fun actualizarHints() {
         for (i in editTextList.indices) {
@@ -352,6 +367,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigate() {
+        val adults = viewModel.adultCount.value ?: 0
+        val children = viewModel.childCount.value ?: 0
+        val babies = viewModel.babyCount.value ?: 0
+
         try {
             if (findNavController().currentDestination?.id == R.id.homeFragment) {
                 if (departureDate.isNullOrBlank()||originAddress.isNullOrBlank()||destinationAddress.isNullOrBlank()) {
@@ -361,7 +380,9 @@ class HomeFragment : Fragment() {
                         departureDate.toString(),
                         originAddress.toString(),
                         destinationAddress.toString(),
-                        passengers,
+                        adults,
+                        children,
+                        babies,
                         luggage
                     )
                     findNavController().navigate(action)

@@ -1,5 +1,9 @@
 package com.example.vanalaeropuerto.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 class Vehicle (
     private var vehicleId : String?="",
     private var vehiclePrice : Float?=0F,
@@ -8,7 +12,9 @@ class Vehicle (
     private var vehicleUrlImage : String?,
     private var vehiclePassangerCapacity : Int?=0,
     private var vehicleLuggageCapacity : Float?=0F
-) {
+) : Parcelable {
+
+    constructor() : this(null, null,null,null,null,null,null)
 
     fun getVehiclePrice() : Float? {
         return this.vehiclePrice

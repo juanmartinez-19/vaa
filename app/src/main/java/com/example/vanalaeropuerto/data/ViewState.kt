@@ -9,4 +9,5 @@ sealed class ViewState {
     object Empty : ViewState()
     object Failure : ViewState()
     data class InvalidParameters(val message: String) : ViewState()
+    object ValidParameters : ViewState()
 }

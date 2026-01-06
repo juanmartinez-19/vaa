@@ -72,7 +72,9 @@ class HomeViewModel : ViewModel() {
         originAddress: String?,
         destinationAddress: String?,
         luggage: Float?,
-        passangers: Int?,
+        adults: Int?,
+        children: Int?,
+        babies: Int?,
         selectedDateInMillis: Long?,
         destinationAddresses: List<String>
     ) {
@@ -98,15 +100,33 @@ class HomeViewModel : ViewModel() {
             errores.add("Dirección de destino no puede estar vacía")
         }
 
-        // Validación de direcciones de destino
+        // 🔴 NUEVO: Origen y destino no pueden ser iguales
+        if (
+            !originAddress.isNullOrBlank() &&
+            !destinationAddress.isNullOrBlank() &&
+            originAddress.trim().equals(destinationAddress.trim(), ignoreCase = true)
+        ) {
+            errores.add("La dirección de origen y destino no pueden ser iguales")
+        }
+
+        // Validación de direcciones de destino (si hay múltiples)
         if (destinationAddresses.any { it.isBlank() }) {
             errores.add("Todas las direcciones de destino deben estar completas")
         }
 
         // Validación de pasajeros
-        if (passangers == null) {
-            errores.add("Pasajeros no puede ser nulo")
-        } else if (passangers <= 0 || passangers > 10) {
+        val adultos = adults ?: 0
+        val niños = children ?: 0
+        val bebes = babies ?: 0
+
+        val totalPasajeros = adultos + niños + bebes
+
+        // mínimo 1 adulto
+        if (adultos <= 0) {
+            errores.add("Debe haber al menos un adulto")
+        }
+
+        if (totalPasajeros <= 0 || totalPasajeros > 10) {
             errores.add("Número de pasajeros debe estar entre 1 y 10")
         }
 
@@ -125,6 +145,7 @@ class HomeViewModel : ViewModel() {
             _viewState.value = ViewState.Idle
         }
     }
+
 
 
 

@@ -25,6 +25,8 @@ class AuthPhoneFragment : Fragment() {
 
     private lateinit var progressBar : ProgressBar
 
+    private lateinit var etPhoneCode : EditText
+
     private lateinit var etPhoneNumber : EditText
 
     private lateinit var btnContinuar : FloatingActionButton
@@ -41,6 +43,7 @@ class AuthPhoneFragment : Fragment() {
         btnContinuar = v.findViewById(R.id.btnContinuar)
         progressBar = v.findViewById(R.id.progressBarLoading)
         etPhoneNumber = v.findViewById(R.id.etPhoneNumber)
+        etPhoneCode = v.findViewById(R.id.etPhoneCode)
 
         return v
     }
@@ -79,19 +82,6 @@ class AuthPhoneFragment : Fragment() {
 
         viewModel.authState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is AuthViewModel.AuthState.Success -> {
-                    Snackbar.make(v, "Autenticación exitosa", Snackbar.LENGTH_SHORT).show()
-                    try {
-                        if (findNavController().currentDestination?.id == R.id.authCodeFragment) {
-                            val action = AuthPhoneFragmentDirections.actionAuthPhoneFragmentToRegisterFragment(etPhoneNumber.text.toString())
-                            findNavController().navigate(action)
-                        } else {
-                            Log.e("AuthCodeFragment", "Navigation action failed")
-                        }
-                    } catch (e: IllegalArgumentException) {
-                        Log.e("AuthCodeFragment", "Navigation action failed: ${e.message}")
-                    }
-                }
                 is AuthViewModel.AuthState.CodeSent -> {
                     // Código enviado al número de teléfono
                     try {
@@ -121,6 +111,7 @@ class AuthPhoneFragment : Fragment() {
 
         btnContinuar.setOnClickListener {
             val phoneNumber = "+16505553434"
+           // val phoneNumber = etPhoneCode.text.toString() + etPhoneNumber.text.toString()
 
             viewModel.phoneAuth(phoneNumber,requireActivity())
         }

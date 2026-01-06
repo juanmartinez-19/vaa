@@ -49,7 +49,10 @@ class DriverAdapter(
     }
 
     override fun onBindViewHolder(holder: DriverHolder, position: Int) {
-        drivers[position].getDriverName()?.let { holder.setDriverName(it) }
+        val firstName = drivers[position].getDriverName()
+        val lastName = drivers[position].getDriverSurname()
+
+        holder.setDriverName("$firstName $lastName")
 
         holder.itemView.setOnClickListener() {
             onClick(position)

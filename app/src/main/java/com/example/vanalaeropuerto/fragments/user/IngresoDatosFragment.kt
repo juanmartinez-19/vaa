@@ -12,12 +12,15 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.IngresoDatosViewModel
+import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -27,15 +30,16 @@ class IngresoDatosFragment : Fragment() {
     private lateinit var viewModel: IngresoDatosViewModel
 
     private lateinit var progressBar : ProgressBar
+    private val userViewModel: UserSharedViewModel by activityViewModels()
 
     private lateinit var rbThirdParty : RadioButton
     private lateinit var rbMyself : RadioButton
     private lateinit var thirdPartyFields : LinearLayout
     private lateinit var fabConfirmForm : FloatingActionButton
-    private lateinit var etUserName : EditText
-    private lateinit var etUserSurname : EditText
-    private lateinit var etUserPhoneNumber : EditText
-    private lateinit var etUserCuil : EditText
+    private lateinit var tvUserName : TextView
+    private lateinit var tvUserSurname : TextView
+    private lateinit var tvUserPhoneNumber : TextView
+    private lateinit var tvUserCuil : TextView
     private lateinit var etThirdPartyName : EditText
     private lateinit var etThirdPartySurname : EditText
     private lateinit var etThirdPartyPhoneNumber : EditText
@@ -70,10 +74,10 @@ class IngresoDatosFragment : Fragment() {
         thirdPartyFields = v.findViewById(R.id.third_party_fields)
         fabConfirmForm = v.findViewById(R.id.fab_confirm_form)
 
-        etUserName = v.findViewById(R.id.et_user_name)
-        etUserSurname = v.findViewById(R.id.et_user_surname)
-        etUserPhoneNumber = v.findViewById(R.id.et_user_phone_number)
-        etUserCuil = v.findViewById(R.id.et_user_cuil)
+        tvUserName = v.findViewById(R.id.tv_user_name)
+        tvUserSurname = v.findViewById(R.id.tv_user_surname)
+        tvUserPhoneNumber = v.findViewById(R.id.tv_user_phone)
+        tvUserCuil = v.findViewById(R.id.tv_user_cuil)
 
         etThirdPartyName = v.findViewById(R.id.et_third_party_name)
         etThirdPartySurname = v.findViewById(R.id.et_third_party_surname)
@@ -81,6 +85,15 @@ class IngresoDatosFragment : Fragment() {
         etThirdPartyCuil = v.findViewById(R.id.et_third_party_cuil)
 
         tripRequester = IngresoDatosFragmentArgs.fromBundle(requireArguments()).tripRequester
+
+        userViewModel.requester.observe(viewLifecycleOwner) { requester ->
+            requester ?: return@observe
+
+            tvUserName.text = requester.getRequesterName().toString()
+            tvUserSurname.text = requester.getRequesterSurname().toString()
+            tvUserPhoneNumber.text = requester.getRequesterPhoneNumber().toString()
+            tvUserCuil.text = requester.getRequesterCuil().toString()
+        }
 
         return v
     }
@@ -112,10 +125,10 @@ class IngresoDatosFragment : Fragment() {
         }
 
         fabConfirmForm.setOnClickListener {
-            userName = etUserName.text.toString()
-            userSurname = etUserSurname.text.toString()
-            userPhoneNumber = etUserPhoneNumber.text.toString()
-            userCuil = etUserCuil.text.toString()
+            userName = tvUserName.text.toString()
+            userSurname = tvUserSurname.text.toString()
+            userPhoneNumber = tvUserPhoneNumber.text.toString()
+            userCuil = tvUserCuil.text.toString()
 
             thirdPartyName = etThirdPartyName.text.toString()
             thirdPartySurname = etThirdPartySurname.text.toString()

@@ -1,12 +1,18 @@
 package com.example.vanalaeropuerto.entities
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 class Requester(
     private var requesterId : String?="",
     private var requesterName : String?="",
     private var requesterSurname : String?="",
     private var requesterPhoneNumber : String?="",
     private var requesterCuil : String?=""
-) {
+) : Parcelable {
+
+    constructor() : this(null, null,null,null,null)
 
     fun getRequesterId () : String? {
         return this.requesterId

@@ -8,7 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.user.VehiclesRepository
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.login.RequesterRepository
 import com.example.vanalaeropuerto.entities.Vehicle
+import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class VehiculosViewModel : ViewModel() {
@@ -16,11 +19,10 @@ class VehiculosViewModel : ViewModel() {
     val viewState: LiveData<ViewState> get() = _viewState
     var _vehiclesList : MutableLiveData<MutableList<Vehicle>?> = MutableLiveData()
     val getVehiclesUseCase : VehiclesRepository = VehiclesRepository()
-
     init {
         _viewState.value = ViewState.Idle
     }
-    fun getProducts(passangers : Int, luggage : Float) {
+    fun getVehicles(passangers : Int, luggage : Float) {
         viewModelScope.launch {
             _viewState.value = ViewState.Loading
             when (val result = getVehiclesUseCase.getVehicles(passangers, luggage)){
@@ -38,8 +40,6 @@ class VehiculosViewModel : ViewModel() {
                     Log.d("TEST", _viewState.value.toString())
                 }
             }
-
-
         }
     }
 

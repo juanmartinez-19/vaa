@@ -88,7 +88,7 @@ class CrudDriverFragment : Fragment() {
                     this.hideLoading()
                 }
                 is ViewState.InvalidParameters -> {
-                    this.showInvalidParameters()
+                    this.showInvalidParameters(viewState.message)
                 }
                 else -> {
                     this.showError()
@@ -148,9 +148,9 @@ class CrudDriverFragment : Fragment() {
         progressBar.visibility = View.GONE
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
-    private fun showInvalidParameters() {
+    private fun showInvalidParameters(message : String) {
         progressBar.visibility = View.GONE
-        Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
 
 }

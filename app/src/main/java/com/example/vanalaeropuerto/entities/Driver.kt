@@ -1,5 +1,9 @@
 package com.example.vanalaeropuerto.entities
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 class Driver(
     private var driverId : String?="",
     private var driverName : String?="",
@@ -7,7 +11,9 @@ class Driver(
     private var driverPhoneNumber : String?="",
     private var driverCuil : String?="",
     private var driverSurname : String?=""
-) {
+) : Parcelable {
+
+    constructor() : this(null, null,null,null,null,null)
 
     fun getTieneButaca() : Boolean? {
         return this.tieneButaca

@@ -7,10 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.empresa.TripsRepository
-import com.example.vanalaeropuerto.data.user.VehiclesRepository
+import com.example.vanalaeropuerto.data.TripsRepository
 import com.example.vanalaeropuerto.entities.Trip
-import com.example.vanalaeropuerto.entities.TripRequester
 import kotlinx.coroutines.launch
 import java.util.Calendar
 

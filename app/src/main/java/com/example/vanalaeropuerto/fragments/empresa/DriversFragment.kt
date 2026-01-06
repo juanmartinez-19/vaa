@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.graphics.green
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import com.example.vanalaeropuerto.adapters.empresa.DriverAdapter
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.DriversViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 class DriversFragment : Fragment() {
 
@@ -112,6 +114,7 @@ class DriversFragment : Fragment() {
     private fun showEmpty() {
         progressBar.visibility = View.GONE
         recyclerDrivers.visibility = View.GONE
+        Snackbar.make(v, "No se ha agregado ningún chofer.", Snackbar.LENGTH_INDEFINITE).show()
     }
 
     private fun showLoading() {
@@ -127,6 +130,8 @@ class DriversFragment : Fragment() {
     private fun showError() {
         progressBar.visibility = View.GONE
         recyclerDrivers.visibility = View.GONE
+        Snackbar.make(v, "Ocurrió un error inesperado.", Snackbar.LENGTH_LONG).show()
+
     }
 
 

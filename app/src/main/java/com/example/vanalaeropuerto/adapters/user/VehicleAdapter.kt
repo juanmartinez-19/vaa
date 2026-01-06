@@ -1,5 +1,7 @@
 package com.example.vanalaeropuerto.adapters.user
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +31,7 @@ class VehicleAdapter(
             val txtTitle : TextView = v.findViewById(R.id.tvVehicleName)
             txtTitle.text = name
         }
+        @SuppressLint("SetTextI18n")
         fun setVehiclePrice(price: Float) {
             val txtPrice: TextView = v.findViewById(R.id.etVehiclePrice)
 
@@ -43,7 +46,7 @@ class VehicleAdapter(
             val imgVehicle: ImageView = v.findViewById(R.id.ivVehicleImage)
 
             Glide.with(imgVehicle.context)
-                .load(imageUri)
+                .load("https://acroadtrip.blob.core.windows.net/catalogo-imagenes/xl/RT_V_5f198c2718fb4374894a07d61d75e053.webp")
                 .placeholder(R.drawable.placeholderimage_124)
                 .error(R.drawable.image_error_24)
                 .into(imgVehicle)

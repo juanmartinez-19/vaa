@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.empresa.RequesterRepository
-import com.example.vanalaeropuerto.data.empresa.TripsRepository
+import com.example.vanalaeropuerto.data.login.RequesterRepository
+import com.example.vanalaeropuerto.data.TripsRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
@@ -38,7 +38,6 @@ class PendingTripsViewModel : ViewModel() {
                     if (result.data.isNotEmpty()) {
                         _tripsList.value = result.data
                         _viewState.value = ViewState.Idle
-
                     } else {
                         _viewState.value = ViewState.Empty
                     }

@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments.login
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.Message
@@ -15,10 +16,13 @@ import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.activities.HomeActivity
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.viewmodels.login.RegisterViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.util.UUID
 
 class RegisterFragment : Fragment() {
 
@@ -27,18 +31,16 @@ class RegisterFragment : Fragment() {
    private lateinit var btnContinue : FloatingActionButton
     private lateinit var progressBar : ProgressBar
 
+    //Pantalla
     private lateinit var etUserName : EditText
     private lateinit var etUserSurname : EditText
     private lateinit var etUserCuil : EditText
-    private lateinit var etUserPassword : EditText
-    private lateinit var etRepeatPassword : EditText
-    private lateinit var btnTogglePasswordVisibility : ImageButton
-    private lateinit var btnToggleRepeatPasswordVisibility : ImageButton
+
+    private lateinit var userName : String
+    private lateinit var userSurname : String
+    private lateinit var userCuil : String
 
     private lateinit var phoneNumber : String
-
-    var isPasswordVisible = false
-    var isRepeatPasswordVisible = false
 
     private lateinit var viewModel: RegisterViewModel
 
@@ -50,13 +52,9 @@ class RegisterFragment : Fragment() {
 
         etUserName = v.findViewById(R.id.etUserName)
         etUserSurname = v.findViewById(R.id.etUserSurname)
-        etUserPassword = v.findViewById(R.id.etUserPassword)
-        etRepeatPassword = v.findViewById(R.id.etRepeatPassword)
         etUserCuil = v.findViewById(R.id.etUserCuil)
         btnContinue = v.findViewById(R.id.btnContinue)
         progressBar = v.findViewById(R.id.progressBarLoading)
-        btnTogglePasswordVisibility = v.findViewById(R.id.btnTogglePasswordVisibility)
-        btnToggleRepeatPasswordVisibility  = v.findViewById(R.id.btnToggleRepeatPasswordVisibility )
 
         phoneNumber = RegisterFragmentArgs.fromBundle(requireArguments()).phoneNumber
 
@@ -67,61 +65,40 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
 
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            when (viewState) {
-                is ViewState.Loading -> {
-                    this.showLoading()
-                }
-                is ViewState.Confirmed -> {
-                    this.showConfirmed()
-                }
-                is ViewState.InvalidParameters -> {
-                    this.showInvalidParameters(viewState.message)
-                }
-
-                else -> {
-                    this.showError()
-                }
-            }
-        })
-
         btnContinue.setOnClickListener {
-            viewModel.register(etUserName.text.toString(),etUserSurname.text.toString(),etUserPassword.text.toString(),etRepeatPassword.text.toString(),etUserCuil.text.toString(),phoneNumber)
 
-        }
+            userName = etUserName.text.toString()
+            userSurname = etUserSurname.text.toString()
+            userCuil = etUserCuil.text.toString()
 
-        btnTogglePasswordVisibility.setOnClickListener {
-            if (isPasswordVisible) {
-                etUserPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                btnTogglePasswordVisibility.setImageResource(R.drawable.ic_visibility_off) // Icono de ocultar
-            } else {
-                etUserPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                btnTogglePasswordVisibility.setImageResource(R.drawable.ic_visibility_24) // Icono de mostrar
-            }
-            isPasswordVisible = !isPasswordVisible
-            etUserPassword.setSelection(etUserPassword.text.length) // Mantener el cursor al final del texto
-        }
+            viewModel.validateData(userName,userSurname,userCuil)
 
-        btnToggleRepeatPasswordVisibility.setOnClickListener {
-            if (isRepeatPasswordVisible) {
-                etRepeatPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                btnToggleRepeatPasswordVisibility.setImageResource(R.drawable.ic_visibility_off) // Icono de ocultar
-            } else {
-                etRepeatPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                btnToggleRepeatPasswordVisibility.setImageResource(R.drawable.ic_visibility_24) // Icono de mostrar
-            }
-            isRepeatPasswordVisible = !isRepeatPasswordVisible
-            etRepeatPassword.setSelection(etRepeatPassword.text.length) // Mantener el cursor al final del texto
+            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+                when (viewState) {
+                    is ViewState.Loading -> {
+                        this.showLoading()
+                    }
+                    is ViewState.ValidParameters -> {
+                        viewModel.signIn(userName,userSurname,phoneNumber,userCuil)
+                    }
+                    is ViewState.InvalidParameters -> {
+                        this.showInvalidParameters(viewState.message)
+                    }
+                    is ViewState.Confirmed -> {
+                        this.onRegisterSuccess()
+                    }
+
+                    else -> {
+                        this.showError()
+                    }
+                }
+            })
+
         }
 
     }
-
-    private fun showError() {
-        progressBar.visibility = View.GONE
-        Snackbar.make(v,"Unexpected error", Snackbar.LENGTH_SHORT).show()
-    }
-    private fun showConfirmed() {
-        progressBar.visibility = View.GONE
+/*
+    private fun navigate(){
         try {
             if (findNavController().currentDestination?.id == R.id.registerFragment) {
                 val action = RegisterFragmentDirections.actionRegisterFragmentToHomeActivity()
@@ -132,7 +109,19 @@ class RegisterFragment : Fragment() {
         } catch (e: IllegalArgumentException) {
             Log.e("RegisterFragment", "Navigation action failed: ${e.message}")
         }
+    }
+*/
 
+    private fun onRegisterSuccess() {
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
+    }
+
+
+    private fun showError() {
+        progressBar.visibility = View.GONE
+        Snackbar.make(v,"Unexpected error", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showLoading() {

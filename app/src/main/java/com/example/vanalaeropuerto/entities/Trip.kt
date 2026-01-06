@@ -1,7 +1,8 @@
 package com.example.vanalaeropuerto.entities
 
+import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-
+@Parcelize
 class Trip (
     private var date : String?="",
     private var originAddress : String?="",
@@ -15,7 +16,9 @@ class Trip (
     private var tripId : String?="",
     private var segmentId : String?="",
     private var requesterId : String?=""
-) {
+) : Parcelable {
+
+    constructor() : this(null, null,null,null,null,null,null,null,null,null,null,null)
 
     fun setOriginAddress(originAddress: String?) {
         this.originAddress = originAddress

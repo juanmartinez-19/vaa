@@ -66,63 +66,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/etUserSurname" />
 
-        <!-- Contraseña con botón de visibilidad -->
-        <EditText
-            android:id="@+id/etUserPassword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Contraseña"
-            android:inputType="textPassword"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etUserCuil" />
-
-        <ImageButton
-            android:id="@+id/btnTogglePasswordVisibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_visibility_off"
-            android:contentDescription="Mostrar/Ocultar contraseña"
-            app:layout_constraintTop_toTopOf="@id/etUserPassword"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <!-- Aviso de requisitos de contraseña -->
-        <TextView
-            android:id="@+id/tvPasswordRequirements"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="• Al menos 8 caracteres\n• Al menos una letra mayúscula\n• Al menos un número\n• Al menos un carácter especial"
-            android:textColor="#FF0000"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etUserPassword" />
-
-        <!-- Repetir Contraseña con botón de visibilidad -->
-        <EditText
-            android:id="@+id/etRepeatPassword"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Repetir Contraseña"
-            android:inputType="textPassword"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPasswordRequirements" />
-
-        <ImageButton
-            android:id="@+id/btnToggleRepeatPasswordVisibility"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:src="@drawable/ic_visibility_off"
-            android:contentDescription="Mostrar/Ocultar contraseña"
-            app:layout_constraintTop_toTopOf="@id/etRepeatPassword"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Botón Continuar -->
 

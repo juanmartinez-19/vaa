@@ -1,20 +1,27 @@
 package com.example.vanalaeropuerto.viewmodels.login
 
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.login.RequesterRepository
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class AuthViewModel : ViewModel() {
+
+
+    val getRequestersUseCase : RequesterRepository = RequesterRepository()
 
     private val errores = mutableListOf<String>()
 
@@ -41,7 +48,7 @@ class AuthViewModel : ViewModel() {
         }
 
         override fun onVerificationFailed(e: FirebaseException) {
-            // Falla en la verificación
+            Log.e("PHONE_AUTH", "Verification failed", e)
             _authState.postValue(AuthState.Failure(e.message ?: "Error de verificación"))
             _viewState.value = ViewState.Idle
         }
@@ -61,7 +68,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun phoneAuth(
-        phoneNumber: String?,
+        phoneNumber: String,
         activity: FragmentActivity
     ) {
         _viewState.value = ViewState.Loading
@@ -94,13 +101,39 @@ class AuthViewModel : ViewModel() {
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _authState.postValue(AuthState.Success)
+                val user = auth.currentUser
+
+                if (user != null) {
+                    checkIfUserExists(user.uid)
+                }
             } else {
                 _authState.postValue(AuthState.Failure("Error en el inicio de sesión"))
             }
             _viewState.value = ViewState.Idle
         }
     }
+    private fun checkIfUserExists(uid: String) {
+        viewModelScope.launch {
+            when (val result = getRequestersUseCase.getRequester(uid)) {
+                is MyResult.Success -> {
+                    val requester = result.data
+
+                    if (requester != null) {
+                        _authState.value = AuthState.UserExists
+                    } else {
+                        _authState.value = AuthState.UserNeedsRegister
+                    }
+                }
+
+                is MyResult.Failure -> {
+                    _authState.value = AuthState.Failure("Error validando usuario")
+                }
+
+            }
+        }
+    }
+
+
 
     private fun validateData(
         phoneNumber: String?,
@@ -122,14 +155,18 @@ class AuthViewModel : ViewModel() {
     }
 
     fun verifyCode(verificationId: String, code: String) {
+
         val credential = PhoneAuthProvider.getCredential(verificationId, code)
         signInWithPhoneAuthCredential(credential)
     }
 
+
     sealed class AuthState {
-        data object Success : AuthState()
         data class CodeSent(val verificationId: String, val message: String) : AuthState()
         data class Failure(val message: String) : AuthState()
         data object Idle : AuthState()
+        data object UserNeedsRegister : AuthState()
+        data object UserExists : AuthState()
+
     }
 }

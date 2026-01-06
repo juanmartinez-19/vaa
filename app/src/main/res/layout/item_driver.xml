@@ -16,17 +16,6 @@
         android:layout_margin="16dp">
 
 
-        <!-- Nombre y Apellido del Pasajero -->
-        <TextView
-            android:id="@+id/tvDriverNameLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre:"
-            android:textAllCaps="false"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TextView
             android:id="@+id/tvDriverName"
             android:layout_width="240dp"

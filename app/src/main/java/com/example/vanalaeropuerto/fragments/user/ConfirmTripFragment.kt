@@ -9,9 +9,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.ConfirmTripViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,6 +22,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ConfirmTripFragment : Fragment() {
 
     lateinit var v : View
+
+    // State
+    lateinit var progressBar : ProgressBar
 
     private lateinit var viewModel: ConfirmTripViewModel
 
@@ -48,6 +54,8 @@ class ConfirmTripFragment : Fragment() {
         tvLuggage = v.findViewById(R.id.tvLuggage)
         tvVehicle = v.findViewById(R.id.tvVehicle)
         tvPrice = v.findViewById(R.id.tvPrice)
+        progressBar = v.findViewById(R.id.progressBarLoading)
+
 
         tripRequester = IngresoDatosFragmentArgs.fromBundle(requireArguments()).tripRequester
 
@@ -68,18 +76,42 @@ class ConfirmTripFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(ConfirmTripViewModel::class.java)
 
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
+            when (viewState) {
+                is ViewState.Loading -> {
+                    this.showLoading()
+                }
+                is ViewState.Failure -> {
+                    this.showError()
+                }
+                is ViewState.Idle -> {
+                    this.hideLoading()
+                }
+                is ViewState.Empty ->{
+                    this.showEmpty()
+                } else ->{
+                this.showError()
+            }
+            }
+        })
+
         btnConfirm.setOnClickListener {
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Solicitud confirmada")
             builder.setMessage("Su solicitud ha sido procesada correctamente. Un agente se comunicará con usted en breve.")
             builder.setPositiveButton("Aceptar") { dialog, _ ->
                 dialog.dismiss()
+                this.confirmTrip()
                 this.navigate()
             }
             val dialog: AlertDialog = builder.create()
             dialog.show()
         }
 
+    }
+
+    private fun confirmTrip() {
+      viewModel.addTrip(tripRequester.getTrip())
     }
 
     private fun navigate() {
@@ -92,5 +124,21 @@ class ConfirmTripFragment : Fragment() {
             Log.e("ConfirmTripFragment", "Navigation action failed: ${e.message}")
         }
     }
+    private fun showEmpty() {
+        progressBar.visibility = View.GONE
+        }
+
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showError() {
+        progressBar.visibility = View.GONE
+    }
+
 
 }

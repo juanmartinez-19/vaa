@@ -61,12 +61,10 @@ class CrudDriverViewModel : ViewModel() {
         this.validateDriverData(name, surname,cuil,phoneNumber)
 
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters("")
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
+            _viewState.value = ViewState.InvalidParameters(errores.first())
         } else {
             viewModelScope.launch {
-
-                _viewState.value = ViewState.Loading
 
                 when (getDriversRepository.addDriver(driverId,name,surname, tieneButaca,phoneNumber,cuil)) {
                     is MyResult.Success -> {
@@ -74,7 +72,7 @@ class CrudDriverViewModel : ViewModel() {
                     }
                     is MyResult.Failure -> {
                         _viewState.value = ViewState.Failure
-                        Log.d("AddProductError", _viewState.value.toString())
+                        Log.d("ValidarDatos", _viewState.value.toString())
                     }
                 }
 
@@ -91,10 +89,6 @@ class CrudDriverViewModel : ViewModel() {
         cuil:String?,
         phoneNumber:String?
     ) {
-        _viewState.value = ViewState.Loading
-
-        val errores = mutableListOf<String>()
-
         // Validación de nombre
         if (name.isNullOrBlank()) {
             errores.add("Nombre no puede estar vacío")
@@ -124,13 +118,6 @@ class CrudDriverViewModel : ViewModel() {
             Log.e("ValidarDatos", "2caracteres del cuil: ${cuil.length}")
         }
 
-        // Manejo de errores
-        if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters("")
-            Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
-        } else {
-            _viewState.value = ViewState.Confirmed
-        }
     }
 
 }

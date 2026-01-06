@@ -18,10 +18,6 @@
         android:name="com.example.vanalaeropuerto.fragments.user.VehiculosFragment"
         tools:layout="@layout/fragment_vehiculos" >
         <argument
-            android:name="passangers"
-            app:argType="integer"
-            android:defaultValue="0" />
-        <argument
             android:name="luggage"
             app:argType="float"
             android:defaultValue="0.0" />
@@ -37,6 +33,15 @@
         <argument
             android:name="direccionDestino"
             app:argType="string" />
+        <argument
+            android:name="adults"
+            app:argType="integer" />
+        <argument
+            android:name="children"
+            app:argType="integer" />
+        <argument
+            android:name="babies"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/ingresoDatosFragment"
