@@ -8,10 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.user.VehiclesRepository
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.login.RequesterRepository
 import com.example.vanalaeropuerto.entities.Vehicle
-import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
 class VehiculosViewModel : ViewModel() {

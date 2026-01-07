@@ -4,19 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.login.RequesterRepository
 import com.example.vanalaeropuerto.entities.Requester
-import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 
 class HomeActivity : AppCompatActivity() {
 

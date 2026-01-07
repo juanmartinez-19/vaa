@@ -9,13 +9,18 @@ class Requester(
     private var requesterName : String?="",
     private var requesterSurname : String?="",
     private var requesterPhoneNumber : String?="",
-    private var requesterCuil : String?=""
+    private var requesterCuil : String?="",
+    private var requesterRole : String?=""
 ) : Parcelable {
 
-    constructor() : this(null, null,null,null,null)
+    constructor() : this(null, null,null,null,null,null)
 
     fun getRequesterId () : String? {
         return this.requesterId
+    }
+
+    fun getRequesterRole () : String? {
+        return this.requesterRole
     }
 
     fun getRequesterName () : String? {

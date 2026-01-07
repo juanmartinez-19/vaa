@@ -6,11 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.login.RequesterRepository
+import com.example.vanalaeropuerto.data.RequesterRepository
 import com.example.vanalaeropuerto.data.ViewState
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {

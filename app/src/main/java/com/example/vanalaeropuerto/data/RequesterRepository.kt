@@ -1,16 +1,12 @@
-package com.example.vanalaeropuerto.data.login
+package com.example.vanalaeropuerto.data
 
-import android.util.Log
-import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.entities.Requester
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 class RequesterRepository {
 
-    val requestersList: MutableList<Requester> = mutableListOf()
     private val db = Firebase.firestore
 
     suspend fun signIn(
@@ -27,7 +23,8 @@ class RequesterRepository {
                 requesterSurname = userSurname,
                 requesterPhoneNumber = phoneNumber,
                 requesterCuil = userCuil,
-                requesterId = uid
+                requesterId = uid,
+                requesterRole = "USER"
             )
 
             db.collection("requesters")

@@ -9,23 +9,17 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.user.VehicleAdapter
-import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.login.RequesterRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
-import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.example.vanalaeropuerto.viewmodels.user.VehiculosViewModel
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 class VehiculosFragment : Fragment() {
