@@ -15,8 +15,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.TripRequester
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.EditTripViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.time.format.DateTimeFormatter
@@ -65,6 +67,15 @@ class EditTripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(EditTripViewModel::class.java)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
+                requireActivity().finish()
+            }
+        }
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {

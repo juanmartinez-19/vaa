@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.DriverAdapter
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.AsignDriverViewModel
 
 class AsignDriverFragment : Fragment() {
@@ -47,6 +49,15 @@ class AsignDriverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AsignDriverViewModel::class.java)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
+                requireActivity().finish()
+            }
+        }
 
         recyclerDrivers.layoutManager = LinearLayoutManager(context)
         driverAdapter = DriverAdapter(mutableListOf()) {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.RequesterRepository
 import com.example.vanalaeropuerto.entities.Requester
@@ -21,9 +22,9 @@ class LauncherViewModel : ViewModel() {
                 is MyResult.Success -> {
                     val requester = result.data
                     if (requester != null) {
-                        if (requester.getRequesterRole() == "USER") {
+                        if (requester.getRequesterRole() == Roles.USER) {
                             _launcherState.postValue(LauncherState.User)
-                        } else if (requester.getRequesterRole() == "ADMIN") {
+                        } else if (requester.getRequesterRole() == Roles.ADMIN) {
                             _launcherState.postValue(LauncherState.Admin)
                         } else {
                             _launcherState.postValue(LauncherState.Error)

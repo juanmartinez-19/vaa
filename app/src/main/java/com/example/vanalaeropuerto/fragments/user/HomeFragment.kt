@@ -24,7 +24,9 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.activities.LoginActivity
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.user.HomeViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -177,8 +179,16 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.USER) {
+                requireActivity().finish()
+            }
+        }
 
         etOriginAddress.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {

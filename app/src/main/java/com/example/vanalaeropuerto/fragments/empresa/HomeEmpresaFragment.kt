@@ -18,7 +18,9 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
 import com.example.vanalaeropuerto.adapters.empresa.ViewPagerAdapter
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.HomeEmpresaViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -50,8 +52,16 @@ class HomeEmpresaFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
         viewModel = ViewModelProvider(this).get(HomeEmpresaViewModel::class.java)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
+                requireActivity().finish()
+            }
+        }
 
         viewPager.adapter = ViewPagerAdapter(requireActivity())
 

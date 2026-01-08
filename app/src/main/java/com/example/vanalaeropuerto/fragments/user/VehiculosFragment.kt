@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.user.VehicleAdapter
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.example.vanalaeropuerto.viewmodels.user.VehiculosViewModel
 import java.util.UUID
@@ -72,6 +74,15 @@ class VehiculosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(VehiculosViewModel::class.java)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.USER) {
+                requireActivity().finish()
+            }
+        }
 
         recyclerVehicles.layoutManager = LinearLayoutManager(context)
         vehicleAdapter = VehicleAdapter(mutableListOf()) {

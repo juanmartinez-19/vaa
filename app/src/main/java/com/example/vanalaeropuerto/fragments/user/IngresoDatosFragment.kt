@@ -17,8 +17,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
+import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.TripRequester
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.user.IngresoDatosViewModel
 import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -107,6 +109,15 @@ class IngresoDatosFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sessionViewModel =
+            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
+        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
+            if (session == null || session.getRequesterRole() != Roles.USER) {
+                requireActivity().finish()
+            }
+        }
 
         rbThirdParty.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
