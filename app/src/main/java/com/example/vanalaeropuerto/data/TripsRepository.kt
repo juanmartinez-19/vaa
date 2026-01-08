@@ -55,11 +55,31 @@ class TripsRepository {
 
     }
 
-    fun cancelTrip (pendingTripId : String) {
-        val trip = tripsList.find { it.getTripId() == pendingTripId }
+    suspend fun cancelTrip(tripId: String): MyResult<Trip?> {
+        return try {
+            val docRef = db.collection("trips").document(tripId)
 
-        trip?.setState("cancelled")
+            // 1️⃣ Update del estado
+            docRef.update(
+                mapOf(
+                    "state" to "CANCELLED"
+                )
+            ).await()
 
+            // 2️⃣ Volver a leer el trip actualizado
+            val snapshot = docRef.get().await()
+
+            if (!snapshot.exists()) {
+                MyResult.Success(null)
+            } else {
+                val trip = snapshot.toObject(Trip::class.java)
+                MyResult.Success(trip)
+            }
+
+        } catch (e: Exception) {
+            Log.e("FirestoreError", "Error confirming trip", e)
+            MyResult.Failure(e)
+        }
     }
 
     suspend fun getTrip(tripId: String): MyResult<Trip?> {

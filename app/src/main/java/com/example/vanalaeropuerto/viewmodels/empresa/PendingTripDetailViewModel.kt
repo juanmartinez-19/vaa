@@ -28,7 +28,22 @@ class PendingTripDetailViewModel : ViewModel() {
     val requester: LiveData<Requester?> get() = _requester
 
     fun cancelTrip(pendingTripId : String) {
-        getTripsUseCase.cancelTrip(pendingTripId)
+        _viewState.value = ViewState.Loading
+
+        viewModelScope.launch {
+            when (val result = getTripsUseCase.cancelTrip(pendingTripId)) {
+                is MyResult.Success -> {
+                    _trip.value = result.data
+                    _viewState.value = ViewState.Idle
+                }
+
+                is MyResult.Failure -> {
+                    _trip.value = null
+                    _viewState.value = ViewState.Failure
+                    Log.d("TEST", _viewState.value.toString())
+                }
+            }
+        }
     }
 
     fun getTrip(tripId : String) {
