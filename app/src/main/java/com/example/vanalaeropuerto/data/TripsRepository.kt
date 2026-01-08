@@ -13,33 +13,39 @@ class TripsRepository {
     var tripsList : MutableList<Trip> = mutableListOf()
     private val db = Firebase.firestore
 
-    fun getTripById(tripId: String): Trip? {
-        return tripsList.find { it.getTripId() == tripId }
+    suspend fun confirmTrip(tripId: String): MyResult<Trip?> {
+        return try {
+            val docRef = db.collection("trips").document(tripId)
+
+            // 1️⃣ Update del estado
+            docRef.update(
+                mapOf(
+                    "state" to "CONFIRMED"
+                )
+            ).await()
+
+            // 2️⃣ Volver a leer el trip actualizado
+            val snapshot = docRef.get().await()
+
+            if (!snapshot.exists()) {
+                MyResult.Success(null)
+            } else {
+                val trip = snapshot.toObject(Trip::class.java)
+                MyResult.Success(trip)
+            }
+
+        } catch (e: Exception) {
+            Log.e("FirestoreError", "Error confirming trip", e)
+            MyResult.Failure(e)
+        }
     }
 
-     fun confirmTrip (tripId : String)  : MyResult<Trip?>  {
-         return try {
-             // Buscar el viaje en la lista usando el tripId
-             val trip = tripsList.find { it.getTripId() == tripId }
-
-             // Si el viaje es encontrado, retornar éxito con el viaje
-             if (trip != null) {
-                 MyResult.Success(trip)
-             } else {
-                 // Si no se encuentra el viaje, retornar éxito con valor null
-                 MyResult.Success(null)
-             }
-         } catch (e: Exception) {
-             // Capturar cualquier excepción y retornar failure con la excepción
-             Log.e("FirestoreError", "Exception thrown: ${e.message}", e)
-             MyResult.Failure(e)
-         }
-    }
 
     suspend fun addTrip (trip : Trip)  : MyResult<Trip?>  {
         return try {
             db.collection("trips")
-                .add(trip)
+                .document(trip.getTripId()!!) // ID del documento = requesterId
+                .set(trip) // set en lugar de add
                 .await()
 
             MyResult.Success(trip)
@@ -56,24 +62,26 @@ class TripsRepository {
 
     }
 
-    fun getTrip(tripId: String): MyResult<Trip?> {
+    suspend fun getTrip(tripId: String): MyResult<Trip?> {
         return try {
-            // Buscar el viaje en la lista usando el tripId
-            val trip = tripsList.find { it.getTripId() == tripId }
+            val snapshot = db.collection("trips")
+                .document(tripId)
+                .get()
+                .await()
 
-            // Si el viaje es encontrado, retornar éxito con el viaje
-            if (trip != null) {
-                MyResult.Success(trip)
-            } else {
-                // Si no se encuentra el viaje, retornar éxito con valor null
+            if (!snapshot.exists()) {
                 MyResult.Success(null)
+            } else {
+                val trip = snapshot.toObject(Trip::class.java)
+                MyResult.Success(trip)
             }
+
         } catch (e: Exception) {
-            // Capturar cualquier excepción y retornar failure con la excepción
             Log.e("FirestoreError", "Exception thrown: ${e.message}", e)
             MyResult.Failure(e)
         }
     }
+
 
     fun updateTrip  (
         tripId: String?,

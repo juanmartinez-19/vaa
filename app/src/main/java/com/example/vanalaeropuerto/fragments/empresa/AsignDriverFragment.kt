@@ -77,7 +77,7 @@ class AsignDriverFragment : Fragment() {
         }
         recyclerDrivers.adapter = driverAdapter
 
-        viewModel.getDrivers(tripId)
+        viewModel.getDrivers()
 
         viewModel._driversList.observe(viewLifecycleOwner, Observer { _driversList ->
             if (_driversList != null) {

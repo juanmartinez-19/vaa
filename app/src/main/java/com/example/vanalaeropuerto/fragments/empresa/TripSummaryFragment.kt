@@ -88,9 +88,7 @@ class TripSummaryFragment : Fragment() {
             }
         }
 
-        viewModel.getTrip(tripId)
-        viewModel.getRequester(requesterId)
-        viewModel.getDriver(driverId)
+        viewModel.loadScreen(tripId, requesterId, driverId)
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
@@ -119,7 +117,6 @@ class TripSummaryFragment : Fragment() {
         })
 
         viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
-
             if (trip != null) {
                 tvTripDate.text = trip.getDate() ?: ""
                 tvOriginAddress.text = trip.getOriginAddress() ?: ""
@@ -156,6 +153,8 @@ class TripSummaryFragment : Fragment() {
             }
         }
     }
+
+
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE

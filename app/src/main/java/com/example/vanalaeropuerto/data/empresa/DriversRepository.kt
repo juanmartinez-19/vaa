@@ -14,8 +14,7 @@ import java.lang.reflect.InvocationTargetException
 
 class DriversRepository {
 
-    val driverList: MutableList<Driver> = mutableListOf()
-    private val db = Firebase.firestore
+   private val db = Firebase.firestore
 
     suspend fun addDriver  (
         driverId : String?,
@@ -42,35 +41,33 @@ class DriversRepository {
 
     }
 
-    fun getDriverById(driverId: String?): MyResult<Driver?> {
-        if (driverId != null) {
-            if (driverId.isEmpty()) {
-                return MyResult.Failure(IllegalArgumentException("Requester ID cannot be null or empty"))
+    suspend fun getDriverById(driverId: String?): MyResult<Driver?> {
+
+        if (driverId.isNullOrBlank()) {
+            return MyResult.Failure(
+                IllegalArgumentException("Driver ID cannot be null or empty")
+            )
+        }
+
+        return try {
+            val snapshot = db.collection("drivers")
+                .document(driverId)
+                .get()
+                .await()
+
+            if (!snapshot.exists()) {
+                MyResult.Success(null) // no existe el driver
+            } else {
+                val driver = snapshot.toObject(Driver::class.java)
+                MyResult.Success(driver)
             }
+
+        } catch (e: Exception) {
+            Log.e(ContentValues.TAG, "Exception thrown: ${e.message}", e)
+            MyResult.Failure(e)
         }
-
-        val driver = driverList.find { it.getDriverId() == driverId }
-
-        return if (driver != null) {
-            MyResult.Success(driver)
-        } else {
-            MyResult.Failure(NoSuchElementException("Requester not found"))
-        }
-
     }
 
-    fun getDriversByTripId (tripId : String) : MyResult<MutableList<Driver>> {
-    /*val trip = TripsRepository.getTripById(tripId)
-    if (trip != null) {
-        val vehicleId = trip.getVehicleId()
-        val drivers = VehiclesRepository.getDrivers(vehicleId)
-
-        // Asigna el conductor al viaje
-        trip.assignDriver(selectedDriver)
-        println("Conductor ${selectedDriver.nombre} asignado al viaje ${trip.tripId}")
-    }*/
-    return MyResult.Success(driverList)
-}
 
     suspend fun getDrivers () : MyResult<MutableList<Driver>> {
         val driversList : MutableList<Driver>

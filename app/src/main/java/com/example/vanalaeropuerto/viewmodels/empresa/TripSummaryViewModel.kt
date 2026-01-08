@@ -13,6 +13,7 @@ import com.example.vanalaeropuerto.data.TripsRepository
 import com.example.vanalaeropuerto.entities.Driver
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class TripSummaryViewModel : ViewModel() {
@@ -105,5 +106,49 @@ class TripSummaryViewModel : ViewModel() {
             }
         }
     }
+
+    fun loadScreen(tripId: String, requesterId: String, driverId: String) {
+        _viewState.value = ViewState.Loading
+
+        viewModelScope.launch {
+
+            try {
+                val requesterDeferred = async {
+                    getRequesterUseCase.getRequester(requesterId)
+                }
+                val driverDeferred = async {
+                    getDriverUseCase.getDriverById(driverId)
+                }
+                val tripDeferred = async {
+                    getTripsUseCase.getTrip(tripId)
+                }
+
+                when (val result = requesterDeferred.await()) {
+                    is MyResult.Success -> _requester.value = result.data
+                    is MyResult.Failure -> throw result.exception
+                }
+
+                when (val result = driverDeferred.await()) {
+                    is MyResult.Success -> _driver.value = result.data
+                    is MyResult.Failure -> throw result.exception
+                }
+
+                when (val result = tripDeferred.await()) {
+                    is MyResult.Success -> _trip.value = result.data
+                    is MyResult.Failure -> throw result.exception
+                }
+
+                _viewState.value = ViewState.Idle
+
+            } catch (e: Exception) {
+                _requester.value = null
+                _driver.value = null
+                _trip.value = null
+                _viewState.value = ViewState.Failure
+            }
+        }
+    }
+
+
 
 }

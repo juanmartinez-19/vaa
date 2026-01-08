@@ -19,10 +19,10 @@ class AsignDriverViewModel : ViewModel() {
     val getDriversUseCase : DriversRepository = DriversRepository()
 
 
-    fun getDrivers(tripId : String) {
+    fun getDrivers() {
         viewModelScope.launch {
             _viewState.value = ViewState.Loading
-            when (val result = getDriversUseCase.getDriversByTripId(tripId)){
+            when (val result = getDriversUseCase.getDrivers()){
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _driversList.value = result.data
