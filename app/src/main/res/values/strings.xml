@@ -10,4 +10,6 @@
     <string name="title_activity_empresa">EmpresaActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_flujo">FlujoActivity</string>
+    <string name="logout" />
+    <string name="cerrar_sesion">Cerrar sesión</string>
 </resources>
