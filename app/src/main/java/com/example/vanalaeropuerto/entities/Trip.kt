@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 @Parcelize
 class Trip (
-    private var date : String?="",
+    private var date : Long?=0,
     private var originAddress : String?="",
     private var destinationAddress : String?="",
     private var adults : Int?=0,
@@ -28,7 +28,7 @@ class Trip (
         this.destinationAddress = destinationAddress
     }
 
-    fun setDate(date: String?) {
+    fun setDate(date: Long?) {
         this.date = date
     }
     fun setState(state : String) {
@@ -37,7 +37,7 @@ class Trip (
     fun setPrice(price: Float?) {
         this.price = price
     }
-    fun getDate() : String? {
+    fun getDate() : Long? {
         return this.date
     }
     fun getOriginAddress() : String? {

@@ -61,7 +61,7 @@ class ConfirmTripFragment : Fragment() {
 
         tripRequester = IngresoDatosFragmentArgs.fromBundle(requireArguments()).tripRequester
 
-        tvDepartureDate.text = tripRequester.getTrip()?.getDate()
+        tvDepartureDate.text = tripRequester.getTrip()?.getDate().toString()
         tvOrigin.text = tripRequester.getTrip()?.getOriginAddress()
         tvDestination.text = tripRequester.getTrip()?.getDestinationAddress()
         tvPassengers.text = tripRequester.getTrip()?.getAdults().toString()

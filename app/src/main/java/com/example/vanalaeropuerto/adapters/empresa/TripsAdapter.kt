@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.entities.TripRequester
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TripsAdapter(
     private var trips : MutableList<TripRequester>,
@@ -30,10 +33,13 @@ class TripsAdapter(
             txtPhoneNumber.text = phoneNumber
         }
 
-        fun setTripDate(date : String)  {
-            val txtDate : TextView = v.findViewById(R.id.tvDate)
-            txtDate.text = date
+        fun setTripDate(dateMillis: Long) {
+            val txtDate: TextView = v.findViewById(R.id.tvDate)
+
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            txtDate.text = sdf.format(Date(dateMillis))
         }
+
 
         fun setTripOriginAddress(originAddress : String)  {
             val txtOriginAddress : TextView = v.findViewById(R.id.tvOriginAddress)

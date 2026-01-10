@@ -43,7 +43,7 @@ class VehiculosFragment : Fragment() {
     private var passangers : Int = 0
     private var originAddress: String?=""
     private var destinationAddress: String?=""
-    private var departureDate: String?=""
+    private var departureDate: Long?=0
 
     private lateinit var trip : Trip
     private lateinit var tripRequester : TripRequester

@@ -81,24 +81,21 @@ class PendingTripsFragment : Fragment() {
 
         viewModel.getPendingTrips()
 
-        viewModel._tripsList.observe(viewLifecycleOwner, Observer { _tripsList ->
-            if (_tripsList != null) {
-                for (trip in _tripsList) {
-                    val requesterId = trip.getRequesterId()
-                    if (requesterId != null) {
-                        viewModel.getRequester(requesterId)
-                    }
+        viewModel.tripsList.observe(viewLifecycleOwner) { trips ->
+            trips ?: return@observe
+
+            for (trip in trips) {
+                trip.getRequesterId()?.let {
+                    viewModel.getRequester(it)
                 }
             }
-        })
+        }
 
-        viewModel.requestersMap.observe(viewLifecycleOwner, Observer { itrequestersMap ->
-            if (itrequestersMap != null) {
-                this.requesterMap = itrequestersMap
-                updateTripRequester()
-            }
+        viewModel.requestersMap.observe(viewLifecycleOwner) { map ->
+            requesterMap = map
+            updateTripRequester()
+        }
 
-        })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
@@ -121,19 +118,37 @@ class PendingTripsFragment : Fragment() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.stopListening()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPendingTrips()
+    }
+
     private fun updateTripRequester() {
+        val trips = viewModel.tripsList.value ?: return
+        if (requesterMap.isEmpty()) return
+
         tripRequesterList.clear()
-        for (trip in viewModel._tripsList.value ?: emptyList()) {
-            val requesterId = trip.getRequesterId()
-            val requester = requesterId?.let { requesterMap[it] }
+
+        for (trip in trips) {
+            val requester = requesterMap[trip.getRequesterId()]
             if (requester != null) {
                 tripRequesterList.add(TripRequester(trip, requester))
             }
         }
 
-        tripsAdapter.submitList(tripRequesterList)
+        tripsAdapter.submitList(tripRequesterList.toMutableList())
     }
-
 
     private fun showEmpty() {
         progressBar.visibility = View.GONE

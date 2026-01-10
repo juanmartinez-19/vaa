@@ -9,15 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
@@ -35,90 +27,58 @@ import java.util.Calendar
 
 class HomeFragment : Fragment() {
 
-    //Pantalla
-    private lateinit var v : View
-    private lateinit var etOriginAddress : AutoCompleteTextView
-    private lateinit var etDestinationAddress : AutoCompleteTextView
-    private lateinit var etLuggage : EditText
-    private lateinit var etDepartureDate : EditText
-    private lateinit var btnSearch : FloatingActionButton
-    private lateinit var btnAdultPlus : Button
-    private lateinit var btnAdultMinus : Button
-    private lateinit var btnChildMinus : Button
-    private lateinit var btnChildPlus : Button
-    private lateinit var btnBabyMinus : Button
-    private lateinit var btnBabyPlus : Button
-    private lateinit var btnSignOut : AppCompatImageButton
-    private lateinit var tvAdultCount : TextView
-    private lateinit var tvChildCount : TextView
-    private lateinit var tvBabyCount : TextView
+    private lateinit var v: View
 
+    private lateinit var etOriginAddress: AutoCompleteTextView
+    private lateinit var etDestinationAddress: AutoCompleteTextView
+    private lateinit var etLuggage: EditText
+    private lateinit var etDepartureDate: EditText
 
-    //State
-    private lateinit var progressBar : ProgressBar
-    private lateinit var textViewTitle : TextView
+    private lateinit var btnSearch: FloatingActionButton
+    private lateinit var btnSignOut: AppCompatImageButton
 
-    private var originAddress: String?=""
-    private var destinationAddress: String?=""
-    private var luggage: Float = 0F
-    private var passengers: Int = 0
-    private var departureDate: String?=""
-    private var selectedDateInMillis: Long = 0
+    private lateinit var tvAdultCount: TextView
+    private lateinit var tvChildCount: TextView
+    private lateinit var tvBabyCount: TextView
 
-    private var adultCountString : String?=""
-    private var adultCount : Int=0
-    private var childCountString : String?=""
-    private var childCount : Int=0
-    private var babyCountString : String?=""
-    private var babyCount : Int=0
+    private lateinit var progressBar: ProgressBar
+    private lateinit var textViewTitle: TextView
 
-    private lateinit var containerLayout: LinearLayout
-    //private lateinit var ibAddFieldButton: ImageButton
-    private var fieldCounter = 2
-    private val editTextList = mutableListOf<View>()
+    // 🔒 NO NULLABLES
+    private lateinit var originAddress: String
+    private lateinit var destinationAddress: String
+
+    private var luggage: Float = 0f
+    private var selectedDateInMillis: Long = 0L
 
     private lateinit var viewModel: HomeViewModel
 
-
-    val suggestions = arrayOf("Aeropuerto Internacional de Ezeiza (EZE)", "Aeropuerto Jorge Newbery (AEP)")
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.let {
-            val values = it.getStringArrayList("editTextValues") ?: emptyList()
-            values.forEachIndexed { index, value ->
-                addNewEditText()
-                val lastEditText = editTextList.last()
-                val editText = lastEditText.findViewById<EditText>(R.id.etDynamic)
-                editText.setText(value)
-                editText.hint = "Dirección destino ${index + 1}"
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val values = editTextList.map { view ->
-            view.findViewById<EditText>(R.id.etDynamic).text.toString()
-        }
-        outState.putStringArrayList("editTextValues", ArrayList(values))
-    }
-
+    private val suggestions = arrayOf(
+        "Aeropuerto Internacional de Ezeiza (EZE)",
+        "Aeropuerto Jorge Newbery (AEP)"
+    )
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         v = inflater.inflate(R.layout.fragment_home, container, false)
 
-        containerLayout = v.findViewById(R.id.layoutDireccionDestino)
-        /*
-        ibAddFieldButton = v.findViewById(R.id.ibAddAddress)
+        etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
+        etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
+        etLuggage = v.findViewById(R.id.etEquipaje)
+        etDepartureDate = v.findViewById(R.id.etDepartureDate)
 
-        ibAddFieldButton.setOnClickListener {
-            addNewEditText()
-         }
-         */
+        btnSearch = v.findViewById(R.id.btnBuscar)
+        btnSignOut = v.findViewById(R.id.btnSignOut)
+
+        tvAdultCount = v.findViewById(R.id.tvAdultCount)
+        tvChildCount = v.findViewById(R.id.tvChildCount)
+        tvBabyCount = v.findViewById(R.id.tvBabyCount)
+
+        progressBar = v.findViewById(R.id.progressBarLoading)
+        textViewTitle = v.findViewById(R.id.tvTitle)
 
         val adapter = ArrayAdapter(
             requireContext(),
@@ -126,60 +86,16 @@ class HomeFragment : Fragment() {
             suggestions
         )
 
-        etOriginAddress = v.findViewById(R.id.etDireccionOrigen)
-
         etOriginAddress.setAdapter(adapter)
-
-        etOriginAddress.threshold = 0
-
-        etDestinationAddress = v.findViewById(R.id.etDireccionDestino)
-
         etDestinationAddress.setAdapter(adapter)
-
-        etDestinationAddress.threshold = 0
-
-
-        etLuggage = v.findViewById(R.id.etEquipaje)
-        btnSearch = v.findViewById(R.id.btnBuscar)
-        progressBar = v.findViewById(R.id.progressBarLoading)
-        textViewTitle = v.findViewById(R.id.tvTitle)
-        etDepartureDate = v.findViewById(R.id.etDepartureDate)
-        btnAdultPlus = v.findViewById(R.id.btnAdultPlus)
-        btnAdultMinus = v.findViewById(R.id.btnAdultMinus)
-        btnSignOut = v.findViewById(R.id.btnSignOut)
-        tvAdultCount = v.findViewById(R.id.tvAdultCount)
-
-        btnChildPlus = v.findViewById(R.id.btnChildPlus)
-        btnChildMinus = v.findViewById(R.id.btnChildMinus)
-        tvChildCount = v.findViewById(R.id.tvChildCount)
-
-        btnBabyPlus = v.findViewById(R.id.btnBabyPlus)
-        btnBabyMinus = v.findViewById(R.id.btnBabyMinus)
-        tvBabyCount = v.findViewById(R.id.tvBabyCount)
-
-        adultCountString = tvAdultCount.text?.toString()
-
-        adultCountString = tvAdultCount.text?.toString()
-        adultCount = if (!adultCountString.isNullOrBlank()) {
-            adultCountString!!.toInt()
-        } else { 0 }
-
-        childCountString = tvChildCount.text?.toString()
-        childCount = if (!childCountString.isNullOrBlank()) {
-            childCountString!!.toInt()
-        } else { 0 }
-
-        babyCountString = tvBabyCount.text?.toString()
-        babyCount = if (!babyCountString.isNullOrBlank()) {
-            babyCountString!!.toInt()
-        } else { 0 }
 
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         val sessionViewModel =
             ViewModelProvider(requireActivity())[SessionViewModel::class.java]
@@ -190,190 +106,57 @@ class HomeFragment : Fragment() {
             }
         }
 
-        etOriginAddress.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                etOriginAddress.showDropDown()
-            }
-        }
-
-        etDestinationAddress.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                etDestinationAddress.showDropDown()
-            }
-        }
-
         btnSignOut.setOnClickListener {
-
             FirebaseAuth.getInstance().signOut()
-
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            startActivity(
+                Intent(requireContext(), LoginActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+            )
         }
 
-
-        viewModel.passengers.observe(viewLifecycleOwner) { count ->
-            passengers = count
-        }
-
-        viewModel.adultCount.observe(viewLifecycleOwner) { count ->
-            tvAdultCount.text = count.toString()
-        }
-
-        viewModel.childCount.observe(viewLifecycleOwner) { count ->
-            tvChildCount.text = count.toString()
-        }
-
-        viewModel.babyCount.observe(viewLifecycleOwner) { count ->
-            tvBabyCount.text = count.toString()
-        }
-
-        etDepartureDate.setOnClickListener {
-            this.showDatePickerDialog()
-        }
-
-        btnAdultPlus.setOnClickListener {
-            viewModel.addAdult()
-        }
-
-        btnAdultMinus.setOnClickListener {
-            viewModel.removeAdult()
-        }
-
-        btnChildPlus.setOnClickListener {
-            viewModel.addChild()
-        }
-
-        btnChildMinus.setOnClickListener {
-            viewModel.removeChild()
-        }
-
-        btnBabyPlus.setOnClickListener {
-            viewModel.addBaby()
-        }
-
-        btnBabyMinus.setOnClickListener {
-            viewModel.removeBaby()
-        }
+        etDepartureDate.setOnClickListener { showDatePickerDialog() }
 
         btnSearch.setOnClickListener {
+            collectInputs()
+            observeViewState()
+        }
+    }
 
-            originAddress = etOriginAddress.text?.toString()
+    private fun collectInputs() {
+        originAddress = etOriginAddress.text.toString()
+        destinationAddress = etDestinationAddress.text.toString()
 
-            destinationAddress = etDestinationAddress.text?.toString()
+        luggage = etLuggage.text.toString().toFloatOrNull() ?: 0f
 
-            departureDate = etDepartureDate.text?.toString()
+        val adults = viewModel.adultCount.value ?: 0
+        val children = viewModel.childCount.value ?: 0
+        val babies = viewModel.babyCount.value ?: 0
 
-            val luggageString = etLuggage.text?.toString()
-            luggage = if (!luggageString.isNullOrBlank()) {
-                luggageString.toFloat()
-            } else {
-                0F
-            }
+        viewModel.validarDatos(
+            originAddress,
+            destinationAddress,
+            luggage,
+            adults,
+            children,
+            babies,
+            selectedDateInMillis,
+            emptyList()
+        )
+    }
 
-            val valoresIngresados = obtenerValoresEditText()
-
-            viewModel.validarDatos(
-                originAddress,
-                destinationAddress,
-                luggage,
-                viewModel.adultCount.value,
-                viewModel.childCount.value,
-                viewModel.babyCount.value,
-                selectedDateInMillis,
-                valoresIngresados
-            )
-            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is ViewState.Loading -> {
-                        this.showLoading()
-                    }
-
-                    is ViewState.Failure -> {
-                        this.showError()
-                    }
-
-                    is ViewState.Idle -> {
-                        this.hideLoading()
-                        this.navigate()
-                    }
-
-                    is ViewState.InvalidParameters -> {
-                        this.showInvalidParameters(viewState.message)
-                    }
-
-                    else -> {
-                        this.showError()
-                    }
+    private fun observeViewState() {
+        viewModel.viewState.observe(viewLifecycleOwner, Observer { state ->
+            when (state) {
+                is ViewState.Loading -> showLoading()
+                is ViewState.InvalidParameters -> showInvalidParameters(state.message)
+                is ViewState.Idle -> {
+                    hideLoading()
+                    navigate()
                 }
-            })
-        }
-    }
-
-    private fun obtenerValoresEditText(): List<String> {
-        val valores = mutableListOf<String>()
-        for (view in editTextList) {
-            val editText = view.findViewById<EditText>(R.id.etDynamic)
-            valores.add(editText.text.toString())
-        }
-        return valores
-    }
-
-    private fun addNewEditText() {
-        if (fieldCounter < 6) {
-            val inflater = LayoutInflater.from(requireContext())
-            val newEditTextView = inflater.inflate(R.layout.edit_text_with_button, containerLayout, false)
-
-            val editText = newEditTextView.findViewById<EditText>(R.id.etDynamic)
-            val removeButton = newEditTextView.findViewById<ImageButton>(R.id.btnRemoveDynamic)
-
-            editText.hint = "Dirección destino $fieldCounter"
-
-            // Configurar el botón para eliminar el EditText
-            removeButton.setOnClickListener {
-                containerLayout.removeView(newEditTextView)
-                editTextList.remove(newEditTextView)
-                actualizarHints()  // Actualizar hints después de eliminar un campo
+                else -> showError()
             }
-
-            // Agregar el nuevo EditText a la lista y al contenedor
-            editTextList.add(newEditTextView)
-            val layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_PARENT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            )
-            // Configurar las constraints para el nuevo EditText
-            if (editTextList.isNotEmpty()) {
-                val previousView = editTextList.last()
-                layoutParams.topToBottom = previousView.id
-            } else {
-                layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-            }
-            newEditTextView.layoutParams = layoutParams
-            newEditTextView.id = View.generateViewId() // Genera un ID único
-            containerLayout.addView(newEditTextView)
-
-            fieldCounter++
-            saveEditTextValues() // Guardar valores después de agregar un campo
-        }
-    }
-
-    private fun saveEditTextValues() {
-        val values = editTextList.map { view ->
-            view.findViewById<EditText>(R.id.etDynamic).text.toString()
-        }
-        // Guardar los valores en el Bundle
-        val outState = Bundle()
-        outState.putStringArrayList("editTextValues", ArrayList(values))
-    }
-
-    // Método para actualizar los hints de los EditText después de eliminar uno
-    private fun actualizarHints() {
-        for (i in editTextList.indices) {
-            val view = editTextList[i]
-            val editText = view.findViewById<EditText>(R.id.etDynamic)
-            editText.hint = "Dirección destino ${i + 2}" // Comienza desde el número 2
-        }
+        })
     }
 
     private fun navigate() {
@@ -381,67 +164,58 @@ class HomeFragment : Fragment() {
         val children = viewModel.childCount.value ?: 0
         val babies = viewModel.babyCount.value ?: 0
 
-        try {
-            if (findNavController().currentDestination?.id == R.id.homeFragment) {
-                if (departureDate.isNullOrBlank()||originAddress.isNullOrBlank()||destinationAddress.isNullOrBlank()) {
-                    Log.e("HomeFragment", "Navigation action failed")
-                } else {
-                    val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(
-                        departureDate.toString(),
-                        originAddress.toString(),
-                        destinationAddress.toString(),
-                        adults,
-                        children,
-                        babies,
-                        luggage
-                    )
-                    findNavController().navigate(action)
-                }
-            }
-        } catch (e: IllegalArgumentException) {
-            Log.e("HomeFragment", "Navigation action failed: ${e.message}")
+        if (selectedDateInMillis <= 0L) {
+            showInvalidParameters("Fecha inválida")
+            return
         }
+
+        val action = HomeFragmentDirections.actionHomeFragmentToVehiculosFragment(
+            luggage = luggage,
+            direccionOrigen = originAddress,
+            direccionDestino = destinationAddress,
+            adults = adults,
+            children = children,
+            babies = babies,
+            fechaSalida = selectedDateInMillis
+        )
+
+        findNavController().navigate(action)
+
     }
 
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(requireContext(), { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            val selectedCalendar = Calendar.getInstance()
-            selectedCalendar.set(year, month, dayOfMonth)
-            selectedDateInMillis = selectedCalendar.timeInMillis
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(year, month, day, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
 
-            val selectedDate = "$dayOfMonth/${month + 1}/$year"
-            etDepartureDate.setText(selectedDate)
-        }, year, month, day)
-
-        datePickerDialog.show()
+                selectedDateInMillis = selectedCalendar.timeInMillis
+                etDepartureDate.setText("${day}/${month + 1}/${year}")
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE
-        textViewTitle.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
         progressBar.visibility = View.GONE
-        textViewTitle.visibility = View.VISIBLE
     }
 
     private fun showError() {
-        progressBar.visibility = View.GONE
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
-        textViewTitle.visibility = View.VISIBLE
     }
 
-    private fun showInvalidParameters(message : String) {
-
-        progressBar.visibility = View.GONE
-        Snackbar.make(v, message , Snackbar.LENGTH_SHORT).show()
-        textViewTitle.visibility = View.VISIBLE
+    private fun showInvalidParameters(message: String) {
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
-
 }

@@ -11,6 +11,7 @@ import com.example.vanalaeropuerto.data.TripsRepository
 import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Date
 
 class EditTripViewModel : ViewModel() {
 
@@ -49,6 +50,11 @@ class EditTripViewModel : ViewModel() {
         price:Float?
     ) {
         val currentDateInMillis = Calendar.getInstance().timeInMillis
+
+        Log.d("FECHA",
+            "Selected: ${Date(selectedDateInMillis ?: 0)} | Now: ${Date(currentDateInMillis)}"
+        )
+
 
         if (price != null) {
             if (price <= 0) {
@@ -91,7 +97,7 @@ class EditTripViewModel : ViewModel() {
         this.validarDatos(originAddress,destinationAddress,selectedDateInMillis,price)
 
         if (errores.isNotEmpty()) {
-            _viewState.value = ViewState.InvalidParameters("")
+            _viewState.value = ViewState.InvalidParameters(errores.first())
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
         } else {
             viewModelScope.launch {

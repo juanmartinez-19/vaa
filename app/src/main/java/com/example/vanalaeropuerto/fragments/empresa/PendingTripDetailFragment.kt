@@ -26,6 +26,9 @@ import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripDetailViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PendingTripDetailFragment : Fragment() {
 
@@ -130,7 +133,16 @@ class PendingTripDetailFragment : Fragment() {
         viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
 
             if (trip != null) {
-                tvTripDate.text = trip.getDate() ?: ""
+                val millis = trip.getDate()
+                if (millis != null) {
+                    val formattedDate = SimpleDateFormat(
+                        "dd/MM/yyyy",
+                        Locale.getDefault()
+                    ).format(Date(millis))
+
+                    tvTripDate.text = formattedDate
+                }
+
                 tvOriginAddress.text = trip.getOriginAddress() ?: ""
                 tvDestinationAddress.text = trip.getDestinationAddress() ?: ""
                 tvAdultCount.text = trip.getAdults()?.toString() ?: "0"

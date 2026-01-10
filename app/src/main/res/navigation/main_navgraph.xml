@@ -25,9 +25,6 @@
             android:id="@+id/action_vehiculosFragment_to_ingresoDatosFragment"
             app:destination="@id/ingresoDatosFragment" />
         <argument
-            android:name="fechaSalida"
-            app:argType="string" />
-        <argument
             android:name="direccionOrigen"
             app:argType="string" />
         <argument
@@ -42,6 +39,9 @@
         <argument
             android:name="babies"
             app:argType="integer" />
+        <argument
+            android:name="fechaSalida"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/ingresoDatosFragment"

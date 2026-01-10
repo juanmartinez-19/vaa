@@ -18,6 +18,9 @@ import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.TripSummaryViewModel
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TripSummaryFragment : Fragment() {
 
@@ -118,7 +121,15 @@ class TripSummaryFragment : Fragment() {
 
         viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
             if (trip != null) {
-                tvTripDate.text = trip.getDate() ?: ""
+                val millis = trip.getDate()
+                if (millis != null) {
+                    val formattedDate = SimpleDateFormat(
+                        "dd/MM/yyyy",
+                        Locale.getDefault()
+                    ).format(Date(millis))
+
+                    tvTripDate.text = formattedDate
+                }
                 tvOriginAddress.text = trip.getOriginAddress() ?: ""
                 tvDestinationAddress.text = trip.getDestinationAddress() ?: ""
                 tvAdultCount.text = trip.getAdults()?.toString() ?: "0"

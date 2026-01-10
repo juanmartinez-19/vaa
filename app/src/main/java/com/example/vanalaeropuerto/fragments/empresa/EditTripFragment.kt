@@ -1,5 +1,6 @@
 package com.example.vanalaeropuerto.fragments.empresa
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -21,8 +22,12 @@ import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.EditTripViewModel
 import com.google.android.material.snackbar.Snackbar
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class EditTripFragment : Fragment() {
 
@@ -96,7 +101,7 @@ class EditTripFragment : Fragment() {
                 }
 
                 is ViewState.InvalidParameters -> {
-                    this.showInvalidParameters()
+                    this.showInvalidParameters(viewState.message)
                 }
 
                 else -> {
@@ -105,19 +110,27 @@ class EditTripFragment : Fragment() {
             }
         })
 
-        viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
+        viewModel.trip.observe(viewLifecycleOwner) { trip ->
             if (trip != null) {
-                departureDate = trip.getDate().toString()
-                originAddress = trip.getOriginAddress().toString()
-                destinationAddress = trip.getDestinationAddress().toString()
-                price = trip.getPrice().toString().toFloat()
 
-                departureDateEditText.setText(departureDate)
-                originAddressEditText.setText(originAddress)
-                destinationAddressEditText.setText(destinationAddress)
-                priceEditText.setText(price.toString())
+                val dateMillis = trip.getDate()
+
+                if (dateMillis != null && dateMillis > 0) {
+                    selectedDateInMillis = dateMillis
+
+                    departureDateEditText.setText(
+                        SimpleDateFormat("d/M/yyyy", Locale.getDefault())
+                            .format(Date(dateMillis))
+                    )
+                }
+
+                originAddressEditText.setText(trip.getOriginAddress())
+                destinationAddressEditText.setText(trip.getDestinationAddress())
+                priceEditText.setText(trip.getPrice().toString())
             }
-        })
+        }
+
+
 
         departureDateEditText.setOnClickListener {
             this.showDatePickerDialog()
@@ -130,30 +143,44 @@ class EditTripFragment : Fragment() {
             val originAddress = originAddressEditText.text.toString()
             val destinationAddress = destinationAddressEditText.text.toString()
             val priceString = priceEditText.text.toString()
-            val price = priceString.toFloat()
+            val price = priceString.toFloatOrNull()
 
-            viewModel.updateTrip(tripId,originAddress,destinationAddress,selectedDateInMillis,price)
+            viewModel.updateTrip(pendingTripId,originAddress,destinationAddress,selectedDateInMillis,price)
         }
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(requireContext(), { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            val selectedCalendar = Calendar.getInstance()
-            selectedCalendar.set(year, month, dayOfMonth)
-            selectedDateInMillis = selectedCalendar.timeInMillis
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                val selectedCalendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, year)
+                    set(Calendar.MONTH, month) // 0-based OK
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
 
-            val selectedDate = "$dayOfMonth/${month + 1}/$year"
-            departureDateEditText.setText(selectedDate)
-        }, year, month, day)
+                selectedDateInMillis = selectedCalendar.timeInMillis
+
+                departureDateEditText.setText(
+                    "$dayOfMonth/${month + 1}/$year"
+                )
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
 
         datePickerDialog.show()
     }
+
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE
@@ -172,10 +199,10 @@ class EditTripFragment : Fragment() {
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
 
-    private fun showInvalidParameters() {
+    private fun showInvalidParameters(message: String) {
 
         progressBar.visibility = View.GONE
-        Snackbar.make(v, getString(R.string.invalid_parameters), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show()
     }
 
 }
