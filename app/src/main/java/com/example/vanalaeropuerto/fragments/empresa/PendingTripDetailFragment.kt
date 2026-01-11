@@ -50,7 +50,7 @@ class PendingTripDetailFragment : Fragment() {
 
     private lateinit var fabEditTrip : FloatingActionButton
 
-    private lateinit var pendingTripId : String
+    private lateinit var tripId : String
     private lateinit var requesterId : String
 
     // Variables para los botones
@@ -80,7 +80,7 @@ class PendingTripDetailFragment : Fragment() {
         tvPrice = v.findViewById(R.id.tvPrice)
         fabEditTrip = v.findViewById(R.id.fabEditTrip)
 
-        pendingTripId = arguments?.getString("tripId").toString()
+        tripId = arguments?.getString("tripId").toString()
         requesterId = arguments?.getString("requesterId").toString()
 
         // Asociar los botones
@@ -103,7 +103,7 @@ class PendingTripDetailFragment : Fragment() {
             }
         }
 
-        viewModel.getTrip(pendingTripId)
+        viewModel.getTrip(tripId)
         viewModel.getRequester(requesterId)
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
@@ -133,6 +133,8 @@ class PendingTripDetailFragment : Fragment() {
         viewModel.trip.observe(viewLifecycleOwner, Observer { trip ->
 
             if (trip != null) {
+                updateActionsVisibility(trip.getState())
+
                 val millis = trip.getDate()
                 if (millis != null) {
                     val formattedDate = SimpleDateFormat(
@@ -168,7 +170,7 @@ class PendingTripDetailFragment : Fragment() {
             try {
                 if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
 
-                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(pendingTripId)
+                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToEditTripFragment(tripId)
 
                     findNavController().navigate(action)
                 }
@@ -178,7 +180,7 @@ class PendingTripDetailFragment : Fragment() {
         }
 
         btnCancelTrip.setOnClickListener {
-            viewModel.cancelTrip(pendingTripId)
+            viewModel.cancelTrip(tripId)
 
             try {
                 if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
@@ -195,7 +197,7 @@ class PendingTripDetailFragment : Fragment() {
             try {
                 if (findNavController().currentDestination?.id == R.id.pendingTripDetailFragment) {
 
-                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToAsignDriverFragment(pendingTripId, requesterId)
+                    val action = PendingTripDetailFragmentDirections.actionPendingTripDetailFragmentToAsignDriverFragment(tripId, requesterId)
 
                     findNavController().navigate(action)
                 }
@@ -204,9 +206,30 @@ class PendingTripDetailFragment : Fragment() {
             }
         }
 
-
-
     }
+
+    private fun updateActionsVisibility(state: String?) {
+        when (state) {
+            "PENDING" -> {
+                fabEditTrip.visibility = View.VISIBLE
+                btnConfirmTrip.visibility = View.VISIBLE
+                btnCancelTrip.visibility = View.VISIBLE
+            }
+
+            "CONFIRMED" -> {
+                fabEditTrip.visibility = View.VISIBLE
+                btnConfirmTrip.visibility = View.GONE
+                btnCancelTrip.visibility = View.VISIBLE
+            }
+
+            else -> {
+                fabEditTrip.visibility = View.GONE
+                btnConfirmTrip.visibility = View.GONE
+                btnCancelTrip.visibility = View.GONE
+            }
+        }
+    }
+
 
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE

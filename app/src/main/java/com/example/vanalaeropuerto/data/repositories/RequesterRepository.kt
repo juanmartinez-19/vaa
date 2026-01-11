@@ -1,5 +1,6 @@
-package com.example.vanalaeropuerto.data
+package com.example.vanalaeropuerto.data.repositories
 
+import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.entities.Requester
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore

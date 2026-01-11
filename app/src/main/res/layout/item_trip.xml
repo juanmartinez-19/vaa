@@ -15,153 +15,141 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp">
 
+        <!-- Guideline para alinear valores -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.40" />
+
+        <!-- Fecha -->
         <TextView
             android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2024-09-10"
-            android:textAlignment="center"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Nombre y Apellido del Pasajero -->
+        <!-- Nombre -->
         <TextView
-            android:id="@+id/tvDriverNameLabel"
+            android:id="@+id/tvRequesterNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre:"
-            android:textAllCaps="false"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDate" />
+            app:layout_constraintTop_toBottomOf="@id/tvDate"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/tvDriverName"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
+            android:id="@+id/tvRequesterName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="Juan Pérez"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvDriverNameLabel"
-            app:layout_constraintTop_toTopOf="@id/tvDriverNameLabel" />
+            app:layout_constraintTop_toTopOf="@id/tvRequesterNameLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Teléfono del Pasajero -->
+        <!-- Teléfono -->
         <TextView
             android:id="@+id/tvPassengerPhoneLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Teléfono:"
-            android:textAllCaps="false"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDriverName" />
+            app:layout_constraintTop_toBottomOf="@id/tvRequesterName"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvPassengerPhone"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="+54 11 1234 5678"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvPassengerPhoneLabel"
-            app:layout_constraintTop_toTopOf="@id/tvPassengerPhoneLabel" />
+            app:layout_constraintTop_toTopOf="@id/tvPassengerPhoneLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Origen del Viaje -->
+        <!-- Origen -->
         <TextView
             android:id="@+id/tvOriginAddressLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Origen:"
-            android:textAllCaps="false"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPassengerPhone" />
+            app:layout_constraintTop_toBottomOf="@id/tvPassengerPhone"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvOriginAddress"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="123 Main St"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvOriginAddressLabel"
-            app:layout_constraintTop_toTopOf="@id/tvOriginAddressLabel" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Aeropuerto Internacional de Ezeiza"
+            app:layout_constraintTop_toTopOf="@id/tvOriginAddressLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Destino del Viaje -->
+        <!-- Destino -->
         <TextView
             android:id="@+id/tvDestinationAddressLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Destino:"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvOriginAddress" />
+            app:layout_constraintTop_toBottomOf="@id/tvOriginAddress"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvDestinationAddress"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="456 Elm St"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvDestinationAddressLabel"
-            app:layout_constraintTop_toTopOf="@id/tvDestinationAddressLabel" />
+            app:layout_constraintTop_toTopOf="@id/tvDestinationAddressLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Precio del Viaje -->
+        <!-- Precio -->
         <TextView
             android:id="@+id/tvPriceLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Precio:"
-            android:textAppearance="?attr/textAppearanceListItem"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvDestinationAddress" />
+            app:layout_constraintTop_toBottomOf="@id/tvDestinationAddress"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tvPrice"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:text="$150"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvPriceLabel"
-            app:layout_constraintTop_toTopOf="@id/tvPriceLabel" />
+            app:layout_constraintTop_toTopOf="@id/tvPriceLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Segmento del Viaje -->
+        <!-- Chofer -->
         <TextView
-            android:id="@+id/tvSegmentoLabel"
+            android:id="@+id/tvDriverNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Segmento:"
-            android:textAppearance="?attr/textAppearanceListItem"
+            android:text="Chofer:"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPrice" />
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tvPrice"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/tvSegmento"
-            android:layout_width="240dp"
-            android:layout_height="23dp"
-            android:text="Económico"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@id/tvSegmentoLabel"
-            app:layout_constraintTop_toTopOf="@id/tvSegmentoLabel" />
+            android:id="@+id/tvDriverNameValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Pedro Gómez"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/tvDriverNameLabel"
+            app:layout_constraintStart_toStartOf="@id/guidelineValue"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.RequesterRepository
-import com.example.vanalaeropuerto.data.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.RequesterRepository
+import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch

@@ -26,96 +26,56 @@ import com.google.android.material.snackbar.Snackbar
 
 class PendingTripsFragment : Fragment() {
 
-    private lateinit var v : View
-
-    private lateinit var progressBar : ProgressBar
-    private lateinit var recyclerPendingTrips : RecyclerView
-    private lateinit var tripsAdapter : TripsAdapter
-
-    private var tripRequesterList = mutableListOf<TripRequester>()
-    private var requesterMap = mutableMapOf<String?, Requester>()
-
+    private lateinit var v: View
     private lateinit var viewModel: PendingTripsViewModel
+    private lateinit var adapter: TripsAdapter
+    private lateinit var progressBar: ProgressBar
+    private lateinit var recycler: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         v = inflater.inflate(R.layout.fragment_pending_trips, container, false)
-
-        recyclerPendingTrips = v.findViewById(R.id.rvTrips)
+        recycler = v.findViewById(R.id.rvTrips)
         progressBar = v.findViewById(R.id.progressBarLoading)
-
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PendingTripsViewModel::class.java)
 
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PendingTripsViewModel::class.java]
 
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
-                requireActivity().finish()
-            }
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        adapter = TripsAdapter(mutableListOf()) { position ->
+            val item = adapter.getSelectedItem(position)
+
+            findNavController().navigate(
+                R.id.pendingTripDetailFragment,
+                Bundle().apply {
+                    putString("tripId", item.getTrip().getTripId())
+                    putString("requesterId", item.getRequester().getRequesterId())
+                }
+            )
         }
 
-        recyclerPendingTrips.layoutManager = LinearLayoutManager(context)
-        tripsAdapter = TripsAdapter(mutableListOf()) {
-            val tripRequester = tripsAdapter.getSelectedProduct(it)
-            val navController = findNavController()
+        recycler.adapter = adapter
 
-            // Crear un Bundle para pasar el tripRequester
-            val bundle = Bundle().apply {
-                putString("tripId", tripRequester.getTrip()?.getTripId())
-                putString("requesterId", tripRequester.getRequester()?.getRequesterId())
-            }
-
-            // Navegar al fragmento y pasar el Bundle
-            navController.navigate(R.id.pendingTripDetailFragment, bundle)
+        viewModel.tripItems.observe(viewLifecycleOwner) {
+            adapter.submitList(it.toMutableList())
         }
 
-        recyclerPendingTrips.adapter = tripsAdapter
+        viewModel.viewState.observe(viewLifecycleOwner) {
+            when (it) {
+                ViewState.Loading -> showLoading()
+                ViewState.Idle -> hideLoading()
+                ViewState.Empty -> showEmpty()
+                else -> showError()
+            }
+        }
 
         viewModel.getPendingTrips()
-
-        viewModel.tripsList.observe(viewLifecycleOwner) { trips ->
-            trips ?: return@observe
-
-            for (trip in trips) {
-                trip.getRequesterId()?.let {
-                    viewModel.getRequester(it)
-                }
-            }
-        }
-
-        viewModel.requestersMap.observe(viewLifecycleOwner) { map ->
-            requesterMap = map
-            updateTripRequester()
-        }
-
-
-        viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-            when (viewState) {
-                is ViewState.Loading -> {
-                    this.showLoading()
-                }
-                is ViewState.Failure -> {
-                    this.showError()
-                }
-                is ViewState.Idle -> {
-                    this.hideLoading()
-                }
-                is ViewState.Empty ->{
-                    this.showEmpty()
-                } else ->{
-                this.showError()
-            }
-            }
-        })
-
     }
 
     override fun onStart() {
@@ -128,50 +88,23 @@ class PendingTripsFragment : Fragment() {
         viewModel.stopListening()
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getPendingTrips()
-    }
-
-    private fun updateTripRequester() {
-        val trips = viewModel.tripsList.value ?: return
-        if (requesterMap.isEmpty()) return
-
-        tripRequesterList.clear()
-
-        for (trip in trips) {
-            val requester = requesterMap[trip.getRequesterId()]
-            if (requester != null) {
-                tripRequesterList.add(TripRequester(trip, requester))
-            }
-        }
-
-        tripsAdapter.submitList(tripRequesterList.toMutableList())
-    }
-
-    private fun showEmpty() {
-        progressBar.visibility = View.GONE
-        recyclerPendingTrips.visibility = View.GONE
-        Snackbar.make(v,"La lista está vacía", Snackbar.LENGTH_SHORT).show()
-    }
     private fun showLoading() {
         progressBar.visibility = View.VISIBLE
-        recyclerPendingTrips.visibility = View.GONE
+        recycler.visibility = View.GONE
     }
 
     private fun hideLoading() {
         progressBar.visibility = View.GONE
-        recyclerPendingTrips.visibility = View.VISIBLE
+        recycler.visibility = View.VISIBLE
+    }
+
+    private fun showEmpty() {
+        hideLoading()
+        Snackbar.make(v, "La lista está vacía", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun showError() {
-        recyclerPendingTrips.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        hideLoading()
         Snackbar.make(v, getString(R.string.ha_ocurrido_un_error), Snackbar.LENGTH_SHORT).show()
     }
-
-
-
-
 }

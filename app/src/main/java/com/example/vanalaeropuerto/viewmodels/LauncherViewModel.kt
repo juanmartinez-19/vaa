@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.RequesterRepository
-import com.example.vanalaeropuerto.entities.Requester
+import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import kotlinx.coroutines.launch
 
 class LauncherViewModel : ViewModel() {

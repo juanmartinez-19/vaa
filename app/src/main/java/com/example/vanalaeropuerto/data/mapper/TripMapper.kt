@@ -15,6 +15,7 @@ fun TripFirestoreDto.toDomain(): Trip {
         price = price?.toFloat(),
         state = state,
         tripId = tripId,
-        requesterId = requesterId
+        requesterId = requesterId,
+        driverId = driverId
     )
 }

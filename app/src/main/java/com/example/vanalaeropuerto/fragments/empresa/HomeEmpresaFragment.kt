@@ -3,29 +3,18 @@ package com.example.vanalaeropuerto.fragments.empresa
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.activities.LoginActivity
-import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
 import com.example.vanalaeropuerto.adapters.empresa.ViewPagerAdapter
 import com.example.vanalaeropuerto.core.Roles
-import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.HomeEmpresaViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
@@ -35,10 +24,9 @@ class HomeEmpresaFragment : Fragment() {
     private lateinit var v : View
     private lateinit var viewPager : ViewPager2
     private lateinit var tabLayout : TabLayout
+    private lateinit var homeViewModel: HomeEmpresaViewModel
 
     private lateinit var fabSignOut : FloatingActionButton
-
-    private lateinit var viewModel: HomeEmpresaViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +43,7 @@ class HomeEmpresaFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel = ViewModelProvider(this).get(HomeEmpresaViewModel::class.java)
+        homeViewModel = ViewModelProvider(requireActivity())[HomeEmpresaViewModel::class.java]
 
         val sessionViewModel =
             ViewModelProvider(requireActivity())[SessionViewModel::class.java]
@@ -65,6 +53,13 @@ class HomeEmpresaFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                homeViewModel.selectedTab = position
+            }
+        })
+
 
         viewPager.adapter = ViewPagerAdapter(requireActivity())
 
@@ -87,20 +82,8 @@ class HomeEmpresaFragment : Fragment() {
             }
         }).attach()
 
-        viewPager.setCurrentItem(1, false) // Establece la segunda pestaña como la inicial (sin animación)
+        viewPager.setCurrentItem(homeViewModel.selectedTab, false)
 
-        /*
-        fabAddDriver.setOnClickListener{
-            try {
-                if (findNavController().currentDestination?.id == R.id.homeEmpresaFragment) {
-                  val action = HomeEmpresaFragmentDirections.actionHomeEmpresaFragmentToDriversFragment()
-                  findNavController().navigate(action)
-                }
-            } catch (e: IllegalArgumentException) {
-                Log.e("HomeEmpresaFragment", "Navigation action failed: ${e.message}")
-            }
-        }
-        */
     }
 
 

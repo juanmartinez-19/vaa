@@ -5,6 +5,10 @@
     <color name="colorAccent">#FF9933</color>
     <color name="grey">#bdbdbd</color>
     <color name="white">#ffffff</color>
+    <color name="trip_pending">#FFF59D</color>     <!-- Amarillo -->
+    <color name="trip_confirmed">#A5D6A7</color>   <!-- Verde -->
+    <color name="trip_cancelled">#EF9A9A</color>   <!-- Rojo -->
+    <color name="trip_done">#FFCC80</color>        <!-- Naranja -->
 
 
 </resources>

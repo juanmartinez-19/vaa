@@ -1,8 +1,7 @@
-package com.example.vanalaeropuerto.fragments.empresa
+package com.example.vanalaeropuerto.fragments.empresa.drivers
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +10,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.RadioGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.session.SessionViewModel
-import com.example.vanalaeropuerto.viewmodels.empresa.CrudDriverViewModel
-import com.example.vanalaeropuerto.viewmodels.empresa.DriversViewModel
-import com.example.vanalaeropuerto.viewmodels.user.IngresoDatosViewModel
+import com.example.vanalaeropuerto.viewmodels.empresa.drivers.CrudDriverViewModel
 import com.google.android.material.snackbar.Snackbar
 import java.util.UUID
 

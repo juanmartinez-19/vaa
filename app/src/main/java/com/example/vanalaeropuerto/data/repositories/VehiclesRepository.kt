@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.data.user
+package com.example.vanalaeropuerto.data.repositories
 
 import android.content.ContentValues
 import android.util.Log

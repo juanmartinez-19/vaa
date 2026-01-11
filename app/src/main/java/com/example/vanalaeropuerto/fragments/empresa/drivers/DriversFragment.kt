@@ -1,4 +1,4 @@
-package com.example.vanalaeropuerto.fragments.empresa
+package com.example.vanalaeropuerto.fragments.empresa.drivers
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -17,9 +17,11 @@ import com.example.vanalaeropuerto.adapters.empresa.DriverAdapter
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.session.SessionViewModel
-import com.example.vanalaeropuerto.viewmodels.empresa.AsignDriverViewModel
+import com.example.vanalaeropuerto.viewmodels.empresa.drivers.DriversViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
-class AsignDriverFragment : Fragment() {
+class DriversFragment : Fragment() {
 
     private lateinit var v : View
 
@@ -27,28 +29,26 @@ class AsignDriverFragment : Fragment() {
     private lateinit var recyclerDrivers : RecyclerView
     lateinit var progressBar : ProgressBar
 
-    private lateinit var tripId : String
-    private lateinit var requesterId : String
+    private lateinit var fabAddDriver : FloatingActionButton
 
-    private lateinit var viewModel: AsignDriverViewModel
+    private lateinit var viewModel: DriversViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.fragment_asign_driver, container, false)
+        v=inflater.inflate(R.layout.fragment_drivers, container, false)
 
         recyclerDrivers = v.findViewById(R.id.recyclerDrivers)
         progressBar = v.findViewById(R.id.progressBarLoading)
-        tripId = AsignDriverFragmentArgs.fromBundle(requireArguments()).tripId
-        requesterId = AsignDriverFragmentArgs.fromBundle(requireArguments()).requesterId
+        fabAddDriver = v.findViewById(R.id.fabAddDriver)
 
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AsignDriverViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DriversViewModel::class.java)
 
         val sessionViewModel =
             ViewModelProvider(requireActivity())[SessionViewModel::class.java]
@@ -59,25 +59,38 @@ class AsignDriverFragment : Fragment() {
             }
         }
 
+        viewModel.getDrivers()
+
         recyclerDrivers.layoutManager = LinearLayoutManager(context)
         driverAdapter = DriverAdapter(mutableListOf()) {
+            val driver = driverAdapter.getSelectedProduct(it)
+            val driverId = driver.getDriverId()
+
             try {
-                if (findNavController().currentDestination?.id == R.id.asignDriverFragment) {
-                    val driverId = driverAdapter.getSelectedProduct(it).getDriverId()
-                    if (!driverId.isNullOrBlank()) {
-                        val action = AsignDriverFragmentDirections.actionAsignDriverFragmentToTripSummaryFragment(tripId,driverId,requesterId)
+                if (findNavController().currentDestination?.id == R.id.driversFragment) {
+                    val action = driverId?.let { it1 ->
+                        DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment(it1)
+                    }
+                    if (action != null) {
                         findNavController().navigate(action)
-                    } else {
-                        Log.e("AsignDriverFragment", "Navigation action failed")
                     }
                 }
             } catch (e: IllegalArgumentException) {
-                Log.e("AsignDriverFragment", "Navigation action failed: ${e.message}")
+                Log.e("DriversFragment", "Navigation action failed: ${e.message}")
             }
         }
         recyclerDrivers.adapter = driverAdapter
 
-        viewModel.getDrivers()
+        fabAddDriver.setOnClickListener {
+            try {
+                if (findNavController().currentDestination?.id == R.id.driversFragment) {
+                    val action = DriversFragmentDirections.actionDriversFragmentToCrudDriverFragment("")
+                    findNavController().navigate(action)
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e("DriversFragment", "Navigation action failed: ${e.message}")
+            }
+        }
 
         viewModel._driversList.observe(viewLifecycleOwner, Observer { _driversList ->
             if (_driversList != null) {
@@ -103,11 +116,13 @@ class AsignDriverFragment : Fragment() {
             }
             }
         })
+
     }
 
     private fun showEmpty() {
         progressBar.visibility = View.GONE
         recyclerDrivers.visibility = View.GONE
+        Snackbar.make(v, "No se ha agregado ningún chofer.", Snackbar.LENGTH_INDEFINITE).show()
     }
 
     private fun showLoading() {
@@ -123,6 +138,9 @@ class AsignDriverFragment : Fragment() {
     private fun showError() {
         progressBar.visibility = View.GONE
         recyclerDrivers.visibility = View.GONE
+        Snackbar.make(v, "Ocurrió un error inesperado.", Snackbar.LENGTH_LONG).show()
+
     }
+
 
 }

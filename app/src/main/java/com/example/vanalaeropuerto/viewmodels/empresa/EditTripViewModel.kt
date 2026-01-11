@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.entities.Trip
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -43,7 +43,7 @@ class EditTripViewModel : ViewModel() {
         }
     }
 
-    fun validarDatos(
+    private fun validarDatos(
         originAddress: String?,
         destinationAddress: String?,
         selectedDateInMillis: Long?,
@@ -111,7 +111,7 @@ class EditTripViewModel : ViewModel() {
                     }
                     is MyResult.Failure -> {
                         _viewState.value = ViewState.Failure
-                        Log.d("AddProductError", _viewState.value.toString())
+                        Log.d("update trip error", _viewState.value.toString())
                     }
                 }
 

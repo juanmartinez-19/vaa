@@ -11,5 +11,6 @@ data class TripFirestoreDto(
     var price: Double? = null,
     var state: String? = null,
     var tripId: String? = null,
-    var requesterId: String? = null
+    var requesterId: String? = null,
+    var driverId: String? = null
 )

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.RequesterRepository
+import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.entities.Requester
 import kotlinx.coroutines.launch
 

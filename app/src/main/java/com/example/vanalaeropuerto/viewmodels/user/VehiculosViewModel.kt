@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.user.VehiclesRepository
+import com.example.vanalaeropuerto.data.repositories.VehiclesRepository
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.Vehicle
 import kotlinx.coroutines.launch

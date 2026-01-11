@@ -15,10 +15,11 @@ class Trip (
     private var state : String?="",
     private var tripId : String?="",
     private var segmentId : String?="",
-    private var requesterId : String?=""
+    private var requesterId : String?="",
+    private var driverId : String?=""
 ) : Parcelable {
 
-    constructor() : this(null, null,null,null,null,null,null,null,null,null,null,null)
+    constructor() : this(null, null,null,null,null,null,null,null,null,null,null,null, null)
 
     fun setOriginAddress(originAddress: String?) {
         this.originAddress = originAddress
@@ -73,6 +74,9 @@ class Trip (
     }
     fun getRequesterId() : String? {
         return this.requesterId
+    }
+    fun getDriverId() : String? {
+        return this.driverId
     }
 
 

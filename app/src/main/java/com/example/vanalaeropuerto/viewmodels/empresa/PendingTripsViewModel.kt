@@ -1,71 +1,87 @@
 package com.example.vanalaeropuerto.viewmodels.empresa
 
-import android.util.Log
+import TripItemUI
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.RequesterRepository
-import com.example.vanalaeropuerto.data.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.RequesterRepository
+import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.launch
 
 class PendingTripsViewModel : ViewModel() {
-    private val _viewState = MutableLiveData<ViewState>()
-    val viewState: LiveData<ViewState> get() = _viewState
-    private val _tripsList = MutableLiveData<List<Trip>>()
-    val tripsList: LiveData<List<Trip>> = _tripsList
-    val getTripsUseCase: TripsRepository = TripsRepository()
 
-    val getRequesterUseCase : RequesterRepository = RequesterRepository()
-    private val _requestersMap = MutableLiveData<MutableMap<String?, Requester>>()
-    val requestersMap: LiveData<MutableMap<String?, Requester>> get() = _requestersMap
+    private val _viewState = MutableLiveData<ViewState>(ViewState.Idle)
+    val viewState: LiveData<ViewState> = _viewState
 
-    private var listener: ListenerRegistration? = null
+    private val _tripItems = MutableLiveData<List<TripItemUI>>()
+    val tripItems: LiveData<List<TripItemUI>> = _tripItems
 
-    init {
-        _requestersMap.value = mutableMapOf()
-    }
+    private val tripsRepo = TripsRepository()
+    private val requesterRepo = RequesterRepository()
 
-    init {
-        _viewState.value = ViewState.Idle
-    }
+    private val requesterMap = mutableMapOf<String, Requester>()
+    private var rawTrips: List<Trip> = emptyList()
+
     fun getPendingTrips() {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getTripsUseCase.getPendingTrips()){
+            when (val result = tripsRepo.getPendingTrips()) {
                 is MyResult.Success -> {
-                    if (result.data.isNotEmpty()) {
-                        _tripsList.value = result.data.map { it }.toMutableList()
-                        _viewState.value = ViewState.Idle
-                    } else {
-                        _viewState.value = ViewState.Empty
-                    }
+                    rawTrips = result.data
+                    loadRequesters()
                 }
                 is MyResult.Failure -> {
                     _viewState.value = ViewState.Failure
-                    Log.d("TEST1", _viewState.value.toString())
                 }
             }
-
         }
     }
 
-    fun startListening() {
-        _viewState.value = ViewState.Loading
+    private fun loadRequesters() {
+        viewModelScope.launch {
+            rawTrips.forEach { trip ->
+                val id = trip.getRequesterId() ?: return@forEach
+                if (!requesterMap.containsKey(id)) {
+                    when (val res = requesterRepo.getRequester(id)) {
+                        is MyResult.Success -> {
+                            res.data?.let { requesterMap[id] = it }
+                        }
+                        else -> {}
+                    }
+                }
+            }
+            buildUIItems()
+        }
+    }
 
-        getTripsUseCase.listenPendingTrips(
+    private fun buildUIItems() {
+        _tripItems.value = rawTrips.mapNotNull { trip ->
+            val requester = requesterMap[trip.getRequesterId()]
+            requester?.let {
+                TripItemUI(
+                    trip = trip,
+                    requester = it,
+                    driver = null
+                )
+            }
+        }
+
+        _viewState.value =
+            if (_tripItems.value.isNullOrEmpty()) ViewState.Empty
+            else ViewState.Idle
+    }
+
+    fun startListening() {
+        tripsRepo.listenPendingTrips(
             onSuccess = { trips ->
-                _tripsList.value = trips
-                _viewState.value =
-                    if (trips.isEmpty()) ViewState.Empty
-                    else ViewState.Idle
+                rawTrips = trips
+                loadRequesters()
             },
             onError = {
                 _viewState.value = ViewState.Failure
@@ -74,36 +90,11 @@ class PendingTripsViewModel : ViewModel() {
     }
 
     fun stopListening() {
-        getTripsUseCase.clearListener()
+        tripsRepo.clearListener()
     }
 
     override fun onCleared() {
-        super.onCleared()
         stopListening()
+        super.onCleared()
     }
-
-
-    fun getRequester(requesterId: String?) {
-        if (requesterId.isNullOrEmpty()) return
-
-        viewModelScope.launch {
-            _viewState.value = ViewState.Loading
-            when (val result = getRequesterUseCase.getRequester(requesterId)) {
-                is MyResult.Success -> {
-                    val currentMap = _requestersMap.value ?: mutableMapOf()
-                    // Asegúrate de que requesterId no sea null antes de usarlo como clave
-                    requesterId.let {
-                        currentMap[it] = result.data ?: return@launch
-                        _requestersMap.value = currentMap
-                    }
-                    _viewState.value = ViewState.Idle
-                }
-                is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
-                    Log.d("TEST2", "Failure: ${result.exception}")
-                }
-            }
-        }
-    }
-
 }

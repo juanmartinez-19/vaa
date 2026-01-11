@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/asignDriverFragment"
-        android:name="com.example.vanalaeropuerto.fragments.empresa.AsignDriverFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.drivers.AsignDriverFragment"
         tools:layout="@layout/fragment_asign_driver" >
         <argument
             android:name="tripId"
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/crudDriverFragment"
-        android:name="com.example.vanalaeropuerto.fragments.empresa.CrudDriverFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.drivers.CrudDriverFragment"
         tools:layout="@layout/fragment_crud_driver" >
         <argument
             android:name="driverId"
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/driversFragment"
-        android:name="com.example.vanalaeropuerto.fragments.empresa.DriversFragment"
+        android:name="com.example.vanalaeropuerto.fragments.empresa.drivers.DriversFragment"
         tools:layout="@layout/fragment_drivers" >
         <action
             android:id="@+id/action_driversFragment_to_crudDriverFragment"
