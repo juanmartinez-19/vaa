@@ -19,9 +19,12 @@ import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.activities.HomeActivity
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.Requester
+import com.example.vanalaeropuerto.session.SessionViewModel
+import com.example.vanalaeropuerto.session.UserRole
 import com.example.vanalaeropuerto.viewmodels.login.RegisterViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import java.util.UUID
 
 class RegisterFragment : Fragment() {
@@ -43,6 +46,7 @@ class RegisterFragment : Fragment() {
     private lateinit var phoneNumber : String
 
     private lateinit var viewModel: RegisterViewModel
+    private lateinit var sessionViewModel: SessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,6 +68,8 @@ class RegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+        sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
+
 
         btnContinue.setOnClickListener {
 
@@ -97,27 +103,12 @@ class RegisterFragment : Fragment() {
         }
 
     }
-/*
-    private fun navigate(){
-        try {
-            if (findNavController().currentDestination?.id == R.id.registerFragment) {
-                val action = RegisterFragmentDirections.actionRegisterFragmentToHomeActivity()
-                findNavController().navigate(action)
-            } else {
-                Log.e("RegisterFragment", "Navigation action failed")
-            }
-        } catch (e: IllegalArgumentException) {
-            Log.e("RegisterFragment", "Navigation action failed: ${e.message}")
-        }
-    }
-*/
 
     private fun onRegisterSuccess() {
-        val intent = Intent(requireContext(), HomeActivity::class.java)
-        startActivity(intent)
-        requireActivity().finish()
-    }
+        val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
+        sessionViewModel.onLoginSuccess(uid)
+    }
 
     private fun showError() {
         progressBar.visibility = View.GONE

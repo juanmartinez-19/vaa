@@ -1,20 +1,45 @@
 package com.example.vanalaeropuerto.session
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.vanalaeropuerto.entities.Requester
+import com.google.firebase.auth.FirebaseAuth
 
-class SessionViewModel : ViewModel() {
+class SessionViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val _currentRequester = MutableLiveData<Requester?>()
-    val currentRequester: LiveData<Requester?> = _currentRequester
+    private val auth = FirebaseAuth.getInstance()
+    private val localSession = LocalSessionStorage(application)
 
-    fun setRequester(requester: Requester) {
-        _currentRequester.value = requester
+    private val _state = MutableLiveData<SessionState>()
+    val state: LiveData<SessionState> = _state
+
+    init {
+        _state.value = SessionState.Loading
+        restoreSession()
     }
 
-    fun clearSession() {
-        _currentRequester.value = null
+    private fun restoreSession() {
+        val local = localSession.get()
+
+        if (local != null && auth.currentUser != null) {
+            _state.value = local
+        } else {
+            clearSession()
+        }
+    }
+    fun onLoginSuccess(uid: String) {
+        localSession.save(uid)
+        _state.value = SessionState.LoggedIn(uid)
+    }
+    fun logout() {
+        auth.signOut()
+        clearSession()
+    }
+    private fun clearSession() {
+        localSession.clear()
+        _state.value = SessionState.LoggedOut
     }
 }

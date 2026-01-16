@@ -4,43 +4,38 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.example.vanalaeropuerto.session.SessionState
+import com.example.vanalaeropuerto.session.SessionViewModel
+import com.example.vanalaeropuerto.session.UserRole
 import com.example.vanalaeropuerto.viewmodels.LauncherViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 class LauncherActivity : AppCompatActivity() {
 
-    private val viewModel: LauncherViewModel by viewModels()
+    private lateinit var sessionViewModel: SessionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val currentUser = FirebaseAuth.getInstance().currentUser
+        sessionViewModel = ViewModelProvider(this)[SessionViewModel::class.java]
 
-        if (currentUser == null) {
-            goToLogin()
-            return
-        }
-
-        observeState()
-        viewModel.loadUser(currentUser.uid)
+        observeSession()
     }
 
-    private fun observeState() {
-        viewModel.launcherState.observe(this) { state ->
+    private fun observeSession() {
+        sessionViewModel.state.observe(this) { state ->
             when (state) {
-                is LauncherViewModel.LauncherState.User -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    finish()
+                SessionState.Loading -> {
+                    // splash opcional
                 }
-                is LauncherViewModel.LauncherState.Admin -> {
-                    startActivity(Intent(this, EmpresaActivity::class.java))
-                    finish()
-                }
-                LauncherViewModel.LauncherState.Login -> {
+
+                SessionState.LoggedOut -> {
                     goToLogin()
                 }
-                LauncherViewModel.LauncherState.Error -> {
-                    FirebaseAuth.getInstance().signOut()
+
+                is SessionState.LoggedIn -> {
+                    // ⚠️ NO navegamos a Home / Empresa acá
                     goToLogin()
                 }
             }
@@ -52,4 +47,3 @@ class LauncherActivity : AppCompatActivity() {
         finish()
     }
 }
-

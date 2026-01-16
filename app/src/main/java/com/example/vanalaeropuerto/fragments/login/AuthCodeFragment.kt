@@ -13,9 +13,12 @@ import android.widget.ProgressBar
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.activities.HomeActivity
+import com.example.vanalaeropuerto.session.SessionViewModel
+import com.example.vanalaeropuerto.session.UserRole
 import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 
 class AuthCodeFragment : Fragment() {
 
@@ -31,6 +34,8 @@ class AuthCodeFragment : Fragment() {
 
     private lateinit var phoneNumber: String
     private lateinit var initMessage: String
+    private lateinit var sessionViewModel: SessionViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +59,7 @@ class AuthCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(AuthViewModel::class.java)
+        sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
 
         btnVerifyCode.setOnClickListener {
             val code = etCode.text.toString().trim()
@@ -90,22 +96,8 @@ class AuthCodeFragment : Fragment() {
                 }
 
                 is AuthViewModel.AuthState.UserExists -> {
-                    this.goToUserHome()
-                    /*
-                    try {
-                        if (findNavController().currentDestination?.id == R.id.authCodeFragment) {
-
-                            val action =
-                                AuthCodeFragmentDirections.actionAuthCodeFragmentToHomeActivity()
-                            findNavController().navigate(action)
-
-                        } else {
-                            Log.e("AuthCodeFragment", "Navigation action failed")
-                        }
-                    } catch (e: IllegalArgumentException) {
-                        Log.e("AuthCodeFragment", "Navigation action failed: ${e.message}")
-                    }
-                    */
+                    val uid = FirebaseAuth.getInstance().currentUser!!.uid
+                    sessionViewModel.onLoginSuccess(uid)
                 }
 
                 is AuthViewModel.AuthState.Failure -> {
@@ -132,13 +124,5 @@ class AuthCodeFragment : Fragment() {
         }
 
     }
-
-    private fun goToUserHome() {
-        val intent = Intent(requireContext(), HomeActivity::class.java)
-        startActivity(intent)
-        requireActivity().finish() // 🔴 mata LoginActivity
-    }
-
-
 
 }

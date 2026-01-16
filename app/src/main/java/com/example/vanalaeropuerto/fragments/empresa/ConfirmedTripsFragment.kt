@@ -17,7 +17,6 @@ import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.TripRequester
-import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -28,9 +27,6 @@ class ConfirmedTripsFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerConfirmedTrips: RecyclerView
     private lateinit var tripsAdapter: TripsAdapter
-
-    private var tripRequesterList = mutableListOf<TripRequester>()
-    private var requesterMap = mutableMapOf<String?, Requester>()
 
     private lateinit var viewModel: ConfirmedTripsViewModel
 
@@ -50,15 +46,6 @@ class ConfirmedTripsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(ConfirmedTripsViewModel::class.java)
-
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
-
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
-                requireActivity().finish()
-            }
-        }
 
         recyclerConfirmedTrips.layoutManager = LinearLayoutManager(context)
         tripsAdapter = TripsAdapter(mutableListOf()) {

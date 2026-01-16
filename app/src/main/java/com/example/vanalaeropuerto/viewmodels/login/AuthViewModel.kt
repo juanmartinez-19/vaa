@@ -5,10 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
+import com.example.vanalaeropuerto.session.SessionViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit
 class AuthViewModel : ViewModel() {
 
 
-    val getRequestersUseCase : RequesterRepository = RequesterRepository()
+    val getRequestersUseCase: RequesterRepository = RequesterRepository()
 
     private val errores = mutableListOf<String>()
 
@@ -39,27 +41,36 @@ class AuthViewModel : ViewModel() {
     private var lastRequestTime: Long = 0
     private val requestCooldown: Long = 60000 // 1 minuto
 
-    private val verificationCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+    private val verificationCallbacks =
+        object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
-        override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-            // Verificación completada automáticamente
-            signInWithPhoneAuthCredential(credential)
-        }
+            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                // Verificación completada automáticamente
+                signInWithPhoneAuthCredential(credential)
+            }
 
-        override fun onVerificationFailed(e: FirebaseException) {
-            Log.e("PHONE_AUTH", "Verification failed", e)
-            _authState.postValue(AuthState.Failure(e.message ?: "Error de verificación"))
-            _viewState.value = ViewState.Idle
-        }
+            override fun onVerificationFailed(e: FirebaseException) {
+                Log.e("PHONE_AUTH", "Verification failed", e)
+                _authState.postValue(AuthState.Failure(e.message ?: "Error de verificación"))
+                _viewState.value = ViewState.Idle
+            }
 
-        override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-            // Código enviado
-            storedVerificationId = verificationId
-            resendToken = token
-            _authState.postValue(AuthState.CodeSent(storedVerificationId,"Código enviado correctamente."))
-            _viewState.value = ViewState.Idle
+            override fun onCodeSent(
+                verificationId: String,
+                token: PhoneAuthProvider.ForceResendingToken
+            ) {
+                // Código enviado
+                storedVerificationId = verificationId
+                resendToken = token
+                _authState.postValue(
+                    AuthState.CodeSent(
+                        storedVerificationId,
+                        "Código enviado correctamente."
+                    )
+                )
+                _viewState.value = ViewState.Idle
+            }
         }
-    }
 
     fun clearData() {
         _viewState.value = ViewState.Idle
@@ -111,6 +122,7 @@ class AuthViewModel : ViewModel() {
             _viewState.value = ViewState.Idle
         }
     }
+
     private fun checkIfUserExists(uid: String) {
         viewModelScope.launch {
             when (val result = getRequestersUseCase.getRequester(uid)) {
@@ -130,9 +142,8 @@ class AuthViewModel : ViewModel() {
 
             }
         }
+
     }
-
-
 
     private fun validateData(
         phoneNumber: String?,

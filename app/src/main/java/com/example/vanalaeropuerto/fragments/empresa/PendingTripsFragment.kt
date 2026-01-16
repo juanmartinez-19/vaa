@@ -2,25 +2,17 @@ package com.example.vanalaeropuerto.fragments.empresa
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
-import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.entities.Requester
-import com.example.vanalaeropuerto.entities.TripRequester
-import com.example.vanalaeropuerto.fragments.user.VehiculosFragmentDirections
-import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripsViewModel
 import com.google.android.material.snackbar.Snackbar
 

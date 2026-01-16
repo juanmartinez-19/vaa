@@ -27,6 +27,7 @@ class HomeEmpresaFragment : Fragment() {
     private lateinit var homeViewModel: HomeEmpresaViewModel
 
     private lateinit var fabSignOut : FloatingActionButton
+    private lateinit var sessionViewModel: SessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,15 +45,7 @@ class HomeEmpresaFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         homeViewModel = ViewModelProvider(requireActivity())[HomeEmpresaViewModel::class.java]
-
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
-
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
-                requireActivity().finish()
-            }
-        }
+        sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -64,12 +57,7 @@ class HomeEmpresaFragment : Fragment() {
         viewPager.adapter = ViewPagerAdapter(requireActivity())
 
         fabSignOut.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            sessionViewModel.logout()
         }
 
         TabLayoutMediator(tabLayout, viewPager, TabLayoutMediator.TabConfigurationStrategy { tab, position ->

@@ -4,14 +4,12 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
@@ -52,6 +50,7 @@ class HomeFragment : Fragment() {
     private var selectedDateInMillis: Long = 0L
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var sessionViewModel: SessionViewModel
 
     private val suggestions = arrayOf(
         "Aeropuerto Internacional de Ezeiza (EZE)",
@@ -94,25 +93,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
-
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.USER) {
-                requireActivity().finish()
-            }
-        }
+        sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
 
         btnSignOut.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            startActivity(
-                Intent(requireContext(), LoginActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
-            )
+            sessionViewModel.logout()
         }
 
         etDepartureDate.setOnClickListener { showDatePickerDialog() }

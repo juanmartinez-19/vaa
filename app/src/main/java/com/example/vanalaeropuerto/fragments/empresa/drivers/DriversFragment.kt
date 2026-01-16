@@ -16,7 +16,6 @@ import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.DriverAdapter
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.drivers.DriversViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -49,15 +48,6 @@ class DriversFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(DriversViewModel::class.java)
-
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
-
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
-                requireActivity().finish()
-            }
-        }
 
         viewModel.getDrivers()
 

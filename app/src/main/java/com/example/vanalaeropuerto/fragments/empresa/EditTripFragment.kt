@@ -4,27 +4,20 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.entities.TripRequester
-import com.example.vanalaeropuerto.session.SessionViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.EditTripViewModel
 import com.google.android.material.snackbar.Snackbar
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -72,15 +65,6 @@ class EditTripFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(EditTripViewModel::class.java)
-
-        val sessionViewModel =
-            ViewModelProvider(requireActivity())[SessionViewModel::class.java]
-
-        sessionViewModel.currentRequester.observe(viewLifecycleOwner) { session ->
-            if (session == null || session.getRequesterRole() != Roles.ADMIN) {
-                requireActivity().finish()
-            }
-        }
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {
