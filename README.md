@@ -18,3 +18,17 @@ Features
 - Gestor de viajes del lado del cliente
 - Validaciones de datos
 - Arquitectura MVVM
+
+## Screenshots
+
+### Login
+![Login](login.jpg)
+
+### Home Usuario
+![Home User](home_user.jpg)
+
+### Home Admin
+![Home Admin](home_admin.jpg)
+
+### Formulario de viaje
+![Form](form_user.jpg)
