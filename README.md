@@ -15,5 +15,6 @@ Features
 - Manejo de sesión persistente
 - Roles de usuario (USER / ADMIN)
 - Formulario de solicitud de viajes
+- Gestor de viajes del lado del cliente
 - Validaciones de datos
 - Arquitectura MVVM
