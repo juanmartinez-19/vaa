@@ -87,7 +87,7 @@ class VehiculosFragment : Fragment() {
         }
         recyclerVehicles.adapter = vehicleAdapter
 
-        viewModel.getVehicles(passangers,luggage)
+        viewModel.getVehicles()
 
         viewModel._vehiclesList.observe(viewLifecycleOwner, Observer { _vehiclesList ->
             if (_vehiclesList != null) {

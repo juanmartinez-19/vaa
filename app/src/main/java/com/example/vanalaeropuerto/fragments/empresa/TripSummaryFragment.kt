@@ -1,31 +1,32 @@
 package com.example.vanalaeropuerto.fragments.empresa
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.TripSummaryViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@AndroidEntryPoint
 class TripSummaryFragment : Fragment() {
 
 
     private lateinit var v: View
-    private lateinit var progressBar : ProgressBar
+    private lateinit var progressBar: ProgressBar
 
     // Variables para los TextView
     private lateinit var tvRequesterName: TextView
@@ -39,22 +40,21 @@ class TripSummaryFragment : Fragment() {
     private lateinit var tvBabyCount: TextView
     private lateinit var tvLuggage: TextView
     private lateinit var tvPrice: TextView
-    private lateinit var tvDriverName : TextView
+    private lateinit var tvDriverName: TextView
 
     private lateinit var btnConfirmTrip: Button
 
-    private lateinit var viewModel: TripSummaryViewModel
+    private val viewModel: TripSummaryViewModel by viewModels()
 
-    private lateinit var tripId : String
-    private lateinit var requesterId : String
-    private lateinit var driverId : String
+    private lateinit var tripId: String
+    private lateinit var requesterId: String
+    private lateinit var driverId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.fragment_trip_summary, container, false)
-
 
         progressBar = v.findViewById(R.id.progressBarLoading)
         tvRequesterName = v.findViewById(R.id.tvRequesterName)
@@ -79,7 +79,6 @@ class TripSummaryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TripSummaryViewModel::class.java)
 
         viewModel.loadScreen(tripId, requesterId, driverId)
 
@@ -146,7 +145,8 @@ class TripSummaryFragment : Fragment() {
 
             try {
                 if (findNavController().currentDestination?.id == R.id.tripSummaryFragment) {
-                    val action = TripSummaryFragmentDirections.actionTripSummaryFragmentToHomeEmpresaFragment()
+                    val action =
+                        TripSummaryFragmentDirections.actionTripSummaryFragmentToHomeEmpresaFragment()
                     findNavController().navigate(action)
                 }
             } catch (e: IllegalArgumentException) {
@@ -154,7 +154,6 @@ class TripSummaryFragment : Fragment() {
             }
         }
     }
-
 
 
     private fun showLoading() {

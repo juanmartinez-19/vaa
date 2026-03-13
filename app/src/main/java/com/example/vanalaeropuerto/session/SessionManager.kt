@@ -1,29 +1,48 @@
 package com.example.vanalaeropuerto.session
 
-import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.repositories.RequesterRepository
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 
 class SessionManager(
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
-    private val repository: RequesterRepository = RequesterRepository()
+    private val auth: FirebaseAuth,
+    private val localSession: LocalSessionStorage
 ) {
 
-    suspend fun resolveSession(): SessionState {
-        val firebaseUser = auth.currentUser ?: return SessionState.LoggedOut
+    private val _session = MutableLiveData<UserSession?>()
+    val session: LiveData<UserSession?> = _session
 
-        return when (val result = repository.getRequester(firebaseUser.uid)) {
-            is MyResult.Success -> {
-                SessionState.LoggedIn(firebaseUser.uid)
-            }
-            is MyResult.Failure -> {
-                auth.signOut()
-                SessionState.LoggedOut
-            }
+    fun restoreSession() {
+
+        val localUid = localSession.getUid()
+        val firebaseUser = auth.currentUser
+
+        if (localUid != null && firebaseUser != null) {
+
+            _session.value = UserSession(
+                uid = localUid,
+                role = UserRole.USER
+            )
+
+        } else {
+
+            _session.value = null
         }
+    }
+
+    fun startSession(uid: String, role: UserRole) {
+
+        localSession.save(uid)
+
+        _session.value = UserSession(
+            uid = uid,
+            role = role
+        )
     }
 
     fun logout() {
         auth.signOut()
+        localSession.clear()
+        _session.value = null
     }
 }

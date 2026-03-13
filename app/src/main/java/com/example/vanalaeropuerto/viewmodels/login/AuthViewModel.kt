@@ -5,12 +5,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
-import com.example.vanalaeropuerto.session.SessionViewModel
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -158,9 +156,10 @@ class AuthViewModel : ViewModel() {
         }
 
         if (phoneNumber == lastPhoneNumber && currentTime - lastRequestTime < requestCooldown) {
-            val message = "Código ya solicitado recientemente. Espera 60 segundos antes de solicitar uno nuevo."
+            val message =
+                "Código ya solicitado recientemente. Espera 60 segundos antes de solicitar uno nuevo."
             errores.add(message)
-            _authState.postValue(AuthState.CodeSent(storedVerificationId,message))
+            _authState.postValue(AuthState.CodeSent(storedVerificationId, message))
         }
     }
 

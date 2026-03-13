@@ -6,21 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
-import com.example.vanalaeropuerto.core.Roles
-import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.TripsUiState
 import com.example.vanalaeropuerto.viewmodels.empresa.TripsHistoryViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class TripsHistoryFragment : Fragment() {
 
     private lateinit var v: View
-    private lateinit var viewModel: TripsHistoryViewModel
+    private val viewModel: TripsHistoryViewModel by viewModels()
 
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerTripHistory: RecyclerView
@@ -41,7 +42,6 @@ class TripsHistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[TripsHistoryViewModel::class.java]
 
         recyclerTripHistory.layoutManager = LinearLayoutManager(requireContext())
 
@@ -59,18 +59,28 @@ class TripsHistoryFragment : Fragment() {
 
         recyclerTripHistory.adapter = tripsAdapter
 
-        // 📌 Observers LIMPIOS
-        viewModel.tripItems.observe(viewLifecycleOwner) {
-            tripsAdapter.submitList(it.toMutableList())
-        }
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
 
-        viewModel.viewState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                ViewState.Loading -> showLoading()
-                ViewState.Idle -> hideLoading()
-                ViewState.Empty -> showEmpty()
-                else -> showError()
+            when(state) {
+
+                is TripsUiState.Loading -> {
+                    showLoading()
+                }
+
+                is TripsUiState.Success -> {
+                    hideLoading()
+                    tripsAdapter.submitList(state.trips)
+                }
+
+                is TripsUiState.Empty -> {
+                    showEmpty()
+                }
+
+                is TripsUiState.Error -> {
+                    showError()
+                }
             }
+
         }
 
         viewModel.getTripHistory()

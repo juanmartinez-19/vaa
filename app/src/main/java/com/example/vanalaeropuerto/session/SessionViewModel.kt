@@ -2,8 +2,6 @@ package com.example.vanalaeropuerto.session
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 
 class SessionViewModel(
@@ -13,33 +11,19 @@ class SessionViewModel(
     private val auth = FirebaseAuth.getInstance()
     private val localSession = LocalSessionStorage(application)
 
-    private val _state = MutableLiveData<SessionState>()
-    val state: LiveData<SessionState> = _state
+    private val sessionManager = SessionManager(auth, localSession)
+
+    val session = sessionManager.session
 
     init {
-        _state.value = SessionState.Loading
-        restoreSession()
+        sessionManager.restoreSession()
     }
 
-    private fun restoreSession() {
-        val local = localSession.get()
+    fun startSession(uid: String) {
+        sessionManager.startSession(uid, UserRole.USER)
+    }
 
-        if (local != null && auth.currentUser != null) {
-            _state.value = local
-        } else {
-            clearSession()
-        }
-    }
-    fun onLoginSuccess(uid: String) {
-        localSession.save(uid)
-        _state.value = SessionState.LoggedIn(uid)
-    }
     fun logout() {
-        auth.signOut()
-        clearSession()
-    }
-    private fun clearSession() {
-        localSession.clear()
-        _state.value = SessionState.LoggedOut
+        sessionManager.logout()
     }
 }

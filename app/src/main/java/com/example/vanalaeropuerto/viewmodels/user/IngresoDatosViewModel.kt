@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
-import java.util.Calendar
 
 class IngresoDatosViewModel : ViewModel() {
 
@@ -57,7 +55,7 @@ class IngresoDatosViewModel : ViewModel() {
         // Validación de cuil
         if (cuil.isNullOrBlank()) {
             errores.add("El CUIL no puede estar vacío")
-        }  else if (cuil.length != 11) {
+        } else if (cuil.length != 11) {
             errores.add("El CUIL debe tener exactamente 11 dígitos.")
         } else if (!cuil.all { it.isDigit() }) {
             errores.add("El CUIL debe contener solo números.")

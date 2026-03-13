@@ -35,6 +35,15 @@ class HomeFragment : Fragment() {
     private lateinit var btnSearch: FloatingActionButton
     private lateinit var btnSignOut: AppCompatImageButton
 
+    private lateinit var btnAdultPlus: Button
+    private lateinit var btnAdultMinus: Button
+
+    private lateinit var btnChildPlus: Button
+    private lateinit var btnChildMinus: Button
+
+    private lateinit var btnBabyPlus: Button
+    private lateinit var btnBabyMinus: Button
+
     private lateinit var tvAdultCount: TextView
     private lateinit var tvChildCount: TextView
     private lateinit var tvBabyCount: TextView
@@ -72,6 +81,15 @@ class HomeFragment : Fragment() {
         btnSearch = v.findViewById(R.id.btnBuscar)
         btnSignOut = v.findViewById(R.id.btnSignOut)
 
+        btnAdultPlus = v.findViewById(R.id.btnAdultPlus)
+        btnAdultMinus = v.findViewById(R.id.btnAdultMinus)
+
+        btnChildPlus = v.findViewById(R.id.btnChildPlus)
+        btnChildMinus = v.findViewById(R.id.btnChildMinus)
+
+        btnBabyPlus = v.findViewById(R.id.btnBabyPlus)
+        btnBabyMinus = v.findViewById(R.id.btnBabyMinus)
+
         tvAdultCount = v.findViewById(R.id.tvAdultCount)
         tvChildCount = v.findViewById(R.id.tvChildCount)
         tvBabyCount = v.findViewById(R.id.tvBabyCount)
@@ -105,6 +123,37 @@ class HomeFragment : Fragment() {
         btnSearch.setOnClickListener {
             collectInputs()
             observeViewState()
+        }
+
+        setupPassengerButtons()
+        observePassengerCounters()
+
+    }
+
+    private fun setupPassengerButtons() {
+
+        btnAdultPlus.setOnClickListener { viewModel.addAdult() }
+        btnAdultMinus.setOnClickListener { viewModel.removeAdult() }
+
+        btnChildPlus.setOnClickListener { viewModel.addChild() }
+        btnChildMinus.setOnClickListener { viewModel.removeChild() }
+
+        btnBabyPlus.setOnClickListener { viewModel.addBaby() }
+        btnBabyMinus.setOnClickListener { viewModel.removeBaby() }
+    }
+
+    private fun observePassengerCounters() {
+
+        viewModel.adultCount.observe(viewLifecycleOwner) {
+            tvAdultCount.text = it.toString()
+        }
+
+        viewModel.childCount.observe(viewLifecycleOwner) {
+            tvChildCount.text = it.toString()
+        }
+
+        viewModel.babyCount.observe(viewLifecycleOwner) {
+            tvBabyCount.text = it.toString()
         }
     }
 

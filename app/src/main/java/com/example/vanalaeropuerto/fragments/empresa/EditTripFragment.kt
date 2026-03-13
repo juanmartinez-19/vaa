@@ -11,17 +11,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.EditTripViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
+@AndroidEntryPoint
 class EditTripFragment : Fragment() {
 
     private lateinit var v : View
@@ -33,17 +36,11 @@ class EditTripFragment : Fragment() {
     private lateinit var destinationAddressEditText: EditText
     private lateinit var priceEditText: EditText
 
-    private lateinit var departureDate : String
-    private lateinit var originAddress : String
-    private lateinit var destinationAddress : String
-    private var price : Float = 0.0f
-
     private var selectedDateInMillis: Long = 0
-    private var tripId : String? = null
 
     private lateinit var pendingTripId : String
 
-    private lateinit var viewModel: EditTripViewModel
+    private val viewModel: EditTripViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +61,6 @@ class EditTripFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditTripViewModel::class.java)
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
             when (viewState) {

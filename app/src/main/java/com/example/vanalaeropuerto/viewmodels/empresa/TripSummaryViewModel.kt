@@ -7,38 +7,40 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Driver
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TripSummaryViewModel : ViewModel() {
+@HiltViewModel
+class TripSummaryViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository,
+    private val requesterRepository: RequesterRepository,
+    private val driversRepository: DriversRepository
+)  : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    val getTripsUseCase : TripsRepository = TripsRepository()
 
     private val _trip = MutableLiveData<Trip?>()
     val trip: LiveData<Trip?> get() = _trip
 
-    val getRequesterUseCase : RequesterRepository = RequesterRepository()
-
     private val _requester = MutableLiveData<Requester?>()
     val requester: LiveData<Requester?> get() = _requester
-
-    val getDriverUseCase : DriversRepository = DriversRepository()
 
     private val _driver = MutableLiveData<Driver?>()
     val driver: LiveData<Driver?> get() = _driver
 
-    fun confirmTrip(tripId : String) {
+    fun confirmTrip(tripId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (getTripsUseCase.confirmTrip(tripId)) {
+            when (tripsRepository.confirmTrip(tripId)) {
                 is MyResult.Success -> {
                     _viewState.value = ViewState.Idle
                 }
@@ -51,11 +53,11 @@ class TripSummaryViewModel : ViewModel() {
         }
     }
 
-    fun getDriver (driverId : String) {
+    fun getDriver(driverId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getDriverUseCase.getDriverById(driverId)) {
+            when (val result = driversRepository.getDriverById(driverId)) {
                 is MyResult.Success -> {
                     _driver.value = result.data
                     _viewState.value = ViewState.Idle
@@ -69,11 +71,12 @@ class TripSummaryViewModel : ViewModel() {
             }
         }
     }
-    fun getTrip (tripId : String) {
+
+    fun getTrip(tripId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getTripsUseCase.getTrip(tripId)) {
+            when (val result = tripsRepository.getTrip(tripId)) {
                 is MyResult.Success -> {
                     _trip.value = result.data
                     _viewState.value = ViewState.Idle
@@ -88,11 +91,11 @@ class TripSummaryViewModel : ViewModel() {
         }
     }
 
-    fun getRequester(requesterId : String) {
+    fun getRequester(requesterId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getRequesterUseCase.getRequester(requesterId)) {
+            when (val result = requesterRepository.getRequester(requesterId)) {
                 is MyResult.Success -> {
                     _requester.value = result.data
                     _viewState.value = ViewState.Idle
@@ -114,13 +117,13 @@ class TripSummaryViewModel : ViewModel() {
 
             try {
                 val requesterDeferred = async {
-                    getRequesterUseCase.getRequester(requesterId)
+                    requesterRepository.getRequester(requesterId)
                 }
                 val driverDeferred = async {
-                    getDriverUseCase.getDriverById(driverId)
+                    driversRepository.getDriverById(driverId)
                 }
                 val tripDeferred = async {
-                    getTripsUseCase.getTrip(tripId)
+                    tripsRepository.getTrip(tripId)
                 }
 
                 when (val result = requesterDeferred.await()) {
@@ -148,7 +151,6 @@ class TripSummaryViewModel : ViewModel() {
             }
         }
     }
-
 
 
 }

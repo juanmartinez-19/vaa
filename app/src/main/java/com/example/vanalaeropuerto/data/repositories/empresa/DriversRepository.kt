@@ -2,14 +2,16 @@ package com.example.vanalaeropuerto.data.repositories.empresa
 
 import android.content.ContentValues
 import android.util.Log
+import com.example.vanalaeropuerto.core.FirestoreCollections
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.entities.Driver
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 import java.lang.reflect.InvocationTargetException
+import javax.inject.Inject
 
-class DriversRepository {
+class DriversRepository @Inject constructor()  {
 
    private val db = Firebase.firestore
 
@@ -24,7 +26,7 @@ class DriversRepository {
 
         return try {
             val driver = Driver (driverId,name,tieneButaca,telefono,cuil,surname)
-            db.collection("drivers")
+            db.collection(FirestoreCollections.DRIVERS)
                 .add(driver)
                 .await()
             return MyResult.Success(Unit)
@@ -47,7 +49,7 @@ class DriversRepository {
         }
 
         return try {
-            val snapshot = db.collection("drivers")
+            val snapshot = db.collection(FirestoreCollections.DRIVERS)
                 .document(driverId)
                 .get()
                 .await()
@@ -70,7 +72,7 @@ class DriversRepository {
         val driversList : MutableList<Driver>
 
         return try {
-            val documents =  db.collection("drivers")
+            val documents =  db.collection(FirestoreCollections.DRIVERS)
                 .get()
                 .await()
             driversList = documents.toObjects(Driver::class.java)

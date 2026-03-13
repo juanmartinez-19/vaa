@@ -14,25 +14,29 @@ class ConfirmTripViewModel : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    val getTripsUseCase : TripsRepository = TripsRepository()
+    val getTripsUseCase: TripsRepository = TripsRepository()
 
     init {
         _viewState.value = ViewState.Idle
     }
+
     fun addTrip(trip: Trip?) {
 
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = trip?.let { getTripsUseCase.addTrip(it) }){
+            when (val result = trip?.let { getTripsUseCase.addTrip(it) }) {
                 is MyResult.Success -> {
                     _viewState.value = ViewState.Idle
                 }
+
                 is MyResult.Failure -> {
                     _viewState.value = ViewState.Failure
                 }
 
-                else -> {_viewState.value = ViewState.Failure}
+                else -> {
+                    _viewState.value = ViewState.Failure
+                }
             }
         }
     }

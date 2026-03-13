@@ -7,28 +7,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
-
-class EditTripViewModel : ViewModel() {
+import javax.inject.Inject
+@HiltViewModel
+class EditTripViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository
+) : ViewModel() {
 
     private val errores = mutableListOf<String>()
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    val getTripsUseCase : TripsRepository = TripsRepository()
 
     private val _trip = MutableLiveData<Trip?>()
     val trip: LiveData<Trip?> get() = _trip
 
-    fun getTrip(tripId : String) {
+    fun getTrip(tripId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getTripsUseCase.getTrip(tripId)) {
+            when (val result = tripsRepository.getTrip(tripId)) {
                 is MyResult.Success -> {
                     _trip.value = result.data
                     _viewState.value = ViewState.Idle
@@ -47,11 +52,12 @@ class EditTripViewModel : ViewModel() {
         originAddress: String?,
         destinationAddress: String?,
         selectedDateInMillis: Long?,
-        price:Float?
+        price: Float?
     ) {
         val currentDateInMillis = Calendar.getInstance().timeInMillis
 
-        Log.d("FECHA",
+        Log.d(
+            "FECHA",
             "Selected: ${Date(selectedDateInMillis ?: 0)} | Now: ${Date(currentDateInMillis)}"
         )
 
@@ -83,18 +89,18 @@ class EditTripViewModel : ViewModel() {
 
     }
 
-    fun updateTrip (
-        tripId : String?,
+    fun updateTrip(
+        tripId: String?,
         originAddress: String?,
         destinationAddress: String?,
         selectedDateInMillis: Long?,
-        price:Float?
-    ){
+        price: Float?
+    ) {
         _viewState.value = ViewState.Loading
 
         this.errores.clear()
 
-        this.validarDatos(originAddress,destinationAddress,selectedDateInMillis,price)
+        this.validarDatos(originAddress, destinationAddress, selectedDateInMillis, price)
 
         if (errores.isNotEmpty()) {
             _viewState.value = ViewState.InvalidParameters(errores.first())
@@ -104,11 +110,18 @@ class EditTripViewModel : ViewModel() {
 
                 _viewState.value = ViewState.Loading
 
-                when (val result = getTripsUseCase.updateTrip(tripId,originAddress,destinationAddress,selectedDateInMillis,price)) {
+                when (val result = tripsRepository.updateTrip(
+                    tripId,
+                    originAddress,
+                    destinationAddress,
+                    selectedDateInMillis,
+                    price
+                )) {
                     is MyResult.Success -> {
                         _trip.value = result.data
                         _viewState.value = ViewState.Confirmed
                     }
+
                     is MyResult.Failure -> {
                         _viewState.value = ViewState.Failure
                         Log.d("update trip error", _viewState.value.toString())

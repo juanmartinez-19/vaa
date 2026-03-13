@@ -1,12 +1,14 @@
 package com.example.vanalaeropuerto.data.repositories
 
+import com.example.vanalaeropuerto.core.FirestoreCollections
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.entities.Requester
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class RequesterRepository {
+class RequesterRepository @Inject constructor() {
 
     private val db = Firebase.firestore
 
@@ -28,7 +30,7 @@ class RequesterRepository {
                 requesterRole = "USER"
             )
 
-            db.collection("requesters")
+            db.collection(FirestoreCollections.REQUESTERS)
                 .document(uid!!) // ID del documento = requesterId
                 .set(requester) // set en lugar de add
                 .await()
@@ -47,7 +49,7 @@ class RequesterRepository {
 
         return try {
             // Se busca el documento en Firestore con el ID dado
-            val documentSnapshot = db.collection("requesters")
+            val documentSnapshot = db.collection(FirestoreCollections.REQUESTERS)
                 .document(requesterId)
                 .get()
                 .await()

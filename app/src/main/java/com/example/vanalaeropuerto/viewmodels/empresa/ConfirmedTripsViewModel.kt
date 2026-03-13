@@ -1,46 +1,45 @@
 package com.example.vanalaeropuerto.viewmodels.empresa
 
 import TripItemUI
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
-import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.data.TripsUiState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ConfirmedTripsViewModel : ViewModel() {
+@HiltViewModel
+class ConfirmedTripsViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository,
+    private val requesterRepository: RequesterRepository,
+    private val driversRepository: DriversRepository
+) : ViewModel() {
 
-    private val tripsRepository = TripsRepository()
-    private val requesterRepository = RequesterRepository()
-    private val driversRepository = DriversRepository()
-
-    private val _viewState = MutableLiveData<ViewState>()
-    val viewState: LiveData<ViewState> = _viewState
-
-    private val _tripsFull = MutableLiveData<List<TripItemUI>>()
-    val tripsFull: LiveData<List<TripItemUI>> = _tripsFull
-
-    init {
-        _viewState.value = ViewState.Idle
-    }
+    private val _uiState = MutableLiveData<TripsUiState>()
+    val uiState: LiveData<TripsUiState> = _uiState
 
     fun getConfirmedTrips() {
-        _viewState.value = ViewState.Loading
+        _uiState.value = TripsUiState.Loading
 
         viewModelScope.launch {
             when (val result = tripsRepository.getConfirmedTrips()) {
                 is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
+                    _uiState.value = TripsUiState.Error("No se pudieron cargar los viajes")
                 }
+
                 is MyResult.Success -> {
                     if (result.data.isEmpty()) {
-                        _viewState.value = ViewState.Empty
+                        _uiState.value = TripsUiState.Empty
                         return@launch
                     } else {
                         buildTripItems(result.data)
@@ -49,61 +48,54 @@ class ConfirmedTripsViewModel : ViewModel() {
             }
         }
     }
-
     private suspend fun buildTripItems(trips: List<Trip>) {
-        val fullList = mutableListOf<TripItemUI>()
 
-        for (trip in trips) {
+        val tripItems = coroutineScope {
 
-            val requesterId = trip.getRequesterId()
-            val driverId = trip.getDriverId()
+            trips.mapNotNull { trip ->
 
-            if (requesterId.isNullOrEmpty() || driverId.isNullOrEmpty()) continue
+                val requesterId = trip.getRequesterId()
+                val driverId = trip.getDriverId()
 
-            val requesterResult = requesterRepository.getRequester(requesterId)
-            val driverResult = driversRepository.getDriverById(driverId)
+                if (requesterId.isNullOrEmpty() || driverId.isNullOrEmpty()) {
+                    return@mapNotNull null
+                }
 
-            if (
-                requesterResult is MyResult.Success &&
-                driverResult is MyResult.Success
-            ) {
-                fullList.add(
-                    TripItemUI(
-                        trip = trip,
-                        requester = requesterResult.data!!,
-                        driver = driverResult.data
-                    )
-                )
-            }
-        }
-        _tripsFull.value = fullList
-        _viewState.value = ViewState.Idle
-    }
+                async {
 
-    /*
-
-    fun getRequester(requesterId: String?) {
-        if (requesterId.isNullOrEmpty()) return
-
-        viewModelScope.launch {
-            _viewState.value = ViewState.Loading
-            when (val result = getRequesterUseCase.getRequester(requesterId)) {
-                is MyResult.Success -> {
-                    val currentMap = _requestersMap.value ?: mutableMapOf()
-                    // Asegúrate de que requesterId no sea null antes de usarlo como clave
-                    requesterId.let {
-                        currentMap[it] = result.data ?: return@launch
-                        _requestersMap.value = currentMap
+                    val requesterDeferred = async {
+                        requesterRepository.getRequester(requesterId)
                     }
-                    _viewState.value = ViewState.Idle
+
+                    val driverDeferred = async {
+                        driversRepository.getDriverById(driverId)
+                    }
+
+                    val requesterResult = requesterDeferred.await()
+                    val driverResult = driverDeferred.await()
+
+                    if (
+                        requesterResult is MyResult.Success &&
+                        driverResult is MyResult.Success
+                    ) {
+
+                        TripItemUI(
+                            trip = trip,
+                            requester = requesterResult.data!!,
+                            driver = driverResult.data
+                        )
+
+                    } else {
+                        null
+                    }
+
                 }
-                is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
-                    Log.d("TEST", "Failure: ${result.exception}")
-                }
-            }
+
+            }.awaitAll().filterNotNull()
+
         }
+
+        _uiState.value = TripsUiState.Success(tripItems)
     }
-    */
 
 }

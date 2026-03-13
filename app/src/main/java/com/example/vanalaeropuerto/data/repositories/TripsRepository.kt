@@ -2,6 +2,7 @@ package com.example.vanalaeropuerto.data.repositories
 
 import android.content.ContentValues
 import android.util.Log
+import com.example.vanalaeropuerto.core.FirestoreCollections
 import com.example.vanalaeropuerto.core.TripState
 import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.mapper.toDomain
@@ -11,17 +12,17 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class TripsRepository {
+class TripsRepository @Inject constructor() {
 
     var tripsList : MutableList<Trip> = mutableListOf()
     private val db = Firebase.firestore
     private var listener: ListenerRegistration? = null
 
-
     suspend fun assignDriverToTrip (tripId: String, driverId : String): MyResult<Trip?> {
         return try {
-            val docRef = db.collection("trips").document(tripId)
+            val docRef = db.collection(FirestoreCollections.TRIPS).document(tripId)
 
             // 1️⃣ Update del estado
             docRef.update(
@@ -48,7 +49,7 @@ class TripsRepository {
     }
     suspend fun confirmTrip(tripId: String): MyResult<Trip?> {
         return try {
-            val docRef = db.collection("trips").document(tripId)
+            val docRef = db.collection(FirestoreCollections.TRIPS).document(tripId)
 
             // 1️⃣ Update del estado
             docRef.update(
@@ -77,7 +78,7 @@ class TripsRepository {
 
     suspend fun addTrip (trip : Trip)  : MyResult<Trip?> {
         return try {
-            db.collection("trips")
+            db.collection(FirestoreCollections.TRIPS)
                 .document(trip.getTripId()!!) // ID del documento = requesterId
                 .set(trip) // set en lugar de add
                 .await()
@@ -91,7 +92,7 @@ class TripsRepository {
 
     suspend fun cancelTrip(tripId: String): MyResult<Trip?> {
         return try {
-            val docRef = db.collection("trips").document(tripId)
+            val docRef = db.collection(FirestoreCollections.TRIPS).document(tripId)
 
             // 1️⃣ Update del estado
             docRef.update(
@@ -119,7 +120,7 @@ class TripsRepository {
 
     suspend fun getTrip(tripId: String): MyResult<Trip?> {
         return try {
-            val snapshot = db.collection("trips")
+            val snapshot = db.collection(FirestoreCollections.TRIPS)
                 .document(tripId)
                 .get()
                 .await()
@@ -154,7 +155,7 @@ class TripsRepository {
         }
 
         return try {
-            val docRef = db.collection("trips").document(tripId)
+            val docRef = db.collection(FirestoreCollections.TRIPS).document(tripId)
 
             // 1️⃣ Armar solo los campos a actualizar
             val updates = mutableMapOf<String, Any>()
@@ -200,7 +201,7 @@ class TripsRepository {
     ) {
         listener?.remove()
 
-        listener = db.collection("trips")
+        listener = db.collection(FirestoreCollections.TRIPS)
             .whereEqualTo("state", TripState.PENDING)
             .addSnapshotListener { snapshots, error ->
                 if (error != null) {
@@ -225,18 +226,10 @@ class TripsRepository {
     suspend fun getPendingTrips () : MyResult<MutableList<Trip>> {
         return try {
 
-            val documents =  db.collection("trips")
+            val documents =  db.collection(FirestoreCollections.TRIPS)
                 .whereEqualTo("state", TripState.PENDING)
                 .get()
                 .await()
-
-            for (doc in documents.documents) {
-                Log.e(
-                    "TRIP_DEBUG",
-                    "id=${doc.id}, date=${doc.get("date")} (${doc.get("date")?.javaClass})"
-                )
-            }
-
 
             tripsList = documents.toObjects(TripFirestoreDto::class.java)
                 .map { it.toDomain() }
@@ -251,7 +244,7 @@ class TripsRepository {
 
     suspend fun getTripHistory () : MyResult<MutableList<Trip>> {
         return try {
-            val documents =  db.collection("trips")
+            val documents =  db.collection(FirestoreCollections.TRIPS)
                 .whereIn("state", listOf(TripState.DONE, TripState.CANCELLED))
                 .get()
                 .await()
@@ -268,7 +261,7 @@ class TripsRepository {
 
     suspend fun getConfirmedTrips () : MyResult<MutableList<Trip>> {
         return try {
-            val documents =  db.collection("trips")
+            val documents =  db.collection(FirestoreCollections.TRIPS)
                 .whereEqualTo("state", TripState.CONFIRMED)
                 .get()
                 .await()

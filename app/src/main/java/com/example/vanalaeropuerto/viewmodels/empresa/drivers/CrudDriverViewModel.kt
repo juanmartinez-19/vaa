@@ -18,15 +18,15 @@ class CrudDriverViewModel : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
 
-    val getDriversRepository : DriversRepository = DriversRepository()
+    val getDriversRepository: DriversRepository = DriversRepository()
 
     private val _driver = MutableLiveData<Driver?>()
-    val driver : LiveData<Driver?> get() = _driver
+    val driver: LiveData<Driver?> get() = _driver
 
 
-    fun getDriverById (
-        driverId : String?
-    ){
+    fun getDriverById(
+        driverId: String?
+    ) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
@@ -45,19 +45,19 @@ class CrudDriverViewModel : ViewModel() {
         }
     }
 
-    fun addDriver (
-        driverId : String?,
+    fun addDriver(
+        driverId: String?,
         name: String?,
         surname: String?,
         tieneButaca: Boolean?,
-        phoneNumber:String?,
-        cuil:String?
-    ){
+        phoneNumber: String?,
+        cuil: String?
+    ) {
         _viewState.value = ViewState.Loading
 
         this.errores.clear()
 
-        this.validateDriverData(name, surname,cuil,phoneNumber)
+        this.validateDriverData(name, surname, cuil, phoneNumber)
 
         if (errores.isNotEmpty()) {
             Log.e("ValidarDatos", "Errores: ${errores.joinToString(", ")}")
@@ -65,10 +65,18 @@ class CrudDriverViewModel : ViewModel() {
         } else {
             viewModelScope.launch {
 
-                when (getDriversRepository.addDriver(driverId,name,surname, tieneButaca,phoneNumber,cuil)) {
+                when (getDriversRepository.addDriver(
+                    driverId,
+                    name,
+                    surname,
+                    tieneButaca,
+                    phoneNumber,
+                    cuil
+                )) {
                     is MyResult.Success -> {
                         _viewState.value = ViewState.Confirmed
                     }
+
                     is MyResult.Failure -> {
                         _viewState.value = ViewState.Failure
                         Log.d("ValidarDatos", _viewState.value.toString())
@@ -85,8 +93,8 @@ class CrudDriverViewModel : ViewModel() {
     fun validateDriverData(
         name: String?,
         surname: String?,
-        cuil:String?,
-        phoneNumber:String?
+        cuil: String?,
+        phoneNumber: String?
     ) {
         // Validación de nombre
         if (name.isNullOrBlank()) {

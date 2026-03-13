@@ -13,37 +13,32 @@ import com.google.firebase.auth.FirebaseAuth
 
 class LauncherActivity : AppCompatActivity() {
 
-    private lateinit var sessionViewModel: SessionViewModel
+    private val sessionViewModel: SessionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sessionViewModel = ViewModelProvider(this)[SessionViewModel::class.java]
 
         observeSession()
     }
 
     private fun observeSession() {
-        sessionViewModel.state.observe(this) { state ->
-            when (state) {
-                SessionState.Loading -> {
-                    // splash opcional
-                }
 
-                SessionState.LoggedOut -> {
-                    goToLogin()
-                }
+        sessionViewModel.session.observe(this) {
 
-                is SessionState.LoggedIn -> {
-                    // ⚠️ NO navegamos a Home / Empresa acá
-                    goToLogin()
-                }
-            }
+            goToLogin()
+
         }
+
     }
 
     private fun goToLogin() {
-        startActivity(Intent(this, LoginActivity::class.java))
+
+        startActivity(
+            Intent(this, LoginActivity::class.java)
+        )
+
         finish()
+
     }
+
 }

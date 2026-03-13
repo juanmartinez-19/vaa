@@ -10,17 +10,11 @@ class LocalSessionStorage(context: Context) {
     )
 
     fun save(uid: String) {
-        prefs.edit()
-            .putString("uid", uid)
-            .apply()
+        prefs.edit().putString("uid", uid).apply()
     }
 
-    fun get(): SessionState.LoggedIn? {
-        val uid = prefs.getString("uid", null) ?: return null
-
-        return SessionState.LoggedIn(
-            uid = uid
-        )
+    fun getUid(): String? {
+        return prefs.getString("uid", null)
     }
 
     fun clear() {

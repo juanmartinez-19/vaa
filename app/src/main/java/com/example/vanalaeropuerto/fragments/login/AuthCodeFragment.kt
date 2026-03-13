@@ -1,6 +1,5 @@
 package com.example.vanalaeropuerto.fragments.login
 
-import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -12,9 +11,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.activities.HomeActivity
 import com.example.vanalaeropuerto.session.SessionViewModel
-import com.example.vanalaeropuerto.session.UserRole
 import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -97,7 +94,7 @@ class AuthCodeFragment : Fragment() {
 
                 is AuthViewModel.AuthState.UserExists -> {
                     val uid = FirebaseAuth.getInstance().currentUser!!.uid
-                    sessionViewModel.onLoginSuccess(uid)
+                    sessionViewModel.startSession(uid)
                 }
 
                 is AuthViewModel.AuthState.Failure -> {

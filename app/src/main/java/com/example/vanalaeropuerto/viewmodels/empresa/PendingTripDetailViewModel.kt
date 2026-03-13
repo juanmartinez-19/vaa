@@ -11,27 +11,30 @@ import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PendingTripDetailViewModel : ViewModel() {
+@HiltViewModel
+class PendingTripDetailViewModel  @Inject constructor(
+    private val tripsRepository: TripsRepository,
+    private val requesterRepository: RequesterRepository
+) : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    val getTripsUseCase : TripsRepository = TripsRepository()
 
     private val _trip = MutableLiveData<Trip?>()
     val trip: LiveData<Trip?> get() = _trip
 
-    val getRequesterUseCase : RequesterRepository = RequesterRepository()
-
     private val _requester = MutableLiveData<Requester?>()
     val requester: LiveData<Requester?> get() = _requester
 
-    fun cancelTrip(pendingTripId : String) {
+    fun cancelTrip(pendingTripId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getTripsUseCase.cancelTrip(pendingTripId)) {
+            when (val result = tripsRepository.cancelTrip(pendingTripId)) {
                 is MyResult.Success -> {
                     _trip.value = result.data
                     _viewState.value = ViewState.Idle
@@ -46,11 +49,11 @@ class PendingTripDetailViewModel : ViewModel() {
         }
     }
 
-    fun getTrip(tripId : String) {
+    fun getTrip(tripId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getTripsUseCase.getTrip(tripId)) {
+            when (val result = tripsRepository.getTrip(tripId)) {
                 is MyResult.Success -> {
                     _trip.value = result.data
                     _viewState.value = ViewState.Idle
@@ -65,11 +68,11 @@ class PendingTripDetailViewModel : ViewModel() {
         }
     }
 
-    fun getRequester(requesterId : String) {
+    fun getRequester(requesterId: String) {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getRequesterUseCase.getRequester(requesterId)) {
+            when (val result = requesterRepository.getRequester(requesterId)) {
                 is MyResult.Success -> {
                     _requester.value = result.data
                     _viewState.value = ViewState.Idle

@@ -13,7 +13,7 @@ class LauncherViewModel : ViewModel() {
 
     private val _launcherState = MutableLiveData<LauncherState>()
     val launcherState: LiveData<LauncherState> = _launcherState
-    val getUsersUseCase : RequesterRepository = RequesterRepository()
+    val getUsersUseCase: RequesterRepository = RequesterRepository()
 
     fun loadUser(uid: String) {
         viewModelScope.launch {
@@ -32,6 +32,7 @@ class LauncherViewModel : ViewModel() {
                         _launcherState.postValue(LauncherState.Login)
                     }
                 }
+
                 is MyResult.Failure -> {
                     _launcherState.postValue(LauncherState.Error)
                 }

@@ -10,18 +10,21 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
+import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.PendingTripDetailViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+@AndroidEntryPoint
 class PendingTripDetailFragment : Fragment() {
 
     private lateinit var v: View
@@ -49,7 +52,7 @@ class PendingTripDetailFragment : Fragment() {
     private lateinit var btnConfirmTrip: Button
     private lateinit var btnCancelTrip: Button
 
-    private lateinit var viewModel: PendingTripDetailViewModel
+    private val viewModel: PendingTripDetailViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,7 +87,6 @@ class PendingTripDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(PendingTripDetailViewModel::class.java)
 
         viewModel.getTrip(tripId)
         viewModel.getRequester(requesterId)

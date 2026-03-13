@@ -2,7 +2,6 @@ package com.example.vanalaeropuerto.adapters.empresa
 
 import TripItemUI
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,7 +107,7 @@ class TripsAdapter(
         return trips[position]
     }
 
-    fun submitList(newTrips: MutableList<TripItemUI>) {
+    fun submitList(newTrips: List<TripItemUI>) {
         trips.clear()
         trips.addAll(newTrips)
         notifyDataSetChanged()

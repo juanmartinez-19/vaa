@@ -7,110 +7,98 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
+import com.example.vanalaeropuerto.data.TripsUiState
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
-import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
-import com.google.firebase.firestore.ListenerRegistration
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TripsHistoryViewModel : ViewModel() {
+@HiltViewModel
+class TripsHistoryViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository,
+    private val requesterRepository: RequesterRepository,
+    private val driversRepository: DriversRepository
+)  : ViewModel() {
 
-    private val tripsRepository = TripsRepository()
-    private val requesterRepository = RequesterRepository()
-
-    private val _viewState = MutableLiveData<ViewState>(ViewState.Idle)
-    val viewState: LiveData<ViewState> = _viewState
-
-    private val _tripItems = MutableLiveData<List<TripItemUI>>()
-    val tripItems: LiveData<List<TripItemUI>> = _tripItems
-    private val driversRepository = DriversRepository()
-
-    private var listener: ListenerRegistration? = null
+    private val _uiState = MutableLiveData<TripsUiState>()
+    val uiState: LiveData<TripsUiState> = _uiState
 
     // 🟢 Carga inicial
     fun getTripHistory() {
-        _viewState.value = ViewState.Loading
+        _uiState.value = TripsUiState.Loading
 
         viewModelScope.launch {
             when (val result = tripsRepository.getTripHistory()) {
                 is MyResult.Success -> {
                     if (result.data.isEmpty()) {
-                        _viewState.value = ViewState.Empty
+                        _uiState.value = TripsUiState.Empty
                     } else {
                         buildTripItems(result.data)
                     }
                 }
+
                 is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
-                    Log.e("TripsHistoryVM", "Error", result.exception)
+                    _uiState.value = TripsUiState.Error("No se pudieron cargar los viajes")
                 }
             }
         }
     }
+
     private suspend fun buildTripItems(trips: List<Trip>) {
-        val fullList = mutableListOf<TripItemUI>()
 
-        for (trip in trips) {
+        val tripItems = coroutineScope {
 
-            val requesterId = trip.getRequesterId()
-            val driverId = trip.getDriverId()
+            trips.mapNotNull { trip ->
 
-            if (requesterId.isNullOrEmpty() || driverId.isNullOrEmpty()) continue
+                val requesterId = trip.getRequesterId()
+                val driverId = trip.getDriverId()
 
-            val requesterResult = requesterRepository.getRequester(requesterId)
-            val driverResult = driversRepository.getDriverById(driverId)
+                if (requesterId.isNullOrEmpty() || driverId.isNullOrEmpty()) {
+                    return@mapNotNull null
+                }
 
-            if (
-                requesterResult is MyResult.Success &&
-                driverResult is MyResult.Success
-            ) {
-                fullList.add(
-                    TripItemUI(
-                        trip = trip,
-                        requester = requesterResult.data!!,
-                        driver = driverResult.data
-                    )
-                )
-            }
-        }
-        _tripItems.value = fullList
-        _viewState.value = ViewState.Idle
-    }
-    /*
-    private suspend fun buildTripItems(trips: List<Trip>) {
-        val requesterCache = mutableMapOf<String, Requester>()
-        val items = mutableListOf<TripItemUI>()
+                async {
 
-        for (trip in trips) {
-            val requesterId = trip.getRequesterId() ?: continue
-
-            val requester = requesterCache[requesterId]
-                ?: when (val result = requesterRepository.getRequester(requesterId)) {
-                    is MyResult.Success -> {
-                        result.data?.also {
-                            requesterCache[requesterId] = it
-                        }
+                    val requesterDeferred = async {
+                        requesterRepository.getRequester(requesterId)
                     }
-                    else -> null
+
+                    val driverDeferred = async {
+                        driversRepository.getDriverById(driverId)
+                    }
+
+                    val requesterResult = requesterDeferred.await()
+                    val driverResult = driverDeferred.await()
+
+                    if (
+                        requesterResult is MyResult.Success &&
+                        driverResult is MyResult.Success
+                    ) {
+
+                        TripItemUI(
+                            trip = trip,
+                            requester = requesterResult.data!!,
+                            driver = driverResult.data
+                        )
+
+                    } else {
+                        null
+                    }
+
                 }
 
-            if (requester != null) {
-                items.add(
-                    TripItemUI(
-                        trip = trip,
-                        requester = requester,
-                        driver = driverResult.data
-                    )
-                )
-            }
+            }.awaitAll().filterNotNull()
+
         }
 
-        _tripItems.value = items
-        _viewState.value = ViewState.Idle
+        _uiState.value = TripsUiState.Success(tripItems)
     }
 
-     */
 }

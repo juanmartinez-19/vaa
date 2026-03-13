@@ -6,38 +6,41 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.vanalaeropuerto.data.MyResult
+import com.example.vanalaeropuerto.data.TripsUiState
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
+import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PendingTripsViewModel : ViewModel() {
+@HiltViewModel
+class PendingTripsViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository,
+    private val requesterRepository: RequesterRepository
+)  : ViewModel() {
 
-    private val _viewState = MutableLiveData<ViewState>(ViewState.Idle)
-    val viewState: LiveData<ViewState> = _viewState
-
-    private val _tripItems = MutableLiveData<List<TripItemUI>>()
-    val tripItems: LiveData<List<TripItemUI>> = _tripItems
-
-    private val tripsRepo = TripsRepository()
-    private val requesterRepo = RequesterRepository()
+    private val _uiState = MutableLiveData<TripsUiState>()
+    val uiState: LiveData<TripsUiState> = _uiState
 
     private val requesterMap = mutableMapOf<String, Requester>()
     private var rawTrips: List<Trip> = emptyList()
 
     fun getPendingTrips() {
-        _viewState.value = ViewState.Loading
+        _uiState.value = TripsUiState.Loading
 
         viewModelScope.launch {
-            when (val result = tripsRepo.getPendingTrips()) {
+            when (val result = tripsRepository.getPendingTrips()) {
                 is MyResult.Success -> {
                     rawTrips = result.data
                     loadRequesters()
                 }
+
                 is MyResult.Failure -> {
-                    _viewState.value = ViewState.Failure
+                    _uiState.value = TripsUiState.Error("No se pudieron cargar los viajes")
                 }
             }
         }
@@ -48,10 +51,11 @@ class PendingTripsViewModel : ViewModel() {
             rawTrips.forEach { trip ->
                 val id = trip.getRequesterId() ?: return@forEach
                 if (!requesterMap.containsKey(id)) {
-                    when (val res = requesterRepo.getRequester(id)) {
+                    when (val res = requesterRepository.getRequester(id)) {
                         is MyResult.Success -> {
                             res.data?.let { requesterMap[id] = it }
                         }
+
                         else -> {}
                     }
                 }
@@ -61,7 +65,8 @@ class PendingTripsViewModel : ViewModel() {
     }
 
     private fun buildUIItems() {
-        _tripItems.value = rawTrips.mapNotNull { trip ->
+
+        val tripItems = rawTrips.mapNotNull { trip ->
             val requester = requesterMap[trip.getRequesterId()]
             requester?.let {
                 TripItemUI(
@@ -72,25 +77,28 @@ class PendingTripsViewModel : ViewModel() {
             }
         }
 
-        _viewState.value =
-            if (_tripItems.value.isNullOrEmpty()) ViewState.Empty
-            else ViewState.Idle
+        _uiState.value =
+            if (tripItems.isEmpty()) {
+                TripsUiState.Empty
+            } else {
+                TripsUiState.Success(tripItems)
+            }
     }
 
     fun startListening() {
-        tripsRepo.listenPendingTrips(
+        tripsRepository.listenPendingTrips(
             onSuccess = { trips ->
                 rawTrips = trips
                 loadRequesters()
             },
             onError = {
-                _viewState.value = ViewState.Failure
+                _uiState.value = TripsUiState.Error("No se pudieron cargar los viajes")
             }
         )
     }
 
     fun stopListening() {
-        tripsRepo.clearListener()
+        tripsRepository.clearListener()
     }
 
     override fun onCleared() {

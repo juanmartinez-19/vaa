@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 class DriversViewModel : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    var _driversList : MutableLiveData<MutableList<Driver>?> = MutableLiveData()
-    val getDriversUseCase : DriversRepository = DriversRepository()
+    var _driversList: MutableLiveData<MutableList<Driver>?> = MutableLiveData()
+    val getDriversUseCase: DriversRepository = DriversRepository()
 
 
     fun getDrivers() {
@@ -22,7 +22,7 @@ class DriversViewModel : ViewModel() {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getDriversUseCase.getDrivers()){
+            when (val result = getDriversUseCase.getDrivers()) {
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _driversList.value = result.data
@@ -32,6 +32,7 @@ class DriversViewModel : ViewModel() {
                         _viewState.value = ViewState.Empty
                     }
                 }
+
                 is MyResult.Failure -> {
                     _viewState.value = ViewState.Failure
                 }

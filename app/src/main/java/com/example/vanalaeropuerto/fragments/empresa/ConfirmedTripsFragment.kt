@@ -7,19 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.adapters.empresa.TripsAdapter
-import com.example.vanalaeropuerto.core.Roles
-import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.entities.Requester
-import com.example.vanalaeropuerto.entities.TripRequester
+import com.example.vanalaeropuerto.data.TripsUiState
 import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ConfirmedTripsFragment : Fragment() {
 
     private lateinit var v: View
@@ -28,7 +27,7 @@ class ConfirmedTripsFragment : Fragment() {
     private lateinit var recyclerConfirmedTrips: RecyclerView
     private lateinit var tripsAdapter: TripsAdapter
 
-    private lateinit var viewModel: ConfirmedTripsViewModel
+    private val viewModel: ConfirmedTripsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +43,6 @@ class ConfirmedTripsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this).get(ConfirmedTripsViewModel::class.java)
 
         recyclerConfirmedTrips.layoutManager = LinearLayoutManager(context)
         tripsAdapter = TripsAdapter(mutableListOf()) {
@@ -65,23 +62,31 @@ class ConfirmedTripsFragment : Fragment() {
 
         viewModel.getConfirmedTrips()
 
-        viewModel.tripsFull.observe(viewLifecycleOwner) { trips ->
-            tripsAdapter.submitList(trips.toMutableList())
-        }
+        viewModel.uiState.observe(viewLifecycleOwner) { state ->
 
+            when(state) {
 
-        viewModel.viewState.observe(viewLifecycleOwner) { viewState ->
-            when (viewState) {
-                ViewState.Loading -> showLoading()
-                ViewState.Idle -> hideLoading()
-                ViewState.Empty -> showEmpty()
-                ViewState.Failure -> showError()
-                else -> {showError()}
+                is TripsUiState.Loading -> {
+                    showLoading()
+                }
+
+                is TripsUiState.Success -> {
+                    hideLoading()
+                    tripsAdapter.submitList(state.trips)
+                }
+
+                is TripsUiState.Empty -> {
+                    showEmpty()
+                }
+
+                is TripsUiState.Error -> {
+                    showError()
+                }
             }
+
         }
 
     }
-
 
     private fun showEmpty() {
         progressBar.visibility = View.GONE

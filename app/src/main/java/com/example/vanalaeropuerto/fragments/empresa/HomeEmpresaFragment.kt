@@ -7,24 +7,28 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.example.vanalaeropuerto.R
 import com.example.vanalaeropuerto.activities.LoginActivity
 import com.example.vanalaeropuerto.adapters.empresa.ViewPagerAdapter
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.session.SessionViewModel
+import com.example.vanalaeropuerto.viewmodels.empresa.ConfirmedTripsViewModel
 import com.example.vanalaeropuerto.viewmodels.empresa.HomeEmpresaViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeEmpresaFragment : Fragment() {
 
     private lateinit var v : View
     private lateinit var viewPager : ViewPager2
     private lateinit var tabLayout : TabLayout
-    private lateinit var homeViewModel: HomeEmpresaViewModel
+    private val homeViewModel: HomeEmpresaViewModel by viewModels()
 
     private lateinit var fabSignOut : FloatingActionButton
     private lateinit var sessionViewModel: SessionViewModel
@@ -44,7 +48,6 @@ class HomeEmpresaFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        homeViewModel = ViewModelProvider(requireActivity())[HomeEmpresaViewModel::class.java]
         sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

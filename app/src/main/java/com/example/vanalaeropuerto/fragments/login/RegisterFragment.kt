@@ -1,31 +1,21 @@
 package com.example.vanalaeropuerto.fragments.login
 
-import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.os.Message
-import android.text.InputType
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.example.vanalaeropuerto.R
-import com.example.vanalaeropuerto.activities.HomeActivity
 import com.example.vanalaeropuerto.data.ViewState
-import com.example.vanalaeropuerto.entities.Requester
 import com.example.vanalaeropuerto.session.SessionViewModel
-import com.example.vanalaeropuerto.session.UserRole
 import com.example.vanalaeropuerto.viewmodels.login.RegisterViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import java.util.UUID
 
 class RegisterFragment : Fragment() {
 
@@ -70,44 +60,52 @@ class RegisterFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
         sessionViewModel = ViewModelProvider(requireActivity())[SessionViewModel::class.java]
 
+        observeViewModel()
 
         btnContinue.setOnClickListener {
+            val userName = etUserName.text.toString()
+            val userSurname = etUserSurname.text.toString()
+            val userCuil = etUserCuil.text.toString()
 
-            userName = etUserName.text.toString()
-            userSurname = etUserSurname.text.toString()
-            userCuil = etUserCuil.text.toString()
+            viewModel.validateData(userName, userSurname, userCuil)
+        }
+    }
 
-            viewModel.validateData(userName,userSurname,userCuil)
+    private fun observeViewModel() {
 
-            viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
-                when (viewState) {
-                    is ViewState.Loading -> {
-                        this.showLoading()
-                    }
-                    is ViewState.ValidParameters -> {
-                        viewModel.signIn(userName,userSurname,phoneNumber,userCuil)
-                    }
-                    is ViewState.InvalidParameters -> {
-                        this.showInvalidParameters(viewState.message)
-                    }
-                    is ViewState.Confirmed -> {
-                        this.onRegisterSuccess()
-                    }
+        viewModel.viewState.observe(viewLifecycleOwner) { viewState ->
 
-                    else -> {
-                        this.showError()
-                    }
+            when (viewState) {
+
+                is ViewState.Loading -> showLoading()
+
+                is ViewState.ValidParameters -> {
+                    viewModel.signIn(
+                        etUserName.text.toString(),
+                        etUserSurname.text.toString(),
+                        phoneNumber,
+                        etUserCuil.text.toString()
+                    )
                 }
-            })
+
+                is ViewState.InvalidParameters -> {
+                    showInvalidParameters(viewState.message)
+                }
+
+                is ViewState.Confirmed -> {
+                    onRegisterSuccess()
+                }
+
+                else -> showError()
+            }
 
         }
-
     }
 
     private fun onRegisterSuccess() {
         val uid = FirebaseAuth.getInstance().currentUser!!.uid
 
-        sessionViewModel.onLoginSuccess(uid)
+        sessionViewModel.startSession(uid)
     }
 
     private fun showError() {
