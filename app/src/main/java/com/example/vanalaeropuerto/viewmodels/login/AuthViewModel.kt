@@ -14,13 +14,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class AuthViewModel : ViewModel() {
-
-
-    val getRequestersUseCase: RequesterRepository = RequesterRepository()
+@HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val requestersRepository: RequesterRepository
+) : ViewModel() {
 
     private val errores = mutableListOf<String>()
 
@@ -123,7 +125,7 @@ class AuthViewModel : ViewModel() {
 
     private fun checkIfUserExists(uid: String) {
         viewModelScope.launch {
-            when (val result = getRequestersUseCase.getRequester(uid)) {
+            when (val result = requestersRepository.getRequester(uid)) {
                 is MyResult.Success -> {
                     val requester = result.data
 

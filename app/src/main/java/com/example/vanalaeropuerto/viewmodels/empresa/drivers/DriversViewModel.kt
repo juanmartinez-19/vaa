@@ -8,21 +8,24 @@ import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Driver
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DriversViewModel : ViewModel() {
+@HiltViewModel
+class DriversViewModel @Inject constructor(
+    private val driversRepository: DriversRepository
+) : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
     var _driversList: MutableLiveData<MutableList<Driver>?> = MutableLiveData()
-    val getDriversUseCase: DriversRepository = DriversRepository()
-
 
     fun getDrivers() {
 
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getDriversUseCase.getDrivers()) {
+            when (val result = driversRepository.getDrivers()) {
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _driversList.value = result.data

@@ -17,7 +17,9 @@ import com.example.vanalaeropuerto.adapters.empresa.DriverAdapter
 import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.drivers.AsignDriverViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AsignDriverFragment : Fragment() {
 
     private lateinit var v : View

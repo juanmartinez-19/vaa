@@ -16,7 +16,9 @@ import com.example.vanalaeropuerto.viewmodels.login.AuthViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthCodeFragment : Fragment() {
 
     private lateinit var v: View

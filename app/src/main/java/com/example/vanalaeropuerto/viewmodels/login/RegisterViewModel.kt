@@ -9,11 +9,15 @@ import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.RequesterRepository
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegisterViewModel : ViewModel() {
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
+    private val requestersRepository: RequesterRepository
+)   : ViewModel() {
 
-    val getRequestersUseCase: RequesterRepository = RequesterRepository()
     private val errores = mutableListOf<String>()
     private val _viewState = MutableLiveData<ViewState>()
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -29,7 +33,7 @@ class RegisterViewModel : ViewModel() {
         val uid = auth.currentUser?.uid
 
         viewModelScope.launch {
-            when (getRequestersUseCase.signIn(userName, userSurname, phoneNumber, userCuil, uid)) {
+            when (requestersRepository.signIn(userName, userSurname, phoneNumber, userCuil, uid)) {
                 is MyResult.Success -> {
                     _viewState.value = ViewState.Confirmed
                 }

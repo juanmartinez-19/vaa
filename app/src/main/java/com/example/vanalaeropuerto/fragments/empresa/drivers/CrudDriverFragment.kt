@@ -16,8 +16,9 @@ import com.example.vanalaeropuerto.core.Roles
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.viewmodels.empresa.drivers.CrudDriverViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
-
+@AndroidEntryPoint
 class CrudDriverFragment : Fragment() {
 
     private lateinit var v : View

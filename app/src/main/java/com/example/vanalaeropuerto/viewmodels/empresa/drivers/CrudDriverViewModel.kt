@@ -9,17 +9,18 @@ import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.empresa.DriversRepository
 import com.example.vanalaeropuerto.entities.Driver
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CrudDriverViewModel : ViewModel() {
+@HiltViewModel
+class CrudDriverViewModel @Inject constructor(
+    private val driversRepository: DriversRepository
+): ViewModel() {
 
     private val errores = mutableListOf<String>()
-
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-
-    val getDriversRepository: DriversRepository = DriversRepository()
-
     private val _driver = MutableLiveData<Driver?>()
     val driver: LiveData<Driver?> get() = _driver
 
@@ -30,7 +31,7 @@ class CrudDriverViewModel : ViewModel() {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = getDriversRepository.getDriverById(driverId)) {
+            when (val result = driversRepository.getDriverById(driverId)) {
                 is MyResult.Success -> {
                     _driver.value = result.data
                     _viewState.value = ViewState.Idle
@@ -65,7 +66,7 @@ class CrudDriverViewModel : ViewModel() {
         } else {
             viewModelScope.launch {
 
-                when (getDriversRepository.addDriver(
+                when (driversRepository.addDriver(
                     driverId,
                     name,
                     surname,

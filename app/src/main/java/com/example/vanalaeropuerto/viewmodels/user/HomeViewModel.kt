@@ -13,7 +13,6 @@ class HomeViewModel : ViewModel() {
     val viewState: LiveData<ViewState> get() = _viewState
 
     private val _passengers = MutableLiveData(0)
-    val passengers: LiveData<Int> get() = _passengers
 
     // LiveData para los contadores
     private val _adultCount = MutableLiveData(0)

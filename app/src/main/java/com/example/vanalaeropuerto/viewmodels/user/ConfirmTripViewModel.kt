@@ -8,13 +8,17 @@ import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.TripsRepository
 import com.example.vanalaeropuerto.entities.Trip
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ConfirmTripViewModel : ViewModel() {
+@HiltViewModel
+class ConfirmTripViewModel @Inject constructor(
+    private val tripsRepository: TripsRepository
+)  : ViewModel() {
 
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
-    val getTripsUseCase: TripsRepository = TripsRepository()
 
     init {
         _viewState.value = ViewState.Idle
@@ -25,7 +29,7 @@ class ConfirmTripViewModel : ViewModel() {
         _viewState.value = ViewState.Loading
 
         viewModelScope.launch {
-            when (val result = trip?.let { getTripsUseCase.addTrip(it) }) {
+            when (trip?.let { tripsRepository.addTrip(it) }) {
                 is MyResult.Success -> {
                     _viewState.value = ViewState.Idle
                 }

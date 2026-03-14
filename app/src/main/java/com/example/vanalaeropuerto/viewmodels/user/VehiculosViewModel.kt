@@ -9,13 +9,17 @@ import com.example.vanalaeropuerto.data.MyResult
 import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.data.repositories.VehiclesRepository
 import com.example.vanalaeropuerto.entities.Vehicle
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class VehiculosViewModel : ViewModel() {
+@HiltViewModel
+class VehiculosViewModel @Inject constructor(
+    private val vehiclesRepository: VehiclesRepository
+) : ViewModel() {
     private val _viewState = MutableLiveData<ViewState>()
     val viewState: LiveData<ViewState> get() = _viewState
     var _vehiclesList: MutableLiveData<MutableList<Vehicle>?> = MutableLiveData()
-    val getVehiclesUseCase: VehiclesRepository = VehiclesRepository()
 
     init {
         _viewState.value = ViewState.Idle
@@ -24,7 +28,7 @@ class VehiculosViewModel : ViewModel() {
     fun getVehicles() {
         viewModelScope.launch {
             _viewState.value = ViewState.Loading
-            when (val result = getVehiclesUseCase.getVehicles()) {
+            when (val result = vehiclesRepository.getVehicles()) {
                 is MyResult.Success -> {
                     if (result.data.isNotEmpty()) {
                         _vehiclesList.value = result.data

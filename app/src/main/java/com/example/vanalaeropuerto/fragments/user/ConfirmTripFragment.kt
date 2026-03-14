@@ -19,7 +19,9 @@ import com.example.vanalaeropuerto.data.ViewState
 import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.ConfirmTripViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ConfirmTripFragment : Fragment() {
 
     lateinit var v : View

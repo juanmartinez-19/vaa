@@ -21,8 +21,9 @@ import com.example.vanalaeropuerto.entities.Trip
 import com.example.vanalaeropuerto.entities.TripRequester
 import com.example.vanalaeropuerto.viewmodels.user.UserSharedViewModel
 import com.example.vanalaeropuerto.viewmodels.user.VehiculosViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.UUID
-
+@AndroidEntryPoint
 class VehiculosFragment : Fragment() {
 
     lateinit var v : View
