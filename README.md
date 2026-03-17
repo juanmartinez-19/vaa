@@ -26,6 +26,7 @@ Además se utiliza **Dependency Injection con Hilt** para desacoplar las depende
 
 * Kotlin
 * MVVM Architecture
+* Unit and integration testing
 * LiveData
 * Coroutines
 * Navigation Component
@@ -81,6 +82,5 @@ Además se utiliza **Dependency Injection con Hilt** para desacoplar las depende
 
 # Future Improvements
 
-* Unit and integration testing
 * Offline caching
 * Performance optimizations
