@@ -1,10 +1,25 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
+    // Plugin principal de aplicación Android
     id 'com.android.application'
+
+    // Soporte para Kotlin en Android
     id 'org.jetbrains.kotlin.android'
+
+    // Safe Args para Navigation (permite pasar datos tipados entre fragments)
     id 'androidx.navigation.safeargs.kotlin'
+
+    // Permite usar @Parcelize para pasar objetos entre componentes
     id 'kotlin-parcelize'
+
+    // Necesario para integrar servicios de Firebase
     id 'com.google.gms.google-services'
+
+    // Inyección de dependencias con Hilt
     id 'com.google.dagger.hilt.android'
+
+    // Procesador de anotaciones (requerido por Hilt, Room, Glide, etc.)
     id 'kotlin-kapt'
 }
 
@@ -19,10 +34,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        // Runner para tests instrumentados
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary true
-        }
     }
 
     buildTypes {
@@ -31,19 +44,30 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
+
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
     buildFeatures {
         compose true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion '1.5.14'
     }
+
     packaging {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -52,55 +76,84 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    // Firebase (usando BOM para manejar versiones)
     implementation platform('com.google.firebase:firebase-bom:33.4.0')
+    implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.github.bumptech.glide:glide:4.16.0'
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
     implementation 'com.google.firebase:firebase-storage:21.0.1'
+
+    // Core Android
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // UI - Material y layouts
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+
+    // Lifecycle (ViewModel, LiveData)
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.8.6'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.6'
+
+    // Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.2'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.6'
-    implementation 'androidx.activity:activity-compose:1.9.2'
+
+    // Jetpack Compose
     implementation platform('androidx.compose:compose-bom:2023.03.00')
+    implementation 'androidx.activity:activity-compose:1.9.2'
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation platform('androidx.compose:compose-bom:2023.03.00')
-    implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
-    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
+
     debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+
+    // Image loading (usar kapt, no annotationProcessor en Kotlin)
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    kapt 'com.github.bumptech.glide:compiler:4.16.0'
+
+    // Dependency Injection (Hilt)
     implementation "com.google.dagger:hilt-android:2.51"
     kapt "com.google.dagger:hilt-compiler:2.51"
+
+    // =========================
+    // TESTING
+    // =========================
+
+    // Unit Testing
+    testImplementation 'junit:junit:4.13.2'
+
+    // Coroutines testing
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
+
+    // Mocking
+    testImplementation "io.mockk:mockk:1.13.8"
+
+    // LiveData / Architecture testing
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+
+    // Flow testing
+    testImplementation "app.cash.turbine:turbine:1.0.0"
+
+    // Hilt testing (ESTO TE FALTABA Y ROMPE KAPT)
+    testImplementation "com.google.dagger:hilt-android-testing:2.51"
+    kaptTest "com.google.dagger:hilt-compiler:2.51"
+
+    androidTestImplementation "com.google.dagger:hilt-android-testing:2.51"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:2.51"
+
+    // Instrumented Testing
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+
+    // Compose UI Testing
+    androidTestImplementation platform('androidx.compose:compose-bom:2023.03.00')
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }

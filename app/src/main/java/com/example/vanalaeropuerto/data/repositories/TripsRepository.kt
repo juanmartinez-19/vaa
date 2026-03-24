@@ -271,7 +271,7 @@ class TripsRepository @Inject constructor() {
 
             return MyResult.Success(tripsList)
         } catch (e : Exception) {
-            Log.e(ContentValues.TAG, "Exception thrown: ${e.message}")
+             
             MyResult.Failure(e)
         }
     }
